@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { PROJECT_NAME, PROJECT_VERSION } from '../constants';
+import { PROJECT_NAME, PROJECT_VERSION } from '@/constants';
 
 interface SideNavBarProps {
   currentPage: string;

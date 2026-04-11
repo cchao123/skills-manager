@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Skill } from '../../../types/skills';
+import type { Skill } from '@/types/skills';
 
 interface MarketplaceSkillCardProps {
   skill: Skill;

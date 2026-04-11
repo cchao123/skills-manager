@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { githubApi } from '../../../api/tauri';
-import { useToast } from '../../../components/Toast';
+import { githubApi } from '@/api/tauri';
+import { useToast } from '@/components/Toast';
 import { AUTO_SAVE_DELAY, DEFAULT_REPO_CONFIG } from '../constants/config';
 
 export interface RepoConfig {

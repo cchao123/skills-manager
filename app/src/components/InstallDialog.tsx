@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { GitHubSkill, AgentConfig } from '../types';
+import type { GitHubSkill, AgentConfig } from '@/types';
 
 interface InstallDialogProps {
   skill: GitHubSkill;

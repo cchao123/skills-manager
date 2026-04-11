@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Collapse } from '../../../components/Collapse';
+import { Collapse } from '@/components/Collapse';
 
 export const ConfigGuide: React.FC = () => {
   const { t } = useTranslation();

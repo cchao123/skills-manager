@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { invoke } from '@tauri-apps/api/core';
-import { useToast } from '../../../components/Toast';
-import { StatsBar } from './StatsBar';
-import { getAgentIcon } from '../utils/agentHelpers';
-import type { SkillMetadata, AgentConfig } from '../../../types';
+import { useToast } from '@/components/Toast';
+import { StatsBar } from '@/pages/Dashboard/components/StatsBar';
+import { getAgentIcon } from '@/pages/Dashboard/utils/agentHelpers';
+import type { SkillMetadata, AgentConfig } from '@/types';
 
 interface SearchAndFilterBarProps {
   searchTerm: string;
@@ -43,7 +43,7 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
           placeholder={t('dashboard.search.placeholder')}
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl py-3 pl-12 pr-4 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all shadow-sm"
+          className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl py-2.5 pl-12 pr-4 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all shadow-sm"
         />
         {searchTerm && (
           <button
@@ -71,7 +71,7 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                 <button
                   key={agent.name}
                   onClick={() => onAgentSelect(agent.name)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                     selectedAgent === agent.name
                       ? 'bg-[#b71422] text-white font-bold'
                       : 'bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border text-[#5e5e5e] dark:text-gray-300 hover:bg-[#edeeef] dark:hover:bg-dark-bg-tertiary'
@@ -90,7 +90,7 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
             })}
             <button
               onClick={() => onAgentSelect('All')}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 selectedAgent === 'All'
                   ? 'bg-[#b71422] text-white font-bold'
                   : 'bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border text-[#5e5e5e] dark:text-gray-300 hover:bg-[#edeeef] dark:hover:bg-dark-bg-tertiary'

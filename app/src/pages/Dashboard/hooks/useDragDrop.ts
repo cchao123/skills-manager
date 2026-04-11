@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { skillsApi } from '../../../api/tauri';
-import { useToast } from '../../../components/Toast';
+import { skillsApi } from '@/api/tauri';
+import { useToast } from '@/components/Toast';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 
 export const useDragDrop = () => {

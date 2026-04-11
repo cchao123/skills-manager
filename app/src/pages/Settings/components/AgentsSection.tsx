@@ -1,5 +1,5 @@
-import { AgentCard } from '../../../components/AgentCard';
-import type { AgentConfig } from '../../../types';
+import { AgentCard } from '@/components/AgentCard';
+import type { AgentConfig } from '@/types';
 
 interface AgentsSectionProps {
   agents: AgentConfig[];

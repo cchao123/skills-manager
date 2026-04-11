@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { open } from '@tauri-apps/plugin-shell';
-import { githubApi } from '../../../api/tauri';
-import { useToast } from '../../../components/Toast';
+import { githubApi } from '@/api/tauri';
+import { useToast } from '@/components/Toast';
 import { STAR_REPO_OWNER, STAR_REPO_NAME, STAR_REPO_URL } from '../constants/config';
 
 export const useGitHubActions = (repoConfig: any, setConnected?: (connected: boolean) => void) => {

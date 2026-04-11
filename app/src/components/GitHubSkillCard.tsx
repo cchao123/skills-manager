@@ -1,4 +1,4 @@
-import type { GitHubSkill } from '../types';
+import type { GitHubSkill } from '@/types';
 
 interface GitHubSkillCardProps {
   skill: GitHubSkill;

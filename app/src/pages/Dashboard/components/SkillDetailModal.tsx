@@ -1,8 +1,8 @@
-import type { SkillMetadata, AgentConfig, SkillFileEntry } from '../../../types';
-import { getSkillIcon, getSkillColor } from '../utils/skillHelpers';
-import { getAgentIcon, needsInvertInDark } from '../utils/agentHelpers';
-import CardFileTree from '../../../components/CardFileTree';
-import { FILE_TREE_HEIGHT } from '../constants/panel';
+import type { SkillMetadata, AgentConfig, SkillFileEntry } from '@/types';
+import { getSkillIcon, getSkillColor } from '@/pages/Dashboard/utils/skillHelpers';
+import { getAgentIcon, needsInvertInDark } from '@/pages/Dashboard/utils/agentHelpers';
+import CardFileTree from '@/components/CardFileTree';
+import { FILE_TREE_HEIGHT } from '@/pages/Dashboard/constants/panel';
 
 interface SkillDetailModalProps {
   skill: SkillMetadata;

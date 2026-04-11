@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageHeader from '../../components/PageHeader';
-import { useToast } from '../../components/Toast';
-import { githubApi } from '../../api/tauri';
+import PageHeader from '@/components/PageHeader';
+import { useToast } from '@/components/Toast';
+import { githubApi } from '@/api/tauri';
 import { useGitHubConfig } from './hooks/useGitHubConfig';
 import { useGitHubActions } from './hooks/useGitHubActions';
 import { StarButton } from './components/StarButton';
@@ -10,7 +10,7 @@ import { GitHubForm } from './components/GitHubForm';
 import { ActionButtons } from './components/ActionButtons';
 import { ConfigGuide } from './components/ConfigGuide';
 import { StatusBadge } from './components/StatusBadge';
-import { Collapse } from '../../components/Collapse';
+import { Collapse } from '@/components/Collapse';
 
 function GitHubBackup() {
   const { t } = useTranslation();

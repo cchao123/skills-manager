@@ -1,4 +1,4 @@
-import type { SkillMetadata, SkillSource } from '../types';
+import type { SkillMetadata, SkillSource } from '@/types';
 
 // Backend returns data in this format (matches Rust serialization)
 export interface BackendSkillMetadata {

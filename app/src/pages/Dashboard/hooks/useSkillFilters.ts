@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import type { SkillMetadata } from '../../../types';
+import type { SkillMetadata } from '@/types';
 
 type FilterType = 'all' | 'enabled' | 'disabled';
 

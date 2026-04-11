@@ -1,4 +1,4 @@
-import { AGENT_ICONS, DEFAULT_AGENT_ICON, NEEDS_INVERT_IN_DARK } from '../constants/agentIcons';
+import { AGENT_ICONS, DEFAULT_AGENT_ICON, NEEDS_INVERT_IN_DARK } from '@/pages/Dashboard/constants/agentIcons';
 
 /**
  * Get agent icon SVG path

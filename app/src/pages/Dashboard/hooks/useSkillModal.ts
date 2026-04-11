@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { skillsApi } from '../../../api/tauri';
-import { useToast } from '../../../components/Toast';
-import type { SkillMetadata, SkillFileEntry } from '../../../types';
+import { skillsApi } from '@/api/tauri';
+import { useToast } from '@/components/Toast';
+import type { SkillMetadata, SkillFileEntry } from '@/types';
 
 export const useSkillModal = () => {
   const { showToast } = useToast();

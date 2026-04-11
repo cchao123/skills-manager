@@ -1,4 +1,4 @@
-import { SKILL_ICON_POOL, SKILL_COLOR_POOL } from '../constants/skillIcons';
+import { SKILL_ICON_POOL, SKILL_COLOR_POOL } from '@/pages/Dashboard/constants/skillIcons';
 
 /**
  * Deterministic hash from string to index
