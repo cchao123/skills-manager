@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { DEFAULT_PANEL_WIDTH, MIN_PANEL_WIDTH, MAX_PANEL_WIDTH } from '../constants/panel';
+import { DEFAULT_PANEL_WIDTH, MIN_PANEL_WIDTH, MAX_PANEL_WIDTH } from '@/pages/Dashboard/constants/panel';
 
 export const usePanelResize = () => {
   const [leftPanelWidth, setLeftPanelWidth] = useState(DEFAULT_PANEL_WIDTH);

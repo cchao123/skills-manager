@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { agentsApi } from '../../../api/tauri';
-import type { AgentConfig } from '../../../types';
+import { agentsApi } from '@/api/tauri';
+import type { AgentConfig } from '@/types';
 
 export const useSettingsData = () => {
   const [agents, setAgents] = useState<AgentConfig[]>([]);

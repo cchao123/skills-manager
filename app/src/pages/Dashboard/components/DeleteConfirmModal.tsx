@@ -1,4 +1,4 @@
-import type { SkillMetadata } from '../../../types';
+import type { SkillMetadata } from '@/types';
 
 interface DeleteConfirmModalProps {
   target: SkillMetadata | null;

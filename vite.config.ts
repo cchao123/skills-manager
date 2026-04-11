@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { codeInspectorPlugin } from 'code-inspector-plugin';
+import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -10,6 +11,12 @@ export default defineConfig(async () => ({
       bundler: 'vite',
     }),
   ],
+
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./app/src"),
+    },
+  },
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //

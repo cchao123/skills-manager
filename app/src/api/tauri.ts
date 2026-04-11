@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
-import type { SkillMetadata, GitHubConfig, AgentConfig, AppConfig, SkillFileEntry, GitHubSkill } from '../types';
-import { adaptSkillMetadataList, BackendSkillMetadata } from '../adapters/skillAdapter';
+import type { SkillMetadata, GitHubConfig, AgentConfig, AppConfig, SkillFileEntry, GitHubSkill } from '@/types';
+import { adaptSkillMetadataList, BackendSkillMetadata } from '@/adapters/skillAdapter';
 
 export const skillsApi = {
   list: async (): Promise<SkillMetadata[]> => {

@@ -1,5 +1,5 @@
 import { MaterialSymbol } from 'react-material-symbols';
-import type { AgentConfig } from '../types';
+import type { AgentConfig } from '@/types';
 
 interface AgentCardProps {
   agent: AgentConfig;

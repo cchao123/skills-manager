@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { skillsApi, agentsApi } from '../../../api/tauri';
-import type { SkillMetadata, AgentConfig } from '../../../types';
+import { skillsApi, agentsApi } from '@/api/tauri';
+import type { SkillMetadata, AgentConfig } from '@/types';
 
 export const useSkillData = () => {
   const [skills, setSkills] = useState<SkillMetadata[]>([]);

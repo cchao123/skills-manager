@@ -1,27 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageHeader from '../../components/PageHeader';
-import type { SkillMetadata } from '../../types';
-import { TabSwitcher } from '../../components/TabSwitcher';
+import PageHeader from '@/components/PageHeader';
+import type { SkillMetadata } from '@/types';
+import { TabSwitcher } from '@/components/TabSwitcher';
 
 // Hooks
-import { useSkillData } from './hooks/useSkillData';
-import { useSkillFilters } from './hooks/useSkillFilters';
-import { useSkillActions } from './hooks/useSkillActions';
-import { useSkillModal } from './hooks/useSkillModal';
-import { useDragDrop } from './hooks/useDragDrop';
-import { usePanelResize } from './hooks/usePanelResize';
+import { useSkillData } from '@/pages/Dashboard/hooks/useSkillData';
+import { useSkillFilters } from '@/pages/Dashboard/hooks/useSkillFilters';
+import { useSkillActions } from '@/pages/Dashboard/hooks/useSkillActions';
+import { useSkillModal } from '@/pages/Dashboard/hooks/useSkillModal';
+import { useDragDrop } from '@/pages/Dashboard/hooks/useDragDrop';
+import { usePanelResize } from '@/pages/Dashboard/hooks/usePanelResize';
 
 // Components
-import { SkillCard } from './components/SkillCard';
-import { SearchAndFilterBar } from './components/SearchAndFilterBar';
-import { DragDropOverlay } from './components/DragDropOverlay';
-import { ImportingOverlay } from './components/ImportingOverlay';
-import { DeleteConfirmModal } from './components/DeleteConfirmModal';
-import { SkillDetailModal } from './components/SkillDetailModal';
-import { getSkillIcon, getSkillColor } from './utils/skillHelpers';
-import MarketplaceSkillCard from './components/MarketplaceSkillCard';
-import type { Skill } from '../../types/skills';
+import { SkillCard } from '@/pages/Dashboard/components/SkillCard';
+import { SearchAndFilterBar } from '@/pages/Dashboard/components/SearchAndFilterBar';
+import { DragDropOverlay } from '@/pages/Dashboard/components/DragDropOverlay';
+import { ImportingOverlay } from '@/pages/Dashboard/components/ImportingOverlay';
+import { DeleteConfirmModal } from '@/pages/Dashboard/components/DeleteConfirmModal';
+import { SkillDetailModal } from '@/pages/Dashboard/components/SkillDetailModal';
+import { getSkillIcon, getSkillColor } from '@/pages/Dashboard/utils/skillHelpers';
+import MarketplaceSkillCard from '@/pages/Dashboard/components/MarketplaceSkillCard';
+import type { Skill } from '@/types/skills';
 
 function Dashboard() {
   const { t } = useTranslation();
@@ -29,10 +29,14 @@ function Dashboard() {
   const [deleteTarget, setDeleteTarget] = useState<SkillMetadata | null>(null);
   const [viewMode, setViewMode] = useState('flat');
   const [selectedAgent, setSelectedAgent] = useState<string>('All');
+  const [showHelp, setShowHelp] = useState(false);
+  const helpButtonRef = useRef<HTMLButtonElement>(null);
+  const helpPopoverRef = useRef<HTMLDivElement>(null);
+  const helpTimeoutRef = useRef<number | null>(null);
 
   const viewTabs = [
     { id: 'flat', label: '平铺展示', icon: 'grid_view' },
-    { id: 'agent', label: '按agent展示', icon: 'view_list' },
+    { id: 'agent', label: '按来源展示', icon: 'smart_toy' },
   ];
 
   // 切换视图时重置agent选择
@@ -45,6 +49,32 @@ function Dashboard() {
 
   // Custom hooks
   const { skills, setSkills, agents, loading, error, loadSkills } = useSkillData();
+
+  // 延迟显示/隐藏帮助，配合hover效果
+  const handleHelpMouseEnter = () => {
+    if (helpTimeoutRef.current) {
+      clearTimeout(helpTimeoutRef.current);
+    }
+    setShowHelp(true);
+  };
+
+  const handleHelpMouseLeave = () => {
+    if (helpTimeoutRef.current) {
+      clearTimeout(helpTimeoutRef.current);
+    }
+    helpTimeoutRef.current = setTimeout(() => {
+      setShowHelp(false);
+    }, 100);
+  };
+
+  // 清理定时器
+  useEffect(() => {
+    return () => {
+      if (helpTimeoutRef.current) {
+        clearTimeout(helpTimeoutRef.current);
+      }
+    };
+  }, []);
   const { searchTerm, setSearchTerm, filterType, setFilterType, filteredSkills } = useSkillFilters(skills);
   const { handleToggleSkill, handleToggleAgent, handleDeleteSkill } = useSkillActions(skills, setSkills);
 
@@ -71,9 +101,9 @@ function Dashboard() {
   const filteredByAgent = selectedAgent === 'All'
     ? marketplaceSkills
     : marketplaceSkills.filter(skill => {
-        const originalSkill = filteredSkills.find(s => s.id === skill.id);
-        return originalSkill?.agent_enabled[selectedAgent];
-      });
+      const originalSkill = filteredSkills.find(s => s.id === skill.id);
+      return originalSkill?.agent_enabled[selectedAgent];
+    });
   const {
     detailSkill,
     showDetailModal,
@@ -159,54 +189,123 @@ function Dashboard() {
       <PageHeader
         icon="extension"
         title={t('header.dashboard')}
-        actions={<TabSwitcher tabs={viewTabs} activeTab={viewMode} onTabChange={handleViewModeChange} />}
+        center={<TabSwitcher tabs={viewTabs} activeTab={viewMode} onTabChange={handleViewModeChange} />}
+        actions={
+          <div className="relative">
+            <button
+              ref={helpButtonRef}
+              onMouseEnter={handleHelpMouseEnter}
+              onMouseLeave={handleHelpMouseLeave}
+              className="help-popover p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              title="视图说明"
+            >
+              <span className="material-symbols-outlined text-2xl text-slate-600 dark:text-gray-300">
+                help
+              </span>
+            </button>
+
+            {/* 帮助弹出框 - 显示在按钮下方 */}
+            {showHelp && (
+              <div
+                ref={helpPopoverRef}
+                onMouseEnter={handleHelpMouseEnter}
+                onMouseLeave={handleHelpMouseLeave}
+                className="absolute right-0 top-full mt-2 z-50 w-80 help-popover"
+              >
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <span className="material-symbols-outlined text-blue-600">info</span>
+                      视图说明
+                    </h3>
+                    <div className="space-y-3 text-sm">
+                      <div>
+                        <div className="font-medium text-gray-800 dark:text-gray-200 mb-1">平铺展示</div>
+                        <div className="text-gray-600 dark:text-gray-400">
+                          扫描本地所有 Agent，显示所有可用的 Skills（不区分 Agent 来源）
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-800 dark:text-gray-200 mb-1">按来源展示</div>
+                        <div className="text-gray-600 dark:text-gray-400">
+                          按照不同的 Agent 对 Skills 进行分类展示，可以清晰地看到每个 Agent 下有哪些 Skills
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        }
       />
 
-      <div className="flex-1 overflow-y-auto bg-white/80 dark:bg-dark-bg-secondary p-8">
-        {/* Search and Filter Section */}
-        <div className="max-w-6xl mx-auto mb-6">
+      {/* 搜索栏 - 固定 */}
+      <div className="bg-[#f8f9fa] dark:bg-dark-bg-secondary px-8 py-4">
+        <div className="max-w-6xl mx-auto">
           <SearchAndFilterBar
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
             filterType={filterType}
             onFilterChange={setFilterType}
             skills={skills}
-            viewMode={viewMode}
+            viewMode={viewMode as 'flat' | 'agent'}
             selectedAgent={selectedAgent}
             onAgentSelect={setSelectedAgent}
             agents={agents}
           />
         </div>
+      </div>
 
-        {viewMode === 'flat' && (
-          <>
-            {filteredSkills.length === 0 ? (
-              <div className="max-w-6xl mx-auto flex flex-col items-center justify-center py-20">
-                <span className="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">
-                  search_off
-                </span>
-                <p className="text-slate-500 dark:text-gray-400 font-medium">
-                  {searchTerm ? t('dashboard.search.noResults') : t('dashboard.filter.noResults')}
-                </p>
-              </div>
-            ) : (
-              <div className="flex flex-col lg:flex-row gap-4 items-start">
-                {/* Left column */}
-                <div className="flex-1 space-y-4">
-                  {filteredSkills.filter((_, i) => i % 2 === 0).map((skill) => (
-                    <SkillCard
-                      key={skill.id}
-                      skill={skill}
-                      agents={agents}
-                      expanded={expandedCards.has(skill.id)}
-                      onToggleExpand={toggleExpand}
-                      onToggleSkill={handleToggleSkill}
-                      onToggleAgent={handleToggleAgent}
-                      onShowDetail={handleShowSkillDetail}
-                    />
-                  ))}
-                  {/* Small screen: show right column skills here too */}
-                  <div className="lg:hidden space-y-4">
+      {/* 内容区域 - 可滚动 */}
+      <div className={`relative flex-1 overflow-y-auto bg-[#f8f9fa] dark:bg-dark-bg-secondary ${isDragOver ? 'px-0 border-4 border-[#b71422] bg-white/90 dark:bg-dark-bg-primary rounded-xl mx-8' : 'px-8'}`}>
+        <div className="max-w-6xl mx-auto">
+          {viewMode === 'flat' && (
+            <>
+              {filteredSkills.length === 0 ? (
+                <div className="max-w-6xl mx-auto flex flex-col items-center justify-center py-20">
+
+                  <span className="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">
+                    search_off
+                  </span>
+                  <p className="text-slate-500 dark:text-gray-400 font-medium">
+                    {searchTerm ? t('dashboard.search.noResults') : t('dashboard.filter.noResults')}
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col lg:flex-row gap-4 items-start">
+                  {/* Left column */}
+                  <div className="flex-1 space-y-4">
+                    {filteredSkills.filter((_, i) => i % 2 === 0).map((skill) => (
+                      <SkillCard
+                        key={skill.id}
+                        skill={skill}
+                        agents={agents}
+                        expanded={expandedCards.has(skill.id)}
+                        onToggleExpand={toggleExpand}
+                        onToggleSkill={handleToggleSkill}
+                        onToggleAgent={handleToggleAgent}
+                        onShowDetail={handleShowSkillDetail}
+                      />
+                    ))}
+                    {/* Small screen: show right column skills here too */}
+                    <div className="lg:hidden space-y-4">
+                      {filteredSkills.filter((_, i) => i % 2 === 1).map((skill) => (
+                        <SkillCard
+                          key={skill.id}
+                          skill={skill}
+                          agents={agents}
+                          expanded={expandedCards.has(skill.id)}
+                          onToggleExpand={toggleExpand}
+                          onToggleSkill={handleToggleSkill}
+                          onToggleAgent={handleToggleAgent}
+                          onShowDetail={handleShowSkillDetail}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  {/* Right column - only on large screens */}
+                  <div className="flex-1 space-y-4 hidden lg:block">
                     {filteredSkills.filter((_, i) => i % 2 === 1).map((skill) => (
                       <SkillCard
                         key={skill.id}
@@ -221,54 +320,45 @@ function Dashboard() {
                     ))}
                   </div>
                 </div>
-                {/* Right column - only on large screens */}
-                <div className="flex-1 space-y-4 hidden lg:block">
-                  {filteredSkills.filter((_, i) => i % 2 === 1).map((skill) => (
-                    <SkillCard
+              )}
+            </>
+          )}
+
+          {viewMode === 'agent' && (
+            <div className="bg-[#f8f9fa] dark:bg-dark-bg-secondary">
+              <div className="space-y-6">
+                {/* Skills Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {filteredByAgent.map((skill) => (
+                    <MarketplaceSkillCard
                       key={skill.id}
                       skill={skill}
-                      agents={agents}
-                      expanded={expandedCards.has(skill.id)}
-                      onToggleExpand={toggleExpand}
-                      onToggleSkill={handleToggleSkill}
-                      onToggleAgent={handleToggleAgent}
-                      onShowDetail={handleShowSkillDetail}
+                      onInstall={() => {
+                        const originalSkill = skills.find(s => s.id === skill.id);
+                        if (originalSkill) {
+                          handleToggleSkill(originalSkill);
+                        }
+                      }}
+                      onInfo={() => handleShowSkillDetail(skills.find(s => s.id === skill.id)!)}
                     />
                   ))}
                 </div>
-              </div>
-            )}
-          </>
-        )}
 
-        {viewMode === 'agent' && (
-          <div className="bg-[#f8f9fa] dark:bg-dark-bg-secondary">
-            <div className="space-y-6">
-              {/* Skills Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredByAgent.map((skill) => (
-                  <MarketplaceSkillCard
-                    key={skill.id}
-                    skill={skill}
-                    onInstall={() => {
-                      const originalSkill = skills.find(s => s.id === skill.id);
-                      if (originalSkill) {
-                        handleToggleSkill(originalSkill);
-                      }
-                    }}
-                    onInfo={() => handleShowSkillDetail(skills.find(s => s.id === skill.id)!)}
-                  />
-                ))}
+                {filteredByAgent.length === 0 && (
+                  <div className="text-center py-20 text-slate-500 dark:text-gray-400">
+                    该 Agent 下暂无技能
+                  </div>
+                )}
               </div>
-
-              {filteredByAgent.length === 0 && (
-                <div className="text-center py-20 text-slate-500 dark:text-gray-400">
-                  该 Agent 下暂无技能
-                </div>
-              )}
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Drag & Drop Overlay */}
+        {isDragOver && <DragDropOverlay />}
+
+        {/* Importing Overlay */}
+        {importing && <ImportingOverlay />}
       </div>
 
       {/* Skill Detail Modal */}
@@ -292,11 +382,6 @@ function Dashboard() {
         />
       )}
 
-      {/* Drag & Drop Overlay */}
-      {isDragOver && <DragDropOverlay />}
-
-      {/* Importing Overlay */}
-      {importing && <ImportingOverlay />}
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmModal

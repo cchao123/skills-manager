@@ -1,6 +1,6 @@
-import type { SkillMetadata, AgentConfig } from '../../../types';
-import { getSkillIcon, getSkillColor } from '../utils/skillHelpers';
-import { getAgentIcon, needsInvertInDark } from '../utils/agentHelpers';
+import type { SkillMetadata, AgentConfig } from '@/types';
+import { getSkillIcon, getSkillColor } from '@/pages/Dashboard/utils/skillHelpers';
+import { getAgentIcon, needsInvertInDark } from '@/pages/Dashboard/utils/agentHelpers';
 
 interface SkillCardProps {
   skill: SkillMetadata;

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { open } from '@tauri-apps/plugin-shell';
-import PageHeader from '../../components/PageHeader';
-import { useTheme } from '../../contexts/ThemeContext';
+import PageHeader from '@/components/PageHeader';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useSettingsData } from './hooks/useSettingsData';
 import { GITHUB_URLS, DEFAULT_TAB, type TabType, type Theme } from './constants/config';
 import { LanguageSection } from './components/LanguageSection';

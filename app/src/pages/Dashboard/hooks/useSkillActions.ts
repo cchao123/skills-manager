@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { skillsApi } from '../../../api/tauri';
-import { useToast } from '../../../components/Toast';
-import type { SkillMetadata } from '../../../types';
+import { skillsApi } from '@/api/tauri';
+import { useToast } from '@/components/Toast';
+import type { SkillMetadata } from '@/types';
 
 export const useSkillActions = (
   _skills: SkillMetadata[],
