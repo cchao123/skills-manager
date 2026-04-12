@@ -44,7 +44,7 @@ pub async fn list_skills(
     let config = settings.get_config();
     info!("Scanning skills from central, cursor, and claude sources...");
 
-    let skills = scanner::scan_all_skill_sources(&config.skill_states)
+    let skills = scanner::scan_all_skill_sources(&config.skill_states, &config.agents)
         .map_err(|e| {
             error!("Failed to scan skills: {}", e);
             format!("Failed to scan skills: {}", e)
@@ -69,7 +69,7 @@ pub async fn enable_skill(
             format!("Failed to acquire lock: {}", e)
         })?;
 
-    let skills = scanner::scan_all_skill_sources(&settings.get_config().skill_states)
+    let skills = scanner::scan_all_skill_sources(&settings.get_config().skill_states, &settings.get_config().agents)
         .map_err(|e| {
             error!("Failed to scan skills: {}", e);
             format!("Failed to scan skills: {}", e)
@@ -169,7 +169,7 @@ pub async fn disable_skill(
             format!("Failed to acquire lock: {}", e)
         })?;
 
-    let skills = scanner::scan_all_skill_sources(&settings.get_config().skill_states)
+    let skills = scanner::scan_all_skill_sources(&settings.get_config().skill_states, &settings.get_config().agents)
         .map_err(|e| {
             error!("Failed to scan skills: {}", e);
             format!("Failed to scan skills: {}", e)
@@ -275,10 +275,10 @@ pub async fn get_skill_files(
     info!("Getting files for skill: {}", skill_id);
 
     // 首先扫描技能获取其路径
-    let skills = scanner::scan_all_skill_sources(&state.settings_manager.lock()
-        .map_err(|e| format!("Failed to acquire lock: {}", e))?
-        .get_config()
-        .skill_states)
+    let guard = state.settings_manager.lock()
+        .map_err(|e| format!("Failed to acquire lock: {}", e))?;
+    let config = guard.get_config();
+    let skills = scanner::scan_all_skill_sources(&config.skill_states, &config.agents)
         .map_err(|e| {
             error!("Failed to scan skills: {}", e);
             format!("Failed to scan skills: {}", e)
@@ -374,10 +374,10 @@ pub async fn read_skill_file(
     info!("Reading file {} for skill: {}", file_path, skill_id);
 
     // 验证文件路径是否在技能目录内
-    let skills = scanner::scan_all_skill_sources(&state.settings_manager.lock()
-        .map_err(|e| format!("Failed to acquire lock: {}", e))?
-        .get_config()
-        .skill_states)
+    let guard = state.settings_manager.lock()
+        .map_err(|e| format!("Failed to acquire lock: {}", e))?;
+    let config = guard.get_config();
+    let skills = scanner::scan_all_skill_sources(&config.skill_states, &config.agents)
         .map_err(|e| {
             error!("Failed to scan skills: {}", e);
             format!("Failed to scan skills: {}", e)
@@ -431,10 +431,10 @@ pub async fn delete_skill(
     info!("Deleting skill: {}", skill_id);
 
     // 获取技能列表并查找目标技能
-    let skills = scanner::scan_all_skill_sources(&state.settings_manager.lock()
-        .map_err(|e| format!("Failed to acquire lock: {}", e))?
-        .get_config()
-        .skill_states)
+    let guard = state.settings_manager.lock()
+        .map_err(|e| format!("Failed to acquire lock: {}", e))?;
+    let config = guard.get_config();
+    let skills = scanner::scan_all_skill_sources(&config.skill_states, &config.agents)
         .map_err(|e| {
             error!("Failed to scan skills: {}", e);
             format!("Failed to scan skills: {}", e)

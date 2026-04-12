@@ -244,6 +244,7 @@ pub fn scan_user_custom_skills(
 /// 扫描多个源的技能目录，返回所有找到的技能
 pub fn scan_all_skill_sources(
     skill_states: &std::collections::HashMap<String, std::collections::HashMap<String, bool>>,
+    agents: &[crate::models::AgentConfig],
 ) -> Result<Vec<SkillMetadata>, ScannerError> {
     let mut all_skills = Vec::new();
     let mut seen_ids = HashSet::new();
@@ -362,8 +363,44 @@ pub fn scan_all_skill_sources(
     }
     eprintln!("=== Claude plugin scan complete, total skills so far: {} ===", all_skills.len());
 
+    // 计算 is_collected 状态（仅对 Central 来源有意义）
+    for skill in &mut all_skills {
+        if skill.source == SkillSource::Central {
+            skill.is_collected = check_skill_collected(&skill.id, agents);
+        }
+    }
+
     all_skills.sort_by(|a, b| a.id.cmp(&b.id));
     Ok(all_skills)
+}
+
+/// 检查路径是否为物理目录（非符号链接）
+fn is_physical_dir(path: &std::path::Path) -> bool {
+    path.is_dir() && !path.is_symlink()
+}
+
+/// 检查 skill 是否被物理收录到任一 agent 目录中
+fn check_skill_collected(skill_id: &str, agents: &[crate::models::AgentConfig]) -> bool {
+    let home_dir = match dirs::home_dir() {
+        Some(h) => h,
+        None => return false,
+    };
+
+    for agent in agents {
+        let agent_path = if agent.path.starts_with("~/") {
+            home_dir.join(&agent.path[2..])
+        } else if agent.path.starts_with("~") {
+            home_dir.join(&agent.path[1..])
+        } else {
+            home_dir.join(&agent.path)
+        };
+
+        let skill_in_agent = agent_path.join(&agent.skills_path).join(skill_id);
+        if is_physical_dir(&skill_in_agent) {
+            return true;
+        }
+    }
+    false
 }
 
 /// 展开~前缀为home目录
