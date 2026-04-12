@@ -28,7 +28,7 @@ function Dashboard() {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [deleteTarget, setDeleteTarget] = useState<SkillMetadata | null>(null);
   const [viewMode, setViewMode] = useState('flat');
-  const [selectedAgent, setSelectedAgent] = useState<string>('All');
+  const [selectedSource, setSelectedSource] = useState<string>('All');
   const [showHelp, setShowHelp] = useState(false);
   const helpButtonRef = useRef<HTMLButtonElement>(null);
   const helpPopoverRef = useRef<HTMLDivElement>(null);
@@ -43,7 +43,7 @@ function Dashboard() {
   const handleViewModeChange = (mode: string) => {
     setViewMode(mode);
     if (mode === 'agent') {
-      setSelectedAgent('All');
+      setSelectedSource('All');
     }
   };
 
@@ -95,15 +95,17 @@ function Dashboard() {
     };
   };
 
-  const marketplaceSkills = filteredSkills.map(convertToMarketplaceSkill);
+  // 按来源过滤
+  const filteredBySource = selectedSource === 'All'
+    ? filteredSkills
+    : filteredSkills.filter(skill => {
+        if (selectedSource === 'claude') return skill.source === 'claude';
+        if (selectedSource === 'cursor') return skill.source === 'cursor';
+        if (selectedSource === 'central') return skill.source === 'central';
+        return true;
+      });
 
-  // 根据选中的agent筛选技能
-  const filteredByAgent = selectedAgent === 'All'
-    ? marketplaceSkills
-    : marketplaceSkills.filter(skill => {
-      const originalSkill = filteredSkills.find(s => s.id === skill.id);
-      return originalSkill?.agent_enabled[selectedAgent];
-    });
+  const marketplaceSkills = filteredBySource.map(convertToMarketplaceSkill);
   const {
     detailSkill,
     showDetailModal,
@@ -250,9 +252,8 @@ function Dashboard() {
             onFilterChange={setFilterType}
             skills={skills}
             viewMode={viewMode as 'flat' | 'agent'}
-            selectedAgent={selectedAgent}
-            onAgentSelect={setSelectedAgent}
-            agents={agents}
+            selectedSource={selectedSource}
+            onSourceSelect={setSelectedSource}
           />
         </div>
       </div>
@@ -329,24 +330,32 @@ function Dashboard() {
               <div className="space-y-6">
                 {/* Skills Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {filteredByAgent.map((skill) => (
-                    <MarketplaceSkillCard
-                      key={skill.id}
-                      skill={skill}
-                      onInstall={() => {
-                        const originalSkill = skills.find(s => s.id === skill.id);
-                        if (originalSkill) {
-                          handleToggleSkill(originalSkill);
-                        }
-                      }}
-                      onInfo={() => handleShowSkillDetail(skills.find(s => s.id === skill.id)!)}
-                    />
-                  ))}
+                  {marketplaceSkills.map((skill) => {
+                    const originalSkill = filteredBySource.find(s => s.id === skill.id);
+                    const collectedStatus = originalSkill?.source === 'central'
+                      ? (originalSkill.is_collected ? 'collected' as const : 'uncollected' as const)
+                      : undefined;
+
+                    return (
+                      <MarketplaceSkillCard
+                        key={skill.id}
+                        skill={skill}
+                        onInstall={() => {
+                          const orig = skills.find(s => s.id === skill.id);
+                          if (orig) {
+                            handleToggleSkill(orig);
+                          }
+                        }}
+                        onInfo={() => handleShowSkillDetail(skills.find(s => s.id === skill.id)!)}
+                        collectedStatus={collectedStatus}
+                      />
+                    );
+                  })}
                 </div>
 
-                {filteredByAgent.length === 0 && (
+                {marketplaceSkills.length === 0 && (
                   <div className="text-center py-20 text-slate-500 dark:text-gray-400">
-                    该 Agent 下暂无技能
+                    该来源下暂无技能
                   </div>
                 )}
               </div>
