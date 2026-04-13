@@ -86,6 +86,9 @@ impl GitHubIntegrator {
             self.open_or_init_repo(config)?
         };
 
+        // 0. 自动生成 README.md
+        generate_readme(&self.skills_dir);
+
         // 1. 暂存变更：覆盖模式需 FORCE，才能把「工作区已删除、索引仍保留」的已跟踪文件从索引移除
         let mut index = repo.index()?;
         let add_opts = if overwrite_remote {
@@ -117,12 +120,12 @@ impl GitHubIntegrator {
             let tree = repo.find_tree(tree_id)?;
             let msg = if overwrite_remote {
                 format!(
-                    "Force sync (mirror local → remote) [{}]",
+                    "Force sync (mirror local → remote) [{}]\n\nSynced-by: Skills Manager <https://github.com/cchao123/skills-managers>",
                     chrono::Utc::now().format("%Y-%m-%d %H:%M")
                 )
             } else {
                 format!(
-                    "Sync skills from Skills Manager [{}]",
+                    "Sync skills from Skills Manager [{}]\n\nSynced-by: Skills Manager <https://github.com/cchao123/skills-managers>",
                     chrono::Utc::now().format("%Y-%m-%d %H:%M")
                 )
             };
@@ -337,4 +340,79 @@ fn push_to_origin(repo: &Repository, branch: &str, token: Option<&str>, force: b
     })?;
 
     Ok(())
+}
+
+/// 扫描 skills 目录，自动生成 README.md
+fn generate_readme(skills_dir: &std::path::Path) {
+    let mut skills = Vec::new();
+
+    if let Ok(entries) = fs::read_dir(skills_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if !path.is_dir() {
+                continue;
+            }
+            let skill_md = path.join("SKILL.md");
+            if !skill_md.exists() {
+                continue;
+            }
+
+            let id = path.file_name().unwrap().to_string_lossy().to_string();
+            let (name, desc) = parse_skill_meta(&skill_md);
+            skills.push((id, name, desc));
+        }
+    }
+
+    skills.sort_by(|a, b| a.0.cmp(&b.0));
+
+    let mut content = String::from(
+        "# Skills Backup\n\n\
+         > Synced by [Skills Manager](https://github.com/cchao123/skills-managers) — \
+         a desktop app for managing AI coding agent skills.\n\n",
+    );
+
+    if skills.is_empty() {
+        content.push_str("*No skills yet.*\n");
+    } else {
+        content.push_str(&format!("## Skills ({})\n\n", skills.len()));
+        content.push_str("| # | Skill | Description |\n");
+        content.push_str("|---|-------|-------------|\n");
+        for (i, (_id, name, desc)) in skills.iter().enumerate() {
+            let desc = desc.replace('|', "\\|").replace('\n', " ");
+            content.push_str(&format!("| {} | **{}** | {} |\n", i + 1, name, desc));
+        }
+        content.push('\n');
+    }
+
+    let readme_path = skills_dir.join("README.md");
+    let _ = fs::write(&readme_path, content);
+    eprintln!("[sync] README.md generated with {} skills", skills.len());
+}
+
+/// 从 SKILL.md 提取 name 和 description
+fn parse_skill_meta(path: &std::path::Path) -> (String, String) {
+    let content = match fs::read_to_string(path) {
+        Ok(c) => c,
+        Err(_) => return ("".to_string(), "".to_string()),
+    };
+    let re = regex::Regex::new(r"(?s)^---[\r\n]+(.*?)[\r\n]+---").unwrap();
+    let yaml = match re.captures(&content).and_then(|c| c.get(1)) {
+        Some(m) => m.as_str().to_string(),
+        None => return ("".to_string(), "".to_string()),
+    };
+    let yaml_val: serde_yaml::Value = match serde_yaml::from_str(&yaml) {
+        Ok(v) => v,
+        Err(_) => return ("".to_string(), "".to_string()),
+    };
+    let name = yaml_val
+        .get("name")
+        .and_then(|v| v.as_str())
+        .unwrap_or("")
+        .to_string();
+    let desc = yaml_val
+        .get("description")
+        .and_then(|v| v.as_str())
+        .unwrap_or("")
+        .to_string();
+    (name, desc)
 }
