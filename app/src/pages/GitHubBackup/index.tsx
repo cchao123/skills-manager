@@ -9,6 +9,7 @@ import { StarButton } from './components/StarButton';
 import { GitHubForm } from './components/GitHubForm';
 import { ActionButtons } from './components/ActionButtons';
 import { ConfigGuide } from './components/ConfigGuide';
+import { Shared } from './components/Shared';
 import { StatusBadge } from './components/StatusBadge';
 import { Collapse } from '@/components/Collapse';
 
@@ -148,6 +149,8 @@ function GitHubBackup() {
 
           {/* Configuration Guide - Accordion */}
           <ConfigGuide />
+
+          <Shared owner={repoConfig.owner} repo={repoConfig.repo} />
         </div>
       </div>
     </div>

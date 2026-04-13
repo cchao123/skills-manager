@@ -26,7 +26,7 @@ function MarketplaceSkillCard({ skill, onInstall, onInfo, onDelete, onAddToRoot,
         </div>
 
         <h4 className="text-base font-bold mb-1 truncate text-slate-900 dark:text-white">{skill.name}</h4>
-        <p className="text-xs text-[#5e5e5e] dark:text-gray-300 mb-4 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-[#5e5e5e] dark:text-gray-300 mb-4 line-clamp-2 min-h-[2.5rem] leading-relaxed">
           {skill.description}
         </p>
 
