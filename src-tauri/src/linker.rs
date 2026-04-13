@@ -117,11 +117,11 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, Linker
 
     // Check if source is a file or directory and use appropriate function
     eprintln!("Attempting to create symlink: {:?} -> {:?}", source, target);
-    let result = if source.is_dir() {
-        std::os::windows::fs::symlink_dir(source, target)?
+    if source.is_dir() {
+        std::os::windows::fs::symlink_dir(source, target)?;
     } else {
-        std::os::windows::fs::symlink_file(source, target)?
-    };
+        std::os::windows::fs::symlink_file(source, target)?;
+    }
 
     eprintln!("Symlink created successfully!");
     eprintln!("=== END CREATE_SYMLINK DEBUG ===");
