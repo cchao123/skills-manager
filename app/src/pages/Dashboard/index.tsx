@@ -34,7 +34,7 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
   const [showHelp, setShowHelp] = useState(false);
   const helpButtonRef = useRef<HTMLButtonElement>(null);
   const helpPopoverRef = useRef<HTMLDivElement>(null);
-  const helpTimeoutRef = useRef<number | null>(null);
+  const helpTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const viewTabs = [
     { id: 'flat', label: '平铺展示', icon: 'grid_view' },
