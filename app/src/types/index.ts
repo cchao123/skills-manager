@@ -15,6 +15,8 @@ export interface SkillMetadata {
   author?: string;               // Author (optional)
   version?: string;              // Version (optional)
   repository?: string;           // Repository URL (optional)
+  /** 技能目录体积（字节），后端可选返回 */
+  size?: number;
   installed_at: string;          // Installation timestamp
   last_updated: string;          // Last update timestamp
   path?: string;                 // Full file system path (optional, used for creating symlinks)
