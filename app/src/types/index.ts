@@ -1,5 +1,5 @@
 // Skill source type
-export type SkillSource = 'central' | 'cursor' | 'claude';
+export type SkillSource = 'global' | 'cursor' | 'claude';
 
 // Skill Metadata (matches backend Phase 1)
 export interface SkillMetadata {

@@ -4,11 +4,11 @@ use std::collections::HashMap;
 // ========== Phase 1 新模型 ==========
 
 /// 技能来源
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum SkillSource {
     #[default]
-    Central,  // ~/.skills-manager/skills/
+    Global,   // ~/.skills-manager/skills/
     Cursor,   // ~/.cursor/skills/
     Claude,   // ~/.claude/plugins/cache/
 }

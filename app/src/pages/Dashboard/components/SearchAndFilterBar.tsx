@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/components/Toast';
 import { StatsBar } from '@/pages/Dashboard/components/StatsBar';
 import { getAgentIcon } from '@/pages/Dashboard/utils/agentHelpers';
+import octopusIcon from '@/assets/agents/octopus.svg';
 import type { SkillMetadata } from '@/types';
 
 interface SearchAndFilterBarProps {
@@ -61,11 +62,11 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
       )}
 
       {viewMode === 'agent' && (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 h-[50px]">
           {[
+            { id: 'global', label: 'Skills Manager根目录', icon: octopusIcon },
             { id: 'claude', label: 'Claude Code', icon: getAgentIcon('claude') },
             { id: 'cursor', label: 'Cursor', icon: getAgentIcon('cursor') },
-            { id: 'central', label: '中央存储', icon: null },
           ].map((item) => (
             <button
               key={item.id}
@@ -86,17 +87,6 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
               <span>{item.label}</span>
             </button>
           ))}
-          <button
-            onClick={() => onSourceSelect('All')}
-            className={`flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-              selectedSource === 'All'
-                ? 'bg-[#b71422] text-white font-bold'
-                : 'bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border text-[#5e5e5e] dark:text-gray-300 hover:bg-[#edeeef] dark:hover:bg-dark-bg-tertiary'
-            }`}
-          >
-            <span className="text-base">🌐</span>
-            <span>全部</span>
-          </button>
         </div>
       )}
 

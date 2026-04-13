@@ -207,6 +207,7 @@ pub fn run() {
             commands::settings::set_linking_strategy,
             commands::settings::open_skills_manager_folder,
             commands::settings::detect_agents,
+            commands::settings::open_folder,
             // Marketplace commands
             commands::marketplace::scan_github_repos,
             commands::marketplace::install_from_github,

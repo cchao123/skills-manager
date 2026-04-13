@@ -146,7 +146,7 @@ fn get_default_agent_states(source: &SkillSource) -> HashMap<String, bool> {
     let mut states = HashMap::new();
 
     match source {
-        SkillSource::Central => {
+        SkillSource::Global => {
             // 中央存储的技能：默认所有agent都启用（用户可手动控制）
             states.insert("claude".to_string(), true);
             states.insert("cursor".to_string(), true);
@@ -247,19 +247,19 @@ pub fn scan_all_skill_sources(
     agents: &[crate::models::AgentConfig],
 ) -> Result<Vec<SkillMetadata>, ScannerError> {
     let mut all_skills = Vec::new();
-    let mut seen_ids = HashSet::new();
+    let mut seen_ids: HashSet<(String, SkillSource)> = HashSet::new();
 
     // 1. 扫描中央存储（优先级最高）
     let central_path = std::path::PathBuf::from("~/.skills-manager/skills");
     if let Ok(expanded) = expand_tilde(&central_path) {
         eprintln!("=== Scanning central storage: {:?} ===", expanded);
-        if let Ok(skills) = scan_skills_directory(&expanded, skill_states, SkillSource::Central) {
+        if let Ok(skills) = scan_skills_directory(&expanded, skill_states, SkillSource::Global) {
             for skill in skills {
-                if !seen_ids.contains(&skill.id) {
-                    let skill_id = skill.id.clone();
-                    seen_ids.insert(skill_id.clone());
+                let key = (skill.id.clone(), SkillSource::Global);
+                if !seen_ids.contains(&key) {
+                    seen_ids.insert(key.clone());
                     all_skills.push(skill);
-                    eprintln!("✅ Added central storage skill: {}", skill_id);
+                    eprintln!("✅ Added central storage skill: {}", key.0);
                 }
             }
         }
@@ -270,11 +270,11 @@ pub fn scan_all_skill_sources(
     if let Ok(expanded) = expand_tilde(&claude_custom_path) {
         if let Ok(skills) = scan_user_custom_skills(&expanded, skill_states, SkillSource::Claude) {
             for skill in skills {
-                if !seen_ids.contains(&skill.id) {
-                    let skill_id = skill.id.clone();
-                    seen_ids.insert(skill_id.clone());
+                let key = (skill.id.clone(), SkillSource::Claude);
+                if !seen_ids.contains(&key) {
+                    seen_ids.insert(key.clone());
                     all_skills.push(skill);
-                    eprintln!("✅ Added Claude custom skill: {}", skill_id);
+                    eprintln!("✅ Added Claude custom skill: {}", key.0);
                 }
             }
         }
@@ -285,11 +285,11 @@ pub fn scan_all_skill_sources(
     if let Ok(expanded) = expand_tilde(&cursor_custom_path) {
         if let Ok(skills) = scan_user_custom_skills(&expanded, skill_states, SkillSource::Cursor) {
             for skill in skills {
-                if !seen_ids.contains(&skill.id) {
-                    let skill_id = skill.id.clone();
-                    seen_ids.insert(skill_id.clone());
+                let key = (skill.id.clone(), SkillSource::Cursor);
+                if !seen_ids.contains(&key) {
+                    seen_ids.insert(key.clone());
                     all_skills.push(skill);
-                    eprintln!("✅ Added Cursor custom skill: {}", skill_id);
+                    eprintln!("✅ Added Cursor custom skill: {}", key.0);
                 }
             }
         }
@@ -301,11 +301,11 @@ pub fn scan_all_skill_sources(
         eprintln!("=== Scanning Cursor built-in skills from: {:?} ===", expanded);
         if let Ok(skills) = scan_user_custom_skills(&expanded, skill_states, SkillSource::Cursor) {
             for skill in skills {
-                if !seen_ids.contains(&skill.id) {
-                    let skill_id = skill.id.clone();
-                    seen_ids.insert(skill_id.clone());
+                let key = (skill.id.clone(), SkillSource::Cursor);
+                if !seen_ids.contains(&key) {
+                    seen_ids.insert(key.clone());
                     all_skills.push(skill);
-                    eprintln!("✅ Added Cursor built-in skill: {}", skill_id);
+                    eprintln!("✅ Added Cursor built-in skill: {}", key.0);
                 }
             }
         }
@@ -324,8 +324,9 @@ pub fn scan_all_skill_sources(
                 eprintln!("Found {} skills from Cursor plugin", skills.len());
                 for skill in skills {
                     eprintln!("  - Skill: {} (source: Cursor)", skill.name);
-                    if !seen_ids.contains(&skill.id) {
-                        seen_ids.insert(skill.id.clone());
+                    let key = (skill.id.clone(), SkillSource::Cursor);
+                    if !seen_ids.contains(&key) {
+                        seen_ids.insert(key);
                         all_skills.push(skill);
                     }
                 }
@@ -351,8 +352,9 @@ pub fn scan_all_skill_sources(
                 eprintln!("Found {} skills from Claude plugin", skills.len());
                 for skill in skills {
                     eprintln!("  - Skill: {} (source: Claude)", skill.name);
-                    if !seen_ids.contains(&skill.id) {
-                        seen_ids.insert(skill.id.clone());
+                    let key = (skill.id.clone(), SkillSource::Claude);
+                    if !seen_ids.contains(&key) {
+                        seen_ids.insert(key);
                         all_skills.push(skill);
                     }
                 }
@@ -365,7 +367,7 @@ pub fn scan_all_skill_sources(
 
     // 计算 is_collected 状态（仅对 Central 来源有意义）
     for skill in &mut all_skills {
-        if skill.source == SkillSource::Central {
+        if skill.source == SkillSource::Global {
             skill.is_collected = check_skill_collected(&skill.id, agents);
         }
     }
@@ -424,7 +426,7 @@ fn find_all_skills_dirs(base_path: &Path) -> Vec<PathBuf> {
         for entry in entries.flatten() {
             let path = entry.path();
             if path.is_dir() {
-                // 如果是skills目录，添加到结果
+                // 如果是skills目录，拷贝到结果
                 if path.file_name() == Some(std::ffi::OsStr::new("skills")) {
                     eprintln!("Found skills directory: {:?}", path);
                     skills_dirs.push(path);

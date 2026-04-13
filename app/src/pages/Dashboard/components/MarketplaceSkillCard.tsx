@@ -4,10 +4,12 @@ interface MarketplaceSkillCardProps {
   skill: Skill;
   onInstall: (skillId: string) => void;
   onInfo: (skillId: string) => void;
-  collectedStatus?: 'collected' | 'uncollected';
+  onDelete?: (skillId: string) => void;
+  onAddToRoot?: (skillId: string) => void;
+  isInRoot?: boolean;
 }
 
-function MarketplaceSkillCard({ skill, onInstall, onInfo, collectedStatus }: MarketplaceSkillCardProps) {
+function MarketplaceSkillCard({ skill, onInstall, onInfo, onDelete, onAddToRoot, isInRoot }: MarketplaceSkillCardProps) {
   return (
     <article className="bg-white dark:bg-dark-bg-card rounded-xl border border-[#e1e3e4] dark:border-dark-border hover:shadow-lg hover:border-[#b71422]/20 transition-all duration-300 flex flex-col group overflow-hidden">
       <div className="p-4">
@@ -29,7 +31,7 @@ function MarketplaceSkillCard({ skill, onInstall, onInfo, collectedStatus }: Mar
         </p>
 
         {/* Rating + Downloads */}
-        <div className="flex items-center gap-3 mb-4 text-[11px] font-medium text-slate-500 dark:text-gray-400">
+        {/* <div className="flex items-center gap-3 mb-4 text-[11px] font-medium text-slate-500 dark:text-gray-400">
           <div className="flex items-center gap-1">
             <span className="material-symbols-outlined text-xs text-yellow-500" style={{ fontVariationSettings: "'FILL' 1" }}>
               star
@@ -40,26 +42,60 @@ function MarketplaceSkillCard({ skill, onInstall, onInfo, collectedStatus }: Mar
             <span className="material-symbols-outlined text-xs dark:text-gray-400">download</span>
             <span className="dark:text-gray-300">{skill.downloads}</span>
           </div>
+        </div> */}
+
+        <div className="flex items-center gap-3 mb-4 text-[11px] font-medium text-slate-500 dark:text-gray-400">
+          <div className="flex items-center gap-1">
+            {skill.enabledAgentCount > 0 ? (
+              <span className="material-symbols-outlined text-xs text-green-500" style={{ fontVariationSettings: "'FILL' 1" }}>
+                check_circle
+              </span>
+            ) : (
+              <span className="material-symbols-outlined text-xs text-gray-400 dark:text-gray-500">
+                radio_button_unchecked
+              </span>
+            )}
+            <span className="text-[#191c1d] dark:text-white">{skill.enabledAgentCount}/{skill.totalAgentCount} Agent 开启</span>
+          </div>
+          {skill.size != null && (
+            <div className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-xs dark:text-gray-400">folder</span>
+              <span className="dark:text-gray-300">{skill.size >= 1024 ? `${(skill.size / 1024).toFixed(1)}MB` : `${skill.size}KB`}</span>
+            </div>
+          )}
         </div>
 
         {/* Buttons */}
         <div className="flex gap-2">
-          {collectedStatus !== undefined ? (
-            /* 收录标签 — 纯展示，不可点击 */
-            <div className={`flex-1 py-2 rounded-lg font-bold text-xs text-center ${
-              collectedStatus === 'collected'
-                ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800'
-                : 'bg-[#edeeef] dark:bg-dark-bg-tertiary text-[#5e5e5e] dark:text-gray-400 border border-[#e1e3e4] dark:border-dark-border'
-            }`}>
-              {collectedStatus === 'collected' ? '已收录' : '收录'}
-            </div>
+          {onDelete ? (
+            /* 删除按钮 — 根目录 tab */
+            <button
+              onClick={() => onDelete(skill.id)}
+              className="flex-1 bg-[#b71422] hover:bg-red-700 text-white py-2 rounded-lg font-bold text-xs transition-colors"
+            >
+              从跟目录中移除
+            </button>
+          ) : onAddToRoot ? (
+            /* 拷贝到根目录按钮 — 其他来源 tab */
+            isInRoot ? (
+              <div className="flex-1 py-2 rounded-lg font-bold text-xs text-center bg-[#edeeef] dark:bg-dark-bg-tertiary text-[#5e5e5e] dark:text-gray-400 border border-[#e1e3e4] dark:border-dark-border cursor-not-allowed">
+                根目录中已存在
+              </div>
+            ) : (
+              <button
+                onClick={() => onAddToRoot(skill.id)}
+                className="flex-1 bg-[#b71422] text-white py-2 rounded-lg font-bold text-xs hover:opacity-90 transition-opacity"
+              >
+                拷贝到根目录
+              </button>
+            )
           ) : (
-            /* Install 按钮 — 原有逻辑 */
+            /* Install 按钮 — 原有逻辑兜底 */
             <button
               onClick={() => onInstall(skill.id)}
               className="flex-1 bg-[#b71422] text-white py-2 rounded-lg font-bold text-xs hover:opacity-90 transition-opacity"
             >
-              {skill.installed ? 'Installed' : 'Install'}
+              {skill.installed ? '已收录' : '收录'}
             </button>
           )}
           <button
