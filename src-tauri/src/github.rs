@@ -2,6 +2,7 @@ use crate::models::GitHubRepoConfig;
 use crate::settings::AppSettingsManager;
 use anyhow::{anyhow, Context, Result};
 use git2::{Repository, Signature};
+use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
 
@@ -146,11 +147,60 @@ impl GitHubIntegrator {
         Ok(())
     }
 
-    /// 从远程仓库恢复技能到本地（直接 clone/pull 到 skills 目录）
-    pub fn pull_from_remote(&self, config: &GitHubRepoConfig) -> Result<u32> {
-        eprintln!("=== [restore] 开始从 GitHub 恢复 ===");
+    /// 从远程仓库恢复技能到本地
+    ///
+    /// `overwrite_local`: true = 完全以远端为准（mirror），本地多出的文件删除
+    ///                    false = merge 模式，远端覆盖同名文件，本地独有的保留
+    pub fn pull_from_remote(&self, config: &GitHubRepoConfig, overwrite_local: bool) -> Result<u32> {
+        eprintln!(
+            "=== [restore] 开始从 GitHub 恢复 (overwrite_local={}) ===",
+            overwrite_local
+        );
 
+        // merge 模式：先记录本地独有的 skill 目录
+        let local_only = if !overwrite_local {
+            let local_skills = self.list_local_skills();
+            let remote_skills = self.list_remote_skills(config)?;
+            local_skills.difference(&remote_skills).cloned().collect::<HashSet<String>>()
+        } else {
+            HashSet::new()
+        };
+
+        // 把本地独有的目录临时移到 temp
+        let temp_dir = self.skills_dir.join(".restore-tmp");
+        if !local_only.is_empty() {
+            fs::create_dir_all(&temp_dir)?;
+            for skill_id in &local_only {
+                let src = self.skills_dir.join(skill_id);
+                if src.exists() {
+                    let dst = temp_dir.join(skill_id);
+                    fs::rename(&src, &dst)?;
+                    eprintln!("[restore] 暂存本地独有: {}", skill_id);
+                }
+            }
+        }
+
+        // git fetch + hard reset（拉取远端最新）
         let _repo = self.open_or_init_repo(config)?;
+
+        // 把之前暂存的本地独有目录移回
+        if !local_only.is_empty() {
+            for skill_id in &local_only {
+                let src = temp_dir.join(skill_id);
+                if src.exists() {
+                    let dst = self.skills_dir.join(skill_id);
+                    // 如果远端也有同名目录（极端情况），跳过
+                    if !dst.exists() {
+                        fs::rename(&src, &dst)?;
+                        eprintln!("[restore] 恢复本地独有: {}", skill_id);
+                    } else {
+                        let _ = fs::remove_dir_all(&src);
+                    }
+                }
+            }
+            // 清理 temp 目录
+            let _ = fs::remove_dir_all(&temp_dir);
+        }
 
         // 统计恢复的 skills 数量
         let mut count: u32 = 0;
@@ -271,6 +321,62 @@ impl GitHubIntegrator {
             Ok(vec![])
         }
     }
+
+    /// 列出本地 skills 目录下的所有 skill 子目录名
+    fn list_local_skills(&self) -> HashSet<String> {
+        let mut skills = HashSet::new();
+        if let Ok(entries) = fs::read_dir(&self.skills_dir) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                if path.is_dir() && path.join("SKILL.md").exists() {
+                    if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
+                        if !name.starts_with('.') {
+                            skills.insert(name.to_string());
+                        }
+                    }
+                }
+            }
+        }
+        skills
+    }
+
+    /// 通过 git ls-tree 列出远端分支上的所有 skill 目录名
+    fn list_remote_skills(&self, config: &GitHubRepoConfig) -> Result<HashSet<String>> {
+        let git_dir = self.skills_dir.join(".git");
+        let mut remote_skills = HashSet::new();
+
+        // 先确保 fetch 了最新远端数据
+        if git_dir.exists() {
+            let repo = Repository::open(&self.skills_dir)?;
+            self.fetch_origin(&repo, config)?;
+
+            let branch_ref = format!("origin/{}", config.branch);
+            let obj = repo.revparse_single(&branch_ref)?;
+            let commit = obj.peel_to_commit()?;
+            let tree = commit.tree()?;
+
+            for entry in tree.iter() {
+                if let Some(name) = entry.name() {
+                    if !name.starts_with('.') && name != "README.md" {
+                        let entry_kind = entry.kind();
+                        if entry_kind == Some(git2::ObjectType::Tree) {
+                            if let Ok(subtree) = repo.find_tree(entry.id()) {
+                                for sub_entry in subtree.iter() {
+                                    if sub_entry.name() == Some("SKILL.md") {
+                                        remote_skills.insert(name.to_string());
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        eprintln!("[restore] 远端技能列表: {:?}", remote_skills);
+        Ok(remote_skills)
+    }
 }
 
 impl Default for GitHubIntegrator {
@@ -331,7 +437,7 @@ fn push_to_origin(repo: &Repository, branch: &str, token: Option<&str>, force: b
         if msg.contains("403") || msg.contains("denied") {
             anyhow!("推送失败: 权限不足。请检查 Token 是否有仓库写入权限（需要勾选 repo 权限范围）。前往设置: https://github.com/settings/personal-access-tokens")
         } else if msg.contains("non-fast-forward") || msg.contains("fast-forward") {
-            anyhow!("推送失败: 远端有新变更，请重试同步；若希望以本地为准，可在同步按钮旁勾选「以当前版本覆盖」后重试")
+            anyhow!("推送失败: 远端有新变更，请重试同步；若希望以本地为准，可在同步按钮旁勾选「 以本地版本覆盖远程」后重试")
         } else if force && (msg.contains("protected") || msg.contains("protected branch")) {
             anyhow!("强制推送被拒绝: GitHub 上该分支可能开启了保护，请暂时允许 force push 或改用未保护分支")
         } else {

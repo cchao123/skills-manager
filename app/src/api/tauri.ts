@@ -134,8 +134,8 @@ export const githubApi = {
     });
   },
 
-  restoreFromGithub: async (name: string): Promise<number> => {
-    return await invoke<number>('restore_from_github', { request: { name } });
+  restoreFromGithub: async (name: string, overwriteLocal = false): Promise<number> => {
+    return await invoke<number>('restore_from_github', { request: { name, overwriteRemote: overwriteLocal } });
   },
 
   getConfig: async (): Promise<GitHubConfig> => {

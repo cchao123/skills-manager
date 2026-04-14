@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageHeader from '@/components/PageHeader';
 import { useToast } from '@/components/Toast';
-import { githubApi } from '@/api/tauri';
+import { githubApi, agentsApi } from '@/api/tauri';
 import { useGitHubConfig } from './hooks/useGitHubConfig';
 import { useGitHubActions } from './hooks/useGitHubActions';
 import { StarButton } from './components/StarButton';
@@ -87,6 +87,16 @@ function GitHubBackup() {
               hasToken={!!repoConfig.token}
               onStar={handleStar}
             />
+            <button
+              onClick={() => agentsApi.openFolder().catch(() => {})}
+              className="px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-1.5"
+              title={t('githubBackup.buttons.openLocal')}
+            >
+              <span className="material-symbols-outlined text-lg text-slate-500 dark:text-gray-400">folder_open</span>
+              <span className="text-xs font-medium text-slate-600 dark:text-gray-300">
+                {t('githubBackup.buttons.openLocal')}
+              </span>
+            </button>
           </>
         }
       />
@@ -122,7 +132,7 @@ function GitHubBackup() {
               syncing={syncing}
               onTest={handleTestConnection}
               onEdit={() => setConnected(false)}
-              onRestore={async () => {
+              onRestore={async (overwriteLocal) => {
                 if (!connected) {
                   showToast('warning', t('githubBackup.messages.testFirst'));
                   return;
@@ -131,7 +141,7 @@ function GitHubBackup() {
                   showToast('warning', t('githubBackup.messages.saveFirst'));
                   return;
                 }
-                await handleRestore(!!config.repositories['default']);
+                await handleRestore(!!config.repositories['default'], overwriteLocal);
               }}
               onSync={async (overwriteRemote) => {
                 if (!connected) {

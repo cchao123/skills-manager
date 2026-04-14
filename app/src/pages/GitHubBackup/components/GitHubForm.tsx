@@ -25,73 +25,48 @@ export const GitHubForm = ({
             onClick={() => console.log('Connected. Click Edit Config to modify')}
           />
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Repository Owner */}
-          <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">
-              {t('githubBackup.config.owner')} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={config.owner}
-              onChange={(e) => onChange('owner', e.target.value)}
-              disabled={connected}
-              placeholder={t('githubBackup.config.ownerPlaceholder')}
-              className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            />
-            <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.ownerHelper')}</p>
-          </div>
-
-          {/* Repository Name */}
-          <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">
-              {t('githubBackup.config.repo')} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={config.repo}
-              onChange={(e) => onChange('repo', e.target.value)}
-              disabled={connected}
-              placeholder={t('githubBackup.config.repoPlaceholder')}
-              className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            />
-            <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">
-              {t('githubBackup.config.repoHelper')}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          {/* Branch */}
-          <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">
-              {t('githubBackup.config.branch')}
-            </label>
-            <input
-              type="text"
-              value={config.branch}
-              onChange={(e) => onChange('branch', e.target.value)}
-              disabled={connected}
-              placeholder={t('githubBackup.config.branchPlaceholder')}
-              className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            />
-            <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.branchHelper')}</p>
-          </div>
-
-          {/* Skills Path */}
-          <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">
-              {t('githubBackup.config.path')}
-            </label>
-            <input
-              type="text"
-              value={config.path}
-              onChange={(e) => onChange('path', e.target.value)}
-              disabled={connected}
-              placeholder={t('githubBackup.config.pathPlaceholder')}
-              className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            />
-            <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.pathHelper')}</p>
+        <div className="space-y-6">
+          {/* Repository (Owner / Repo) + Branch */}
+          <div className="flex items-start gap-4">
+            <div className="w-[60%] min-w-0">
+              <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">
+                {t('githubBackup.config.owner')} / {t('githubBackup.config.repo')} <span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={config.owner}
+                  onChange={(e) => onChange('owner', e.target.value)}
+                  disabled={connected}
+                  placeholder={t('githubBackup.config.ownerPlaceholder')}
+                  className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+                <span className="text-lg text-slate-400 dark:text-gray-500 font-light select-none shrink-0">/</span>
+                <input
+                  type="text"
+                  value={config.repo}
+                  onChange={(e) => onChange('repo', e.target.value)}
+                  disabled={connected}
+                  placeholder={t('githubBackup.config.repoPlaceholder')}
+                  className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+              </div>
+              <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.ownerHelper')}</p>
+            </div>
+            <div className="flex-1 min-w-0">
+              <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">
+                {t('githubBackup.config.branch')}
+              </label>
+              <input
+                type="text"
+                value={config.branch}
+                onChange={(e) => onChange('branch', e.target.value)}
+                disabled={connected}
+                placeholder={t('githubBackup.config.branchPlaceholder')}
+                className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              />
+              <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.branchHelper')}</p>
+            </div>
           </div>
         </div>
 

@@ -80,7 +80,7 @@
       "tokenHelperAfter": " 中生成 (需要 repo 权限)"    },
     "syncMenu": {
       "openTitle": "同步选项",
-      "overwriteRemote": "以当前版本覆盖",
+      "overwriteRemote": " 以本地版本覆盖远程",
       "overwriteRemoteHint": "勾选后：不把本地重置为远端再提交，而是按当前磁盘内容暂存（含删除）并强制推送，使 GitHub 上的技能目录与本地一致。分支若开启保护可能无法强制推送。"
     },
     "buttons": {
@@ -92,7 +92,8 @@
       "syncing": "同步中...",
       "restoreNow": "从 GitHub 恢复",
       "restoring": "恢复中...",
-      "editConfig": "修改配置"
+      "editConfig": "修改配置",
+      "openLocal": "打开本地目录"
     },
     "guide": {
       "title": "配置指南",

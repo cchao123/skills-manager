@@ -59,7 +59,7 @@ export const useGitHubActions = (repoConfig: any, setConnected?: (connected: boo
     }
   }, [repoConfig, showToast]);
 
-  const handleRestore = useCallback(async (hasDefaultRepo: boolean) => {
+  const handleRestore = useCallback(async (hasDefaultRepo: boolean, overwriteLocal = false) => {
     if (!hasDefaultRepo) {
       showToast('warning', t('githubBackup.messages.saveFirst'));
       return;
@@ -67,7 +67,7 @@ export const useGitHubActions = (repoConfig: any, setConnected?: (connected: boo
 
     try {
       setRestoring(true);
-      const count = await githubApi.restoreFromGithub('default');
+      const count = await githubApi.restoreFromGithub('default', overwriteLocal);
       if (count > 0) {
         showToast('success', t('githubBackup.messages.restoreSuccess').replace('{count}', String(count)));
       } else {

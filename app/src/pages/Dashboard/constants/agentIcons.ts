@@ -10,6 +10,7 @@ export const AGENT_ICONS: Record<string, string> = {
   'gpt': gptIcon,
   'codex': gptIcon,
   'openclaw': openclawIcon,
+  'opencode': openclawIcon,
 };
 
 // Agents that need color inversion in dark mode

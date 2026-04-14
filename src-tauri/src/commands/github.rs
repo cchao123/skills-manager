@@ -323,7 +323,7 @@ pub async fn restore_from_github(
         .map_err(|e| e.to_string())?;
 
     let count = tokio::task::spawn_blocking(move || {
-        integrator.pull_from_remote(&repo_config)
+        integrator.pull_from_remote(&repo_config, request.overwrite_remote)
             .map_err(|e| e.to_string())
     })
     .await

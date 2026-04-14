@@ -1,6 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { invoke } from '@tauri-apps/api/core';
-import { useToast } from '@/components/Toast';
 import { StatsBar } from '@/pages/Dashboard/components/StatsBar';
 import { getAgentIcon } from '@/pages/Dashboard/utils/agentHelpers';
 import octopusIcon from '@/assets/agents/octopus.svg';
@@ -15,6 +13,7 @@ interface SearchAndFilterBarProps {
   viewMode: 'flat' | 'agent';
   selectedSource: string;
   onSourceSelect: (source: string) => void;
+  onNavigateToAgents?: () => void;
 }
 
 export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
@@ -26,9 +25,9 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
   viewMode,
   selectedSource,
   onSourceSelect,
+  onNavigateToAgents,
 }) => {
   const { t } = useTranslation();
-  const { showToast } = useToast();
 
   return (
     <div className="flex items-center gap-3">
@@ -89,14 +88,9 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
         </div>
       )}
 
-      {/* Open Skills Folder */}
+      {/* Open Skills Folder → Navigate to Settings Agents tab */}
       <button
-        onClick={() => {
-          invoke('open_skills_manager_folder').catch((err: unknown) => {
-            console.error('Failed to open folder:', err);
-            showToast('error', '打开文件夹失败');
-          });
-        }}
+        onClick={() => onNavigateToAgents?.()}
         className="flex items-center gap-1.5 bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary hover:border-[#b71422]/30 transition-all shadow-sm"
         title="打开技能文件夹"
       >
