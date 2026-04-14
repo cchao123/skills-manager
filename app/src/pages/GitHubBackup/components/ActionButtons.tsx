@@ -26,6 +26,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   const { t } = useTranslation();
   const [syncMenuOpen, setSyncMenuOpen] = useState(false);
   const [overwriteRemote, setOverwriteRemote] = useState(false);
+  const [showForceConfirm, setShowForceConfirm] = useState(false);
   const syncSplitRef = useRef<HTMLDivElement>(null);
   const menuPanelRef = useRef<HTMLDivElement>(null);
   /** fixed 坐标，避免 Collapse 等父级 overflow:hidden 裁切下拉 */
@@ -111,7 +112,11 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             type="button"
             onClick={() => {
               setSyncMenuOpen(false);
-              void onSync(overwriteRemote);
+              if (overwriteRemote) {
+                setShowForceConfirm(true);
+              } else {
+                void onSync(false);
+              }
             }}
             disabled={syncing || restoring}
             className="pl-5 pr-3 py-3 text-sm font-bold bg-[#b71422] hover:bg-[#a01220] text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border-r border-white/25"
@@ -170,6 +175,43 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             document.body
           )}
       </div>
+
+      {/* 强制同步确认框 */}
+      {showForceConfirm && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/10 backdrop-blur-[2px]">
+          <div className="w-full max-w-md bg-white/95 dark:bg-dark-bg-card backdrop-blur-xl rounded-3xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25),0_18px_36px_-18px_rgba(0,0,0,0.3)] border border-white/50 dark:border-dark-border overflow-hidden flex flex-col items-center text-center p-8">
+            <div className="w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-6">
+              <span className="material-symbols-outlined text-amber-500 text-4xl"
+                style={{ fontVariationSettings: "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}
+              >
+                warning
+              </span>
+            </div>
+            <h3 className="font-bold text-2xl text-slate-900 dark:text-white mb-2">强制同步确认</h3>
+            <p className="text-sm text-slate-500 dark:text-gray-400 leading-relaxed mb-8 px-4">
+              当前已勾选「以当前版本覆盖」，同步后将<strong className="text-slate-900 dark:text-white">强制推送本地内容到远端</strong>，远端仓库中的其他变更将被覆盖，且不可撤销。
+              <br />确认要继续吗？
+            </p>
+            <div className="w-full flex gap-3">
+              <button
+                onClick={() => {
+                  setShowForceConfirm(false);
+                  void onSync(true);
+                }}
+                className="w-full py-3.5 bg-[#b71422] hover:bg-[#a01220] text-white font-bold rounded-2xl shadow-lg shadow-[#b71422]/20 hover:brightness-110 active:scale-[0.98] transition-all"
+              >
+                确认同步
+              </button>
+              <button
+                onClick={() => setShowForceConfirm(false)}
+                className="w-full py-3.5 bg-slate-100 dark:bg-dark-bg-tertiary text-slate-700 dark:text-gray-300 font-semibold rounded-2xl hover:bg-slate-200 dark:hover:bg-dark-bg-secondary transition-colors"
+              >
+                取消
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
