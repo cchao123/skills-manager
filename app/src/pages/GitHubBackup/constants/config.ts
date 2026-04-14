@@ -8,7 +8,7 @@ export const DEFAULT_REPO_CONFIG = {
   owner: '',
   repo: '',
   branch: 'main',
-  path: '/skills',
+  path: '/',
   token: '',
 } as const;
 
