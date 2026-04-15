@@ -96,10 +96,12 @@
     "viewHelp": "View Guide",
     "viewHelpFlat": "Scan all local Agents and show all available Skills regardless of source",
     "viewHelpBySource": "Group Skills by Agent source, so you can clearly see which Skills belong to each Agent",
-    "githubTipBefore": "Skills collected to root can be synced via",
+    "rootPathLabel": "Root: ",
+    "githubTipMid": " — skills under this path can be synced via",
     "githubTipLink": " GitHub Backup",
     "githubTipAfter": "to the remote repository",
     "dismiss": "Got it",
+    "agentSourcePath": "Root: ",
     "noSkillsInSource": "No skills in this source"
   },
   "githubBackup": {

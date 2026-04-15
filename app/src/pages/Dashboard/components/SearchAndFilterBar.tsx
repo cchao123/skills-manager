@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StatsBar } from '@/pages/Dashboard/components/StatsBar';
 import { getAgentIcon } from '@/pages/Dashboard/utils/agentHelpers';
-import octopusIcon from '@/assets/agents/octopus.svg';
+
 import type { SkillMetadata } from '@/types';
 
 interface SearchAndFilterBarProps {
@@ -13,7 +13,6 @@ interface SearchAndFilterBarProps {
   viewMode: 'flat' | 'agent';
   selectedSource: string;
   onSourceSelect: (source: string) => void;
-  onNavigateToAgents?: () => void;
 }
 
 export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
@@ -25,7 +24,6 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
   viewMode,
   selectedSource,
   onSourceSelect,
-  onNavigateToAgents,
 }) => {
   const { t } = useTranslation();
 
@@ -62,7 +60,7 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
       {viewMode === 'agent' && (
         <div className="flex flex-wrap items-center gap-2 h-[50px]">
           {[
-            { id: 'global', label: t('dashboard.source.global'), icon: octopusIcon },
+            { id: 'global', label: t('dashboard.source.global'), icon: '/octopus-logo.png' },
             { id: 'claude', label: 'Claude Code', icon: getAgentIcon('claude') },
             { id: 'cursor', label: 'Cursor', icon: getAgentIcon('cursor') },
           ].map((item) => (
@@ -87,15 +85,6 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
           ))}
         </div>
       )}
-
-      {/* Open Skills Folder → Navigate to Settings Agents tab */}
-      <button
-        onClick={() => onNavigateToAgents?.()}
-        className="flex items-center gap-1.5 bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary hover:border-[#b71422]/30 transition-all shadow-sm"
-        title={t('dashboard.openFolder')}
-      >
-        <span className="material-symbols-outlined text-lg">folder_open</span>
-      </button>
     </div>
   );
 };
