@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { open } from '@tauri-apps/plugin-shell';
 import PageHeader from '@/components/PageHeader';
@@ -8,8 +8,6 @@ import { GITHUB_URLS, DEFAULT_TAB, type TabType, type Theme } from './constants/
 import { LanguageSection } from './components/LanguageSection';
 import { AppearanceSection } from './components/AppearanceSection';
 import { AgentsSection } from './components/AgentsSection';
-import { LinkingStrategySection } from './components/LinkingStrategySection';
-import { ActionsSection } from './components/ActionsSection';
 import { AboutSection } from './components/AboutSection';
 
 function Settings() {
@@ -17,12 +15,17 @@ function Settings() {
   const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<TabType>(DEFAULT_TAB);
 
+  useEffect(() => {
+    const initialTab = sessionStorage.getItem('settingsInitialTab') as TabType | null;
+    if (initialTab) {
+      sessionStorage.removeItem('settingsInitialTab');
+      setActiveTab(initialTab);
+    }
+  }, []);
+
   const {
     agents,
-    linkingStrategy,
     handleDetectAgents,
-    handleSetStrategy,
-    handleOpenFolder,
   } = useSettingsData();
 
   const handleThemeChange = (newTheme: Theme) => {
@@ -111,19 +114,7 @@ function Settings() {
             )}
 
             {activeTab === 'agents' && (
-              <div className="space-y-6">
-                <AgentsSection
-                  agents={agents}
-                  onDetectAgents={handleDetectAgents}
-                />
-                <LinkingStrategySection
-                  currentStrategy={linkingStrategy}
-                  onStrategyChange={handleSetStrategy}
-                />
-                <ActionsSection
-                  onOpenFolder={handleOpenFolder}
-                />
-              </div>
+              <AgentsSection agents={agents} />
             )}
 
             {activeTab === 'about' && <AboutSection />}

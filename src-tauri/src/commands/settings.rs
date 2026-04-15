@@ -113,15 +113,23 @@ pub async fn open_skills_manager_folder() -> Result<(), String> {
 /// 在系统文件管理器中打开指定目录
 #[tauri::command]
 pub async fn open_folder(path: String) -> Result<(), String> {
-    let path = std::path::PathBuf::from(&path);
-    if !path.exists() {
-        return Err(format!("目录不存在: {}", path.display()));
+    // Expand ~/ to home directory
+    let expanded = if path.starts_with("~/") {
+        let home = dirs::home_dir().ok_or("Cannot determine home directory")?;
+        home.join(&path[2..])
+    } else if path == "~" {
+        dirs::home_dir().ok_or("Cannot determine home directory")?
+    } else {
+        std::path::PathBuf::from(&path)
+    };
+    if !expanded.exists() {
+        return Err(format!("目录不存在: {}", expanded.display()));
     }
 
     #[cfg(target_os = "macos")]
     {
         std::process::Command::new("open")
-            .arg(&path)
+            .arg(&expanded)
             .spawn()
             .map_err(|e| format!("Failed to open folder: {}", e))?;
     }
@@ -129,7 +137,7 @@ pub async fn open_folder(path: String) -> Result<(), String> {
     #[cfg(target_os = "windows")]
     {
         std::process::Command::new("explorer")
-            .arg(&path)
+            .arg(&expanded)
             .spawn()
             .map_err(|e| format!("Failed to open folder: {}", e))?;
     }
@@ -137,7 +145,7 @@ pub async fn open_folder(path: String) -> Result<(), String> {
     #[cfg(target_os = "linux")]
     {
         std::process::Command::new("xdg-open")
-            .arg(&path)
+            .arg(&expanded)
             .spawn()
             .map_err(|e| format!("Failed to open folder: {}", e))?;
     }

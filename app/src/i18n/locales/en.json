@@ -92,7 +92,8 @@
       "syncing": "Syncing...",
       "restoreNow": "Restore from GitHub",
       "restoring": "Restoring...",
-      "editConfig": "Edit Config"
+      "editConfig": "Edit Config",
+      "openLocal": "Open Local Directory"
     },
     "guide": {
       "title": "Configuration Guide",

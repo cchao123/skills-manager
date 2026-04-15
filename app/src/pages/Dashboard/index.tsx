@@ -325,6 +325,10 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
             viewMode={viewMode as 'flat' | 'agent'}
             selectedSource={selectedSource}
             onSourceSelect={setSelectedSource}
+            onNavigateToAgents={() => {
+              sessionStorage.setItem('settingsInitialTab', 'agents');
+              onNavigate('settings');
+            }}
           />
         </div>
       </div>
