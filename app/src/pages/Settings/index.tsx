@@ -23,10 +23,7 @@ function Settings() {
     }
   }, []);
 
-  const {
-    agents,
-    handleDetectAgents,
-  } = useSettingsData();
+  const { agents } = useSettingsData();
 
   const handleThemeChange = (newTheme: Theme) => {
     setTheme(newTheme);
