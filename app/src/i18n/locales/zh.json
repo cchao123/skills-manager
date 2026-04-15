@@ -79,7 +79,7 @@
       "deleteSkill": "删除技能"
     },
     "source": {
-      "global": "Skills Manager根目录",
+      "global": "Skills Manager 根目录",
       "removeFromRoot": "从根目录中移除",
       "existsInRoot": "根目录中已存在",
       "copyToRoot": "拷贝到根目录",
@@ -96,10 +96,12 @@
     "viewHelp": "视图说明",
     "viewHelpFlat": "扫描本地所有 Agent，显示所有可用的 Skills（不区分 Agent 来源）",
     "viewHelpBySource": "按照不同的 Agent 对 Skills 进行分类展示，可以清晰地看到每个 Agent 下有哪些 Skills",
-    "githubTipBefore": "收录至根目录的技能可以通过",
+    "rootPathLabel": "根目录：",
+    "githubTipMid": " 该路径下的技能可通过",
     "githubTipLink": " GitHub 备份",
     "githubTipAfter": "同步到远端仓库",
     "dismiss": "知道了",
+    "agentSourcePath": "根目录：",
     "noSkillsInSource": "该来源下暂无技能"
   },
   "githubBackup": {

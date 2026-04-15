@@ -13,8 +13,8 @@ export const AboutSection: React.FC = () => {
   return (
     <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-8 shadow-sm border border-[#e1e3e4] dark:border-dark-border">
       <div className="flex flex-col items-center text-center">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#b71422] to-[#a01220] flex items-center justify-center mb-6 shadow-lg">
-          <span className="material-symbols-outlined text-5xl text-white">settings</span>
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#fff] to-[#f0f0f0] flex items-center justify-center mb-6 shadow-lg">
+          <img src="/octopus-logo.png" alt="Octopus Logo" className="w-full h-full object-cover" />
         </div>
         <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
           {t('app.name')}

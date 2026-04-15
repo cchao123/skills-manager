@@ -24,6 +24,8 @@ import { EmptyView } from '@/pages/Dashboard/components/EmptyView';
 import { SkillDetailModal } from '@/pages/Dashboard/components/SkillDetailModal';
 import { getSkillIcon, getSkillColor } from '@/pages/Dashboard/utils/skillHelpers';
 import MarketplaceSkillCard from '@/pages/Dashboard/components/MarketplaceSkillCard';
+import { agentsApi } from '@/api/tauri';
+import { getAgentIcon, needsInvertInDark } from '@/pages/Dashboard/utils/agentHelpers';
 import type { Skill } from '@/types/skills';
 
 const DASHBOARD_VIEW_MODE_KEY = 'skills-manager:dashboard:viewMode';
@@ -325,10 +327,6 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
             viewMode={viewMode as 'flat' | 'agent'}
             selectedSource={selectedSource}
             onSourceSelect={setSelectedSource}
-            onNavigateToAgents={() => {
-              sessionStorage.setItem('settingsInitialTab', 'agents');
-              onNavigate('settings');
-            }}
           />
         </div>
       </div>
@@ -399,28 +397,59 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
 
           {viewMode === 'agent' && (
             <div className="bg-[#f8f9fa] dark:bg-dark-bg-secondary">
-              {selectedSource === 'global' && !githubTipDismissed && (
+              {selectedSource === 'global' && (
                 <div className="mb-4 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.67-.3-5.46-1.334-5.46-5.925 0-1.305.465-2.38 1.23-3.22-.12-.3-.54-1.53.12-3.18 0 0 1.005-.322 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.297-1.23 3.297-1.23.66 1.653.242 2.874.118 3.176.77.84 1.235 1.905 1.235 3.22 0 4.605-2.805 5.624-5.475 5.921.43.372.823 1.102.823 2.22 0 1.605-.015 2.89-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-                  </svg>
+                  <img src="/octopus-logo.png" alt="Skills Manager" className="w-4 h-4 flex-shrink-0" />
                   <p className="text-xs text-[#5e5e5e] dark:text-gray-400">
-                    {t('dashboard.githubTipBefore')}
+                    {t('dashboard.rootPathLabel')}
                     <span
-                      className="text-[#2563eb] dark:text-blue-400 cursor-pointer hover:underline"
-                      onClick={() => onNavigate('githubBackup')}
-                    >{t('dashboard.githubTipLink')}</span>
-                    {t('dashboard.githubTipAfter')}
+                      className="text-[#2563eb] dark:text-blue-400 cursor-pointer hover:underline font-mono"
+                      onClick={() => agentsApi.openFolderPath('~/.skills-manager').catch(() => {})}
+                    >~/.skills-manager </span>
+                    {!githubTipDismissed && (
+                      <>
+                        {t('dashboard.githubTipMid')}
+                        <span
+                          className="text-[#2563eb] dark:text-blue-400 cursor-pointer hover:underline"
+                          onClick={() => onNavigate('githubBackup')}
+                        >{t('dashboard.githubTipLink')}</span>
+                        {t('dashboard.githubTipAfter')}
+                      </>
+                    )}
                   </p>
-                  <button
-                    onClick={() => { setGithubTipDismissed(true); sessionStorage.setItem('githubTipDismissed', 'true'); }}
-                    className="text-xs text-[#5e5e5e] dark:text-gray-400 hover:text-[#b71422] dark:hover:text-[#b71422] transition-colors ml-1"
-                  >
-                    {t('dashboard.dismiss')}
-                  </button>
+                  {!githubTipDismissed && (
+                    <button
+                      onClick={() => { setGithubTipDismissed(true); sessionStorage.setItem('githubTipDismissed', 'true'); }}
+                      className="w-[14px] h-[14px] rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors ml-1 flex items-center"
+                    >
+                      <span className="material-symbols-outlined text-sm text-slate-400 dark:text-gray-500 hover:text-[#b71422]">close</span>
+                    </button>
+                  )}
                 </div>
               )}
-              <div className="space-y-6">
+              {selectedSource !== 'global' && (() => {
+                const agentPaths: Record<string, string> = { claude: '~/.claude', cursor: '~/.cursor' };
+                const agentIcons: Record<string, string> = { claude: getAgentIcon('claude'), cursor: getAgentIcon('cursor') };
+                const path = agentPaths[selectedSource];
+                const icon = agentIcons[selectedSource];
+                return path ? (
+                  <div className="mb-4 flex items-center gap-2">
+                    {icon ? (
+                      <img src={icon} alt="" className={`w-4 h-4 flex-shrink-0 ${needsInvertInDark(selectedSource) ? 'dark:invert' : ''}`} />
+                    ) : (
+                      <span className="material-symbols-outlined text-base text-gray-500 dark:text-gray-400">folder_open</span>
+                    )}
+                    <p className="text-xs text-[#5e5e5e] dark:text-gray-400">
+                      {t('dashboard.agentSourcePath')}
+                      <span
+                        className="text-[#2563eb] dark:text-blue-400 cursor-pointer hover:underline font-mono"
+                        onClick={() => agentsApi.openFolderPath(path).catch(() => {})}
+                      >{path}</span>
+                    </p>
+                  </div>
+                ) : null;
+              })()}
+              <div className="space-y-6 pb-8">
                 {/* Skills Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {marketplaceSkills.map((skill) => {
