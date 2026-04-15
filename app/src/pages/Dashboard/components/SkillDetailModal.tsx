@@ -57,7 +57,18 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-black dark:text-white">{skill.name}</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">v{skill.version || '1.0.0'}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {skill.source && skill.source !== 'global' && getAgentIcon(skill.source) ? (
+                    <img src={getAgentIcon(skill.source)} alt={skill.source} className={`w-3.5 h-3.5 object-contain ${needsInvertInDark(skill.source) ? 'dark:invert' : ''}`} />
+                  ) : (
+                    <img src="/octopus-logo.png" alt="Skills Manager" className="w-3.5 h-3.5" />
+                  )}
+                  <span className="text-sm text-gray-500 dark:text-gray-400">From{" "}
+                    {skill.source === 'global' ? t('dashboard.source.global') :
+                     skill.source === 'claude' ? 'Claude Code' :
+                     skill.source === 'cursor' ? 'Cursor' : skill.source}
+                  </span>
+                </div>
               </div>
             </div>
             <button
