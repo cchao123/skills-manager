@@ -5,7 +5,7 @@ import type { AgentConfig } from '@/types';
 export const useSettingsData = () => {
   const [agents, setAgents] = useState<AgentConfig[]>([]);
 
-  const handleDetectAgents = async () => {
+  const loadAgents = async () => {
     try {
       const updatedAgents = await agentsApi.detect();
       setAgents(updatedAgents);
@@ -15,11 +15,11 @@ export const useSettingsData = () => {
   };
 
   useEffect(() => {
-    handleDetectAgents();
+    loadAgents();
   }, []);
 
   return {
     agents,
-    handleDetectAgents,
+    loadAgents,
   };
 };
