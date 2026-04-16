@@ -9,6 +9,9 @@ import { LanguageSection } from './components/LanguageSection';
 import { AppearanceSection } from './components/AppearanceSection';
 import { AgentsSection } from './components/AgentsSection';
 import { AboutSection } from './components/AboutSection';
+import { invoke } from '@tauri-apps/api/core';
+import { isTauri } from '@/lib/tauri-env';
+import { SESSION_STORAGE_KEYS } from '@/constants';
 
 function Settings() {
   const { t, i18n } = useTranslation();
@@ -16,9 +19,9 @@ function Settings() {
   const [activeTab, setActiveTab] = useState<TabType>(DEFAULT_TAB);
 
   useEffect(() => {
-    const initialTab = sessionStorage.getItem('settingsInitialTab') as TabType | null;
+    const initialTab = sessionStorage.getItem(SESSION_STORAGE_KEYS.settingsInitialTab) as TabType | null;
     if (initialTab) {
-      sessionStorage.removeItem('settingsInitialTab');
+      sessionStorage.removeItem(SESSION_STORAGE_KEYS.settingsInitialTab);
       setActiveTab(initialTab);
     }
   }, []);
@@ -32,14 +35,14 @@ function Settings() {
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng);
     // Sync system tray menu language
-    if ((window as any).__TAURI__) {
-      (window as any).__TAURI__.invoke('update_tray_language', { lang: lng }).catch(() => {});
+    if (isTauri()) {
+      invoke('update_tray_language', { lang: lng }).catch(() => {});
     }
   };
 
   const tabs = [
     { id: 'general' as TabType, label: t('settings.tabGeneral'), icon: 'tune' },
-    { id: 'agents' as TabType, label: 'Agents', icon: 'smart_toy' },
+    { id: 'agents' as TabType, label: t('settings.tabAgents'), icon: 'smart_toy' },
     { id: 'about' as TabType, label: t('settings.tabAbout'), icon: 'info' },
   ];
 
@@ -57,6 +60,14 @@ function Settings() {
             >
               <span className="material-symbols-outlined text-lg">update</span>
               {t('settings.tabChangelog')}
+            </button>
+            <button
+              onClick={() => open(GITHUB_URLS.ISSUES)}
+              className="hover:bg-[#f8f9fa] dark:hover:bg-dark-bg-tertiary rounded-xl px-3 py-2 text-slate-500 dark:text-gray-300 transition-colors flex items-center gap-1.5 text-sm font-medium cursor-pointer"
+              title={t('settings.feedback')}
+            >
+              <span className="material-symbols-outlined text-lg">chat</span>
+              {t('settings.feedback')}
             </button>
             <a
               href={GITHUB_URLS.REPO}

@@ -144,7 +144,7 @@ impl AppSettingsManager {
                     name: "claude".to_string(),
                     display_name: "Claude".to_string(),
                     path: "~/.claude".to_string(),
-                    skills_path: "skills/plugins".to_string(),
+                    skills_path: "skills".to_string(),
                     enabled: true,
                     detected: false,
                 },

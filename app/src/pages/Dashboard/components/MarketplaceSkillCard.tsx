@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import type { Skill } from '@/types/skills';
+import type { Skill } from '@/types';
 
 interface MarketplaceSkillCardProps {
   skill: Skill;

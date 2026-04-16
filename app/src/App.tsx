@@ -7,6 +7,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { ToastProvider } from './components/Toast';
 import { invoke } from '@tauri-apps/api/core';
 import i18n from './i18n/config';
+import { isTauri } from '@/lib/tauri-env';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -14,7 +15,7 @@ function App() {
 
   // 启动时同步前端语言到托盘
   useEffect(() => {
-    if ((window as any).__TAURI__) {
+    if (isTauri()) {
       invoke('update_tray_language', { lang: i18n.language }).catch(() => {});
     }
   }, []);

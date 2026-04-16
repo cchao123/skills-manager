@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { isTauri } from '@/lib/tauri-env';
 
 type Theme = 'light' | 'dark' | 'auto';
 
@@ -54,9 +56,8 @@ export function ThemeProvider({ children, defaultTheme = 'auto', storageKey = 'v
       root.classList.add(isDark ? 'dark' : 'light');
       setResolvedTheme(isDark ? 'dark' : 'light');
 
-      // Tauri native window theme integration
-      if (window.__TAURI__?.core?.invoke) {
-        window.__TAURI__.core.invoke('set_window_theme', { theme: isDark ? 'dark' : 'light' }).catch(() => {});
+      if (isTauri()) {
+        invoke('set_window_theme', { theme: isDark ? 'dark' : 'light' }).catch(() => {});
       }
       return;
     }
@@ -64,9 +65,8 @@ export function ThemeProvider({ children, defaultTheme = 'auto', storageKey = 'v
     root.classList.add(theme);
     setResolvedTheme(theme);
 
-    // Tauri native window theme integration
-    if (window.__TAURI__?.core?.invoke) {
-      window.__TAURI__.core.invoke('set_window_theme', { theme }).catch(() => {});
+    if (isTauri()) {
+      invoke('set_window_theme', { theme }).catch(() => {});
     }
   }, [theme]);
 

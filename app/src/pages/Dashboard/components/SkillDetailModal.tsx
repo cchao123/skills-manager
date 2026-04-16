@@ -42,6 +42,10 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
   onResizeStart,
 }) => {
   const { t } = useTranslation();
+  const isWindows = typeof navigator !== 'undefined' && navigator.platform.toLowerCase().includes('win');
+  const normalizedSkillPath = skill.path
+    ? (isWindows ? skill.path.replace(/\//g, '\\') : skill.path)
+    : null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -91,13 +95,13 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
               <div>
                 <div className="mb-2 flex items-center gap-2">
                   <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex-shrink-0">{t('dashboard.detail.fileDirectory')}</h3>
-                  {skill.path && (
+                  {normalizedSkillPath && (
                     <p
                       className="text-xs text-blue-500 dark:text-blue-400 font-mono truncate flex-1 min-w-0 cursor-pointer hover:underline"
-                      title={skill.path}
-                      onClick={() => agentsApi.openFolderPath(skill.path!)}
+                      title={normalizedSkillPath}
+                      onClick={() => agentsApi.openFolderPath(normalizedSkillPath)}
                     >
-                      {skill.path}
+                      {normalizedSkillPath}
                     </p>
                   )}
                 </div>
@@ -163,13 +167,13 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
               <div>
                 <div className="mb-2 flex items-center gap-2">
                   <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex-shrink-0">{t('dashboard.detail.fileDirectory')}</h3>
-                  {skill.path && (
+                  {normalizedSkillPath && (
                     <p
                       className="text-xs text-blue-500 dark:text-blue-400 font-mono truncate flex-1 min-w-0 cursor-pointer hover:underline"
-                      title={skill.path}
-                      onClick={() => agentsApi.openFolderPath(skill.path!)}
+                      title={normalizedSkillPath}
+                      onClick={() => agentsApi.openFolderPath(normalizedSkillPath)}
                     >
-                      {skill.path}
+                      {normalizedSkillPath}
                     </p>
                   )}
                 </div>

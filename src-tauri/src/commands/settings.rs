@@ -113,14 +113,19 @@ pub async fn open_skills_manager_folder() -> Result<(), String> {
 /// 在系统文件管理器中打开指定目录
 #[tauri::command]
 pub async fn open_folder(path: String) -> Result<(), String> {
-    // Expand ~/ to home directory
-    let expanded = if path.starts_with("~/") {
+    #[cfg(target_os = "windows")]
+    let normalized_input = path.replace('/', "\\");
+    #[cfg(not(target_os = "windows"))]
+    let normalized_input = path;
+
+    // Expand ~ to home directory
+    let expanded = if normalized_input.starts_with("~/") || normalized_input.starts_with("~\\") {
         let home = dirs::home_dir().ok_or("Cannot determine home directory")?;
-        home.join(&path[2..])
-    } else if path == "~" {
+        home.join(&normalized_input[2..])
+    } else if normalized_input == "~" {
         dirs::home_dir().ok_or("Cannot determine home directory")?
     } else {
-        std::path::PathBuf::from(&path)
+        std::path::PathBuf::from(&normalized_input)
     };
     if !expanded.exists() {
         return Err(format!("目录不存在: {}", expanded.display()));
@@ -136,8 +141,11 @@ pub async fn open_folder(path: String) -> Result<(), String> {
 
     #[cfg(target_os = "windows")]
     {
+        let final_path = expanded
+            .canonicalize()
+            .unwrap_or(expanded.clone());
         std::process::Command::new("explorer")
-            .arg(&expanded)
+            .arg(final_path)
             .spawn()
             .map_err(|e| format!("Failed to open folder: {}", e))?;
     }

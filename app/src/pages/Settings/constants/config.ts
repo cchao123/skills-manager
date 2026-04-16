@@ -2,7 +2,7 @@
 export const GITHUB_URLS = {
   REPO: 'https://github.com/cchao123/skills-managers',
   RELEASES: 'https://github.com/cchao123/skills-managers/releases',
-  HOME: 'https://github.com',
+  ISSUES: 'https://github.com/cchao123/skills-managers/issues',
 } as const;
 
 // External URLs

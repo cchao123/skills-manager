@@ -4,9 +4,12 @@ import App from './App';
 import { ErrorBoundary } from './ErrorBoundary';
 import './assets/styles/index.css';
 import './i18n/config';
+import { isTauri } from '@/lib/tauri-env';
 
-console.log('Main.tsx loaded');
-console.log('Tauri API available:', !!(window as any).__TAURI__);
+if (import.meta.env.DEV) {
+  console.log('Main.tsx loaded');
+  console.log('Tauri API available:', isTauri());
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

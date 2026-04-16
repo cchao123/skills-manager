@@ -22,6 +22,18 @@ pub enum ScannerError {
     MissingField(String),
 }
 
+fn path_to_display_string(path: &Path) -> String {
+    let path_str = path.to_string_lossy().to_string();
+    #[cfg(target_os = "windows")]
+    {
+        path_str.replace('/', "\\")
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        path_str
+    }
+}
+
 /// 解析 SKILL.md 文件的 YAML frontmatter (Phase 1 新版本)
 pub fn parse_skill_md(skill_md_path: &Path, source: SkillSource) -> Result<SkillMetadata, ScannerError> {
     let content = fs::read_to_string(skill_md_path)?;
@@ -66,7 +78,7 @@ pub fn parse_skill_md(skill_md_path: &Path, source: SkillSource) -> Result<Skill
         .to_string();
 
     // 保存技能目录的完整路径
-    let skill_path = skill_dir.to_string_lossy().to_string();
+    let skill_path = path_to_display_string(skill_dir);
 
     Ok(SkillMetadata {
         id,
@@ -586,7 +598,7 @@ impl SkillScanner {
             .to_string();
 
         let id = format!("{}@{}/{}", plugin_name, version, name);
-        let path_str = skill_path.to_string_lossy().to_string();
+        let path_str = path_to_display_string(skill_path);
 
         Ok(Some(LegacySkillMetadata {
             id,

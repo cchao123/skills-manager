@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { githubApi } from '@/api/tauri';
 import { useToast } from '@/components/Toast';
+import { isTauri } from '@/lib/tauri-env';
 import { AUTO_SAVE_DELAY, DEFAULT_REPO_CONFIG } from '../constants/config';
 
 export interface RepoConfig {
@@ -53,10 +54,8 @@ export const useGitHubConfig = () => {
   const loadConfig = useCallback(async () => {
     try {
       setLoading(true);
-      const isTauri = !!(window as any).__TAURI__;
-
-      if (!isTauri) {
-        console.log('Running in browser, using mock config');
+      if (!isTauri()) {
+        if (import.meta.env.DEV) console.log('Running in browser, using mock config');
         setUseMock(true);
         await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -111,7 +110,7 @@ export const useGitHubConfig = () => {
 
     setSaving(true);
 
-    if (useMock || !(window as any).__TAURI__) {
+    if (useMock || !isTauri()) {
       await new Promise(resolve => setTimeout(resolve, 500));
       setConfig((prev: { repositories: Record<string, unknown> }) => ({
         ...prev,

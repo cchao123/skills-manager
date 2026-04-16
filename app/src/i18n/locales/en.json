@@ -93,6 +93,7 @@
     "errorMessage": "Make sure the app is running in Tauri environment, not in a browser.",
     "viewFlat": "Flat View",
     "viewBySource": "By Source",
+    "openAgentSettings": "Open Agents in Settings",
     "viewHelp": "View Guide",
     "viewHelpFlat": "Scan all local Agents and show all available Skills regardless of source",
     "viewHelpBySource": "Group Skills by Agent source, so you can clearly see which Skills belong to each Agent",
@@ -244,6 +245,7 @@
     "tabAgents": "Agents",
     "tabAbout": "About",
     "tabChangelog": "Changelog",
+    "feedback": "Feedback",
     "agents": {
       "title": "Agents",
       "subtitle": "Click an agent to open its directory",
@@ -261,6 +263,14 @@
     "themeAuto": "System",
     "about": "About",
     "aboutDescription": "A desktop application for managing Claude Code skills and plugins. Browse, install, and enable skills from the marketplace, or sync custom skills from GitHub repositories.",
+    "aboutHighlights": {
+      "visualSchedulingTitle": "Visual Scheduling",
+      "visualSchedulingDescription": "One-stop management for multi-agent desktop applications;",
+      "cleanReuseTitle": "Clean Reuse",
+      "cleanReuseDescription": "One skill, zero-intrusion reuse across platforms, while keeping native environments clean;",
+      "oneClickHubTitle": "One-Click Curation",
+      "oneClickHubDescription": "Sync to GitHub in the cloud and build your own Skills Hub."
+    },
     "builtWith": "Built with"
   },
   "common": {
