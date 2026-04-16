@@ -1,5 +1,5 @@
 use serde_json;
-use crate::models::{SkillMetadata, AgentConfig, LinkStrategy};
+use crate::models::{AgentConfig, LinkStrategy, SkillMetadata, SkillSource};
 use std::collections::HashMap;
 
 #[cfg(test)]
@@ -21,8 +21,12 @@ mod tests {
                 ("claude-code".to_string(), true),
                 ("cursor".to_string(), false),
             ]),
+            agent_enabled_backup: None,
             installed_at: "2025-03-29T10:00:00Z".to_string(),
             last_updated: "2025-03-29T10:00:00Z".to_string(),
+            source: SkillSource::Global,
+            is_collected: false,
+            path: Some("/tmp/test-skill".to_string()),
         };
 
         let json = serde_json::to_string(&skill).unwrap();

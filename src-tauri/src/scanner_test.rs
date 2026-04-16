@@ -5,6 +5,8 @@ use tempfile::TempDir;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::models::SkillSource;
+    use std::collections::HashMap;
 
     fn create_test_skill(dir: &Path, name: &str, content: &str) -> PathBuf {
         let skill_dir = dir.join(name);
@@ -33,7 +35,7 @@ version: 1.0.0
         let skill_dir = create_test_skill(temp_dir.path(), "web-scraper", content);
         let skill_md = skill_dir.join("SKILL.md");
 
-        let result = crate::scanner::parse_skill_md(&skill_md);
+        let result = crate::scanner::parse_skill_md(&skill_md, SkillSource::Global);
 
         assert!(result.is_ok());
         let skill = result.unwrap();
@@ -59,7 +61,7 @@ Content here
         let skill_dir = create_test_skill(temp_dir.path(), "minimal", content);
         let skill_md = skill_dir.join("SKILL.md");
 
-        let result = crate::scanner::parse_skill_md(&skill_md);
+        let result = crate::scanner::parse_skill_md(&skill_md, SkillSource::Global);
 
         assert!(result.is_ok());
         let skill = result.unwrap();
@@ -79,7 +81,7 @@ No frontmatter here.
         let skill_dir = create_test_skill(temp_dir.path(), "invalid", content);
         let skill_md = skill_dir.join("SKILL.md");
 
-        let result = crate::scanner::parse_skill_md(&skill_md);
+        let result = crate::scanner::parse_skill_md(&skill_md, SkillSource::Global);
 
         assert!(result.is_err());
     }
@@ -116,12 +118,17 @@ Content
         fs::create_dir_all(&other_dir).unwrap();
         fs::write(other_dir.join("README.md"), "readme").unwrap();
 
-        let result = crate::scanner::scan_skills_directory(&skills_base);
+        let skill_states = HashMap::new();
+        let result = crate::scanner::scan_skills_directory(&skills_base, &skill_states, SkillSource::Global);
 
         assert!(result.is_ok());
         let skills = result.unwrap();
         assert_eq!(skills.len(), 2);
         assert_eq!(skills[0].name, "skill-one");
         assert_eq!(skills[1].name, "skill-two");
+        // 中央目录且无 skill_states：Agent 子开关默认关，总开关同步为关
+        assert!(!skills[0].enabled);
+        assert_eq!(skills[0].agent_enabled.get("cursor"), Some(&false));
+        assert_eq!(skills[0].agent_enabled.get("claude"), Some(&false));
     }
 }
