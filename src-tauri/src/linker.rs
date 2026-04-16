@@ -78,7 +78,75 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, Linker
     }
 }
 
+/// Windows `CreateSymbolicLinkW` 标志：目录链接 + 允许无特权创建（需「开发人员模式」等系统策略）
+#[cfg(windows)]
+const SYMLINK_FLAG_DIRECTORY: u32 = 0x1;
+#[cfg(windows)]
+const SYMLINK_FLAG_ALLOW_UNPRIVILEGED_CREATE: u32 = 0x2;
+
+#[cfg(windows)]
+#[link(name = "kernel32")]
+extern "system" {
+    fn CreateSymbolicLinkW(
+        lp_symlink_file_name: *const u16,
+        lp_target_file_name: *const u16,
+        dw_flags: u32,
+    ) -> u8;
+}
+
+/// `link` 为新符号链接路径，`point_to` 为链接目标（须存在）。
+#[cfg(windows)]
+fn path_to_wide_nul(path: &Path) -> Vec<u16> {
+    use std::os::windows::ffi::OsStrExt;
+    path.as_os_str()
+        .encode_wide()
+        .chain(std::iter::once(0))
+        .collect()
+}
+
+/// 去除 `canonicalize` 产生的 `\\?\` 扩展路径前缀（CreateSymbolicLinkW 对它支持不一致）。
+#[cfg(windows)]
+fn strip_extended_prefix(p: &Path) -> PathBuf {
+    let s = p.to_string_lossy();
+    if s.starts_with(r"\\?\") {
+        PathBuf::from(&s[4..])
+    } else {
+        p.to_path_buf()
+    }
+}
+
+/// 使用与「开发人员模式」兼容的标志创建符号链接；失败时再回退到 `std` 实现。
+#[cfg(windows)]
+fn create_symlink_windows_api(link: &Path, point_to: &Path, flags: u32) -> std::io::Result<()> {
+    let link_w = path_to_wide_nul(link);
+    let target_w = path_to_wide_nul(point_to);
+    let ok = unsafe { CreateSymbolicLinkW(link_w.as_ptr(), target_w.as_ptr(), flags) };
+    if ok == 0 {
+        Err(std::io::Error::last_os_error())
+    } else {
+        Ok(())
+    }
+}
+
+/// 使用 `cmd /c mklink /J` 创建 NTFS Junction（目录连接点）。
+/// Junction 无需任何特权，在 Windows 上可替代目录 symlink。
+#[cfg(windows)]
+fn create_junction(link: &Path, point_to: &Path) -> std::io::Result<()> {
+    let output = std::process::Command::new("cmd")
+        .args(["/C", "mklink", "/J",
+            &link.to_string_lossy(),
+            &point_to.to_string_lossy()])
+        .output()?;
+    if output.status.success() {
+        Ok(())
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        Err(std::io::Error::new(std::io::ErrorKind::Other, format!("mklink /J failed: {}", stderr.trim())))
+    }
+}
+
 /// 创建符号链接 (Windows)
+/// 优先级：Junction（无需权限） > Symlink（需权限） > 返回错误（由外层 fallback 到 Copy）
 #[cfg(windows)]
 pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, LinkerError> {
     eprintln!("=== CREATE_SYMLINK DEBUG (Windows) ===");
@@ -88,20 +156,15 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, Linker
     eprintln!("Target path: {:?}", target);
     eprintln!("Target exists: {}", target.exists());
 
-    // 检查源路径是否存在
     if !source.exists() {
         eprintln!("ERROR: Source path does not exist!");
         return Err(LinkerError::LinkFailed(format!("Source path does not exist: {:?}", source)));
     }
 
     if let Some(parent) = target.parent() {
-        eprintln!("Target parent: {:?}", parent);
-        eprintln!("Parent exists: {}", parent.exists());
-
         if !parent.exists() {
             eprintln!("Creating parent directory: {:?}", parent);
             fs::create_dir_all(parent)?;
-            eprintln!("Parent directory created successfully");
         }
     }
 
@@ -115,15 +178,50 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, Linker
         eprintln!("Old target removed");
     }
 
-    // Check if source is a file or directory and use appropriate function
-    eprintln!("Attempting to create symlink: {:?} -> {:?}", source, target);
+    let source_abs = strip_extended_prefix(
+        &fs::canonicalize(source).map_err(LinkerError::Io)?
+    );
+    eprintln!("Source absolute (cleaned): {:?}", source_abs);
+
     if source.is_dir() {
-        std::os::windows::fs::symlink_dir(source, target)?;
+        // 1) 优先用 NTFS Junction — 无需任何特权
+        eprintln!("Trying NTFS Junction (mklink /J) ...");
+        match create_junction(target, &source_abs) {
+            Ok(()) => {
+                eprintln!("✅ NTFS Junction created successfully");
+                eprintln!("=== END CREATE_SYMLINK DEBUG ===");
+                return Ok(LinkResult::Symlink);
+            }
+            Err(e) => {
+                eprintln!("❌ Junction failed: {}", e);
+            }
+        }
+
+        // 2) 再尝试 symlink（需要开发人员模式或管理员权限）
+        let flags_priv = SYMLINK_FLAG_DIRECTORY | SYMLINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
+        eprintln!("Trying CreateSymbolicLinkW (flags=0x{:x}) ...", flags_priv);
+        match create_symlink_windows_api(target, &source_abs, flags_priv) {
+            Ok(()) => {
+                eprintln!("✅ Symlink created via CreateSymbolicLinkW");
+            }
+            Err(e) => {
+                eprintln!("❌ CreateSymbolicLinkW failed: {} (os error {:?})", e, e.raw_os_error());
+                eprintln!("Trying std::os::windows::fs::symlink_dir ...");
+                std::os::windows::fs::symlink_dir(&source_abs, target).map_err(LinkerError::Io)?;
+                eprintln!("✅ std::symlink_dir succeeded");
+            }
+        }
     } else {
-        std::os::windows::fs::symlink_file(source, target)?;
+        // 文件级 symlink
+        let flags_file = SYMLINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
+        eprintln!("Trying CreateSymbolicLinkW for file (flags=0x{:x}) ...", flags_file);
+        if let Err(e) = create_symlink_windows_api(target, &source_abs, flags_file) {
+            eprintln!("❌ file symlink failed: {} — trying std::symlink_file", e);
+            std::os::windows::fs::symlink_file(&source_abs, target).map_err(LinkerError::Io)?;
+        }
+        eprintln!("✅ File symlink created");
     }
 
-    eprintln!("Symlink created successfully!");
     eprintln!("=== END CREATE_SYMLINK DEBUG ===");
     Ok(LinkResult::Symlink)
 }
@@ -170,25 +268,40 @@ fn recursive_copy(source: &Path, target: &Path) -> Result<(), LinkerError> {
     Ok(())
 }
 
-/// 移除链接（安全版本，只删除符号链接）
+/// 检查路径是否为 NTFS Junction（reparse point 且非 symlink）或 symlink
+fn is_junction_or_symlink(path: &Path) -> bool {
+    if path.is_symlink() {
+        return true;
+    }
+    // Junction 在 Windows 上 is_symlink() 返回 false，但 metadata 的 file_attributes 带 REPARSE_POINT
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::MetadataExt;
+        const FILE_ATTRIBUTE_REPARSE_POINT: u32 = 0x400;
+        if let Ok(meta) = fs::symlink_metadata(path) {
+            return meta.file_attributes() & FILE_ATTRIBUTE_REPARSE_POINT != 0;
+        }
+    }
+    false
+}
+
+/// 移除链接（安全版本，只删除 symlink / junction，不删真实目录）
 pub fn remove_link(target: &Path) -> Result<(), LinkerError> {
-    if !target.exists() {
+    if !target.exists() && !is_junction_or_symlink(target) {
         return Ok(());
     }
 
-    // 安全检查：只删除符号链接，不删除真实目录
-    if target.is_symlink() {
-        eprintln!("✅ Removing symlink: {:?}", target);
+    if is_junction_or_symlink(target) {
+        eprintln!("✅ Removing symlink/junction: {:?}", target);
+        // Junction / symlink to dir: remove_dir 只删链接本身，不递归删目标内容
         if target.is_dir() {
-            fs::remove_dir_all(target)?;
+            fs::remove_dir(target)?;
         } else {
             fs::remove_file(target)?;
         }
         Ok(())
     } else {
-        // 如果不是符号链接，说明是真实目录，不应该删除
-        eprintln!("⚠️  Warning: Target is not a symlink, refusing to delete: {:?}", target);
-        eprintln!("This is a real directory, not a managed symlink. Skipping deletion.");
+        eprintln!("⚠️  Warning: Target is not a symlink/junction, refusing to delete: {:?}", target);
         Ok(())
     }
 }

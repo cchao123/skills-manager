@@ -137,6 +137,7 @@ pub fn scan_skills_directory(
                     skill.agent_enabled = get_default_agent_states(&skill.source);
                     eprintln!("Set default agent states for skill {} (source: {:?}): {:?}", skill.id, skill.source, skill.agent_enabled);
                 }
+                sync_enabled_with_agent_toggles(&mut skill);
 
                 if !seen_ids.contains(&skill.id) {
                     seen_ids.insert(skill.id.clone());
@@ -153,15 +154,20 @@ pub fn scan_skills_directory(
     Ok(skills)
 }
 
+/// 总开关与「是否有任一 Agent 子开关为开」一致，避免中央仅落盘未链接却显示总开关已开。
+fn sync_enabled_with_agent_toggles(skill: &mut SkillMetadata) {
+    skill.enabled = skill.agent_enabled.values().any(|&v| v);
+}
+
 /// 根据技能来源获取默认的agent启用状态
 fn get_default_agent_states(source: &SkillSource) -> HashMap<String, bool> {
     let mut states = HashMap::new();
 
     match source {
         SkillSource::Global => {
-            // 中央存储的技能：默认所有agent都启用（用户可手动控制）
-            states.insert("claude".to_string(), true);
-            states.insert("cursor".to_string(), true);
+            // 仅在中央目录：尚未链接/复制到各 Agent 前，默认可选 Agent 均为关，避免误以为已生效
+            states.insert("claude".to_string(), false);
+            states.insert("cursor".to_string(), false);
         }
         SkillSource::Cursor => {
             // Cursor来源的技能：默认只对Cursor启用
@@ -234,6 +240,7 @@ pub fn scan_user_custom_skills(
                         eprintln!("Set default agent states for skill {} (source: {:?}): {:?}",
                             skill.id, skill.source, skill.agent_enabled);
                     }
+                    sync_enabled_with_agent_toggles(&mut skill);
 
                     if !seen_ids.contains(&skill.id) {
                         let skill_id = skill.id.clone();
