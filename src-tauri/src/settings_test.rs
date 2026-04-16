@@ -22,6 +22,8 @@ mod tests {
         assert_eq!(config.agents[2].name, "codex");
         assert_eq!(config.agents[3].name, "openclaw");
         assert_eq!(config.agents[4].name, "opencode");
+        let claude = config.agents.iter().find(|a| a.name == "claude").unwrap();
+        assert_eq!(claude.skills_path, "skills");
     }
 
     #[test]

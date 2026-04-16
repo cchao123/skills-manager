@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import PageHeader from '@/components/PageHeader';
 import { LIQUID_GLASS_TOAST_PANEL_CLASS } from '@/components/toastPanelStyles';
-import type { SkillMetadata } from '@/types';
+import type { SkillMetadata, Skill } from '@/types';
+import { SESSION_STORAGE_KEYS } from '@/constants';
 import { TabSwitcher } from '@/components/TabSwitcher';
 
 // Hooks
@@ -26,16 +27,10 @@ import { getSkillIcon, getSkillColor } from '@/pages/Dashboard/utils/skillHelper
 import MarketplaceSkillCard from '@/pages/Dashboard/components/MarketplaceSkillCard';
 import { agentsApi } from '@/api/tauri';
 import { getAgentIcon, needsInvertInDark } from '@/pages/Dashboard/utils/agentHelpers';
-import type { Skill } from '@/types/skills';
-
-const DASHBOARD_VIEW_MODE_KEY = 'skills-manager:dashboard:viewMode';
-/** v2：默认来源改为 global，与旧键分离以免会话里仍残留此前的默认 claude */
-const DASHBOARD_SELECTED_SOURCE_KEY = 'skills-manager:dashboard:selectedSourceV2';
-
 function readPersistedDashboardNav(): { viewMode: 'flat' | 'agent'; selectedSource: string } {
   try {
-    const vm = sessionStorage.getItem(DASHBOARD_VIEW_MODE_KEY);
-    const src = sessionStorage.getItem(DASHBOARD_SELECTED_SOURCE_KEY);
+    const vm = sessionStorage.getItem(SESSION_STORAGE_KEYS.dashboardViewMode);
+    const src = sessionStorage.getItem(SESSION_STORAGE_KEYS.dashboardSelectedSourceV2);
     const viewMode: 'flat' | 'agent' = vm === 'agent' ? 'agent' : 'flat';
     const selectedSource =
       src === 'global' || src === 'claude' || src === 'cursor' ? src : 'global';
@@ -69,7 +64,9 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
   const [deleteTarget, setDeleteTarget] = useState<SkillMetadata | null>(null);
   const [viewMode, setViewMode] = useState<'flat' | 'agent'>(() => readPersistedDashboardNav().viewMode);
   const [selectedSource, setSelectedSource] = useState<string>(() => readPersistedDashboardNav().selectedSource);
-  const [githubTipDismissed, setGithubTipDismissed] = useState(() => sessionStorage.getItem('githubTipDismissed') === 'true');
+  const [githubTipDismissed, setGithubTipDismissed] = useState(
+    () => sessionStorage.getItem(SESSION_STORAGE_KEYS.githubTipDismissed) === 'true'
+  );
   /** 帮助气泡挂 Portal：与 Toast 一样在 body 层 fixed，backdrop-blur 才能作用到整窗，否则会透出下层 Tab 等 */
   const [helpPopover, setHelpPopover] = useState<{ open: boolean; anchor: DOMRect | null }>({
     open: false,
@@ -86,8 +83,8 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
   // 离开再进入 Dashboard（如去 GitHub 备份页）时保留视图与来源 Tab：写入 sessionStorage
   useEffect(() => {
     try {
-      sessionStorage.setItem(DASHBOARD_VIEW_MODE_KEY, viewMode);
-      sessionStorage.setItem(DASHBOARD_SELECTED_SOURCE_KEY, selectedSource);
+      sessionStorage.setItem(SESSION_STORAGE_KEYS.dashboardViewMode, viewMode);
+      sessionStorage.setItem(SESSION_STORAGE_KEYS.dashboardSelectedSourceV2, selectedSource);
     } catch {
       /* ignore quota / private mode */
     }
@@ -297,18 +294,38 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
       <PageHeader
         icon="extension"
         title={t('header.dashboard')}
-        center={<TabSwitcher tabs={viewTabs} activeTab={viewMode} onTabChange={handleViewModeChange} />}
+        center={<div className="flex gap-3">
+          <TabSwitcher tabs={viewTabs} activeTab={viewMode} onTabChange={handleViewModeChange} />
+          <button
+            className="flex items-center justify-center"
+            ref={helpButtonRef}
+            onMouseEnter={handleHelpMouseEnter}
+            onMouseLeave={handleHelpMouseLeave}
+            title={t('dashboard.viewHelp')}
+          >
+            <span className="material-symbols-outlined text-lg text-slate-600 dark:text-gray-300">
+              help
+            </span>
+          </button>
+        </div>
+        }
         actions={
-          <div className="flex items-center">
+          <div className="flex items-center gap-1">
             <button
-              ref={helpButtonRef}
-              onMouseEnter={handleHelpMouseEnter}
-              onMouseLeave={handleHelpMouseLeave}
-              className="rounded-xl p-2 transition-colors hover:bg-slate-100/80 dark:hover:bg-white/10"
-              title={t('dashboard.viewHelp')}
+              className="px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-1.5"
+              onClick={() => {
+                try {
+                  sessionStorage.setItem(SESSION_STORAGE_KEYS.settingsInitialTab, 'agents');
+                } catch {
+                  /* ignore */
+                }
+                onNavigate('settings');
+              }}
+              title={t('dashboard.openAgentSettings')}
             >
-              <span className="material-symbols-outlined text-2xl text-slate-600 dark:text-gray-300">
-                help
+              <span className="material-symbols-outlined text-lg text-slate-500 dark:text-gray-400">folder_open</span>
+              <span className="text-xs font-medium text-slate-600 dark:text-gray-300">
+                本地 Agent 目录
               </span>
             </button>
           </div>
@@ -404,7 +421,7 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
                     {t('dashboard.rootPathLabel')}
                     <span
                       className="text-[#2563eb] dark:text-blue-400 cursor-pointer hover:underline font-mono"
-                      onClick={() => agentsApi.openFolderPath('~/.skills-manager').catch(() => {})}
+                      onClick={() => agentsApi.openFolderPath('~/.skills-manager').catch(() => { })}
                     >~/.skills-manager </span>
                     {!githubTipDismissed && (
                       <>
@@ -419,7 +436,10 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
                   </p>
                   {!githubTipDismissed && (
                     <button
-                      onClick={() => { setGithubTipDismissed(true); sessionStorage.setItem('githubTipDismissed', 'true'); }}
+                      onClick={() => {
+                        setGithubTipDismissed(true);
+                        sessionStorage.setItem(SESSION_STORAGE_KEYS.githubTipDismissed, 'true');
+                      }}
                       className="w-[14px] h-[14px] rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors ml-1 flex items-center"
                     >
                       <span className="material-symbols-outlined text-sm text-slate-400 dark:text-gray-500 hover:text-[#b71422]">close</span>
@@ -443,7 +463,7 @@ function Dashboard({ onNavigate }: { onNavigate: (page: string) => void }) {
                       {t('dashboard.agentSourcePath')}
                       <span
                         className="text-[#2563eb] dark:text-blue-400 cursor-pointer hover:underline font-mono"
-                        onClick={() => agentsApi.openFolderPath(path).catch(() => {})}
+                        onClick={() => agentsApi.openFolderPath(path).catch(() => { })}
                       >{path}</span>
                     </p>
                   </div>

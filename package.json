@@ -22,7 +22,6 @@
     "react-i18next": "^17.0.1",
     "react-markdown": "^10.1.0",
     "react-material-symbols": "^4.4.0",
-    "react-router-dom": "^6.20.0",
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {

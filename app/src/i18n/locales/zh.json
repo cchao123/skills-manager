@@ -93,6 +93,7 @@
     "errorMessage": "请确保应用在 Tauri 环境中运行，而不是在浏览器中。",
     "viewFlat": "平铺展示",
     "viewBySource": "按来源展示",
+    "openAgentSettings": "打开设置中的 Agents",
     "viewHelp": "视图说明",
     "viewHelpFlat": "扫描本地所有 Agent，显示所有可用的 Skills（不区分 Agent 来源）",
     "viewHelpBySource": "按照不同的 Agent 对 Skills 进行分类展示，可以清晰地看到每个 Agent 下有哪些 Skills",
@@ -244,6 +245,7 @@
     "tabAgents": "Agents",
     "tabAbout": "关于",
     "tabChangelog": "更新日志",
+    "feedback": "反馈",
     "agents": {
       "title": "Agents",
       "subtitle": "点击 Agent 可打开其配置目录",
@@ -261,6 +263,14 @@
     "themeAuto": "跟随系统",
     "about": "关于",
     "aboutDescription": "一个用于管理 Claude Code 技能和插件的桌面应用程序。支持从技能市场浏览、安装和启用技能，也可以从 GitHub 仓库同步自定义技能。",
+    "aboutHighlights": {
+      "visualSchedulingTitle": "可视化调度",
+      "visualSchedulingDescription": "一站式管理多 Agent 桌面应用；",
+      "cleanReuseTitle": "纯净复用",
+      "cleanReuseDescription": "一个技能，零侵入多端复用，保持环境原生纯净；",
+      "oneClickHubTitle": "一键沉淀",
+      "oneClickHubDescription": "云端同步 GitHub，构建专属的Skills Hub。"
+    },
     "builtWith": "基于"
   },
   "common": {

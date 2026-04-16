@@ -39,7 +39,7 @@ mod tests {
             name: "claude-code".to_string(),
             display_name: "Claude Code".to_string(),
             path: "~/.claude".to_string(),
-            skills_path: "skills/plugins".to_string(),
+            skills_path: "skills".to_string(),
             enabled: true,
             detected: false,
         };

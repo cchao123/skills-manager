@@ -1,3 +1,5 @@
+export type { Skill, SkillCategory } from './skills';
+
 // Skill source type
 export type SkillSource = 'global' | 'cursor' | 'claude';
 
@@ -36,7 +38,7 @@ export interface AgentConfig {
   name: string;                  // Unique identifier (e.g., "claude", "cursor")
   display_name: string;          // Human-readable name (e.g., "Claude", "Cursor")
   path: string;                  // Base path (e.g., "~/.claude")
-  skills_path: string;           // Relative skills path (e.g., "skills/plugins")
+  skills_path: string;           // Relative skills path (e.g., "skills" under agent home)
   enabled: boolean;              // Whether agent is active
   detected: boolean;             // Whether agent is installed on system
 }
