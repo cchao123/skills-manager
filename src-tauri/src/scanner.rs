@@ -89,7 +89,7 @@ pub fn parse_skill_md(skill_md_path: &Path, source: SkillSource) -> Result<Skill
         author,
         version,
         repository: None,
-        enabled: true,
+        enabled: false, // 默认未启用，除非 settings.json 中有记录
         agent_enabled: HashMap::new(), // 将在外部填充
         agent_enabled_backup: None,
         installed_at: last_updated.clone(),
@@ -653,7 +653,7 @@ impl SkillScanner {
             plugin_name: plugin_name.to_string(),
             plugin_version: version,
             path: path_str,
-            enabled: true, // Default to enabled, will be updated by settings
+            enabled: false, // 默认未启用，除非 settings.json 中有记录
             agent_disabled: HashMap::new(),
             installed_at: self.get_file_modified_time(skill_md)?,
             source,

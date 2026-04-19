@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { skillsApi } from '@/api/tauri';
 import { useToast } from '@/components/Toast';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 
 export const useDragDrop = (onImportComplete?: (importedNames: string[]) => void) => {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const [isDragOver, setIsDragOver] = useState(false);
   const [importing, setImporting] = useState(false);
@@ -29,7 +31,7 @@ export const useDragDrop = (onImportComplete?: (importedNames: string[]) => void
     }
 
     if (importedNames.length > 0) {
-      showToast('success', `成功导入 ${importedNames.length} 个技能`);
+      showToast('success', t('dashboard.toast.importSkillsSuccess', { count: importedNames.length }));
       onImportComplete?.(importedNames);
     }
     if (errorMsg) {
