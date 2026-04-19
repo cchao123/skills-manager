@@ -15,10 +15,11 @@
  *   4. 推送代码和 tag 到远程
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import readlineSync from 'readline-sync';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const pkgPath = resolve(root, 'package.json');
@@ -101,7 +102,7 @@ const checkCurrentBranch = () => {
   const branch = git('git rev-parse --abbrev-ref HEAD');
   if (branch !== 'main') {
     console.warn(`⚠️  You are on '${branch}' branch. Recommend using 'main' branch for release.`);
-    const answer = process.stdin.isTTY ? require('readline-sync').question('Continue? (y/N) ') : 'n';
+    const answer = process.stdin.isTTY ? readlineSync.question('Continue? (y/N) ') : 'n';
     if (answer.toLowerCase() !== 'y') {
       process.exit(1);
     }
