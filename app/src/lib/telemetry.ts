@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { isTauri } from '@/lib/tauri-env';
 import { TelemetryEvent, type TelemetryEventProps } from '@/constants/events';
+import { PROJECT_VERSION } from '@/constants/app';
 
 let initialized = false;
 let aptabaseInitialized = false;
@@ -29,7 +30,7 @@ async function initAptabase() {
       console.log('[Aptabase Debug] Calling init() with Web SDK...');
       await init(appKey, {
         // Configure for Tauri environment
-        appVersion: import.meta.env.APP_VERSION || '1.0.6',
+        appVersion: PROJECT_VERSION,
       });
 
       aptabaseInitialized = true;
