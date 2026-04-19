@@ -32,6 +32,12 @@ target
 src-tauri/target
 src-tauri/gen/
 
+# Local env
+.env
+.env.local
+src-tauri/.env
+src-tauri/.env.local
+
 # Claude Code
 .claude/
 
