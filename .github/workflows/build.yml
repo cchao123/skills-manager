@@ -130,8 +130,22 @@ jobs:
           codesign --verify --deep --strict --verbose=2 "$APP_PATH"
           spctl -a -vv "$APP_PATH" || true
 
-          # 重命名并移动 app 到 dist 目录
+          # 产出 app.tar.gz（文件名格式：Skills-Manager-macOS-arm64-v1.0.4.app.tar.gz）
           ARCH_NAME="${{ matrix.arch == 'aarch64' && 'arm64' || 'x64' }}"
+          tar -C "$(dirname "$APP_PATH")" -czf "dist/Skills-Manager-macOS-${ARCH_NAME}-v${VERSION}.app.tar.gz" "$(basename "$APP_PATH")"
+
+          # 产出 dmg（带 Applications 快捷方式）
+          STAGE_DIR="$(mktemp -d)"
+          cp -R "$APP_PATH" "$STAGE_DIR/"
+          ln -s /Applications "$STAGE_DIR/Applications"
+          hdiutil create \
+            -volname "Skills Manager" \
+            -srcfolder "$STAGE_DIR" \
+            -ov \
+            -format UDZO \
+            "dist/Skills-Manager-macOS-${ARCH_NAME}-v${VERSION}.dmg"
+
+          # 重命名并移动 app 到 dist 目录
           mv "$APP_PATH" "dist/Skills-Manager-macOS-${ARCH_NAME}-v${VERSION}.app"
 
       - name: Build (Windows)
