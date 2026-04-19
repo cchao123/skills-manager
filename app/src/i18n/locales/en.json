@@ -39,17 +39,30 @@
     },
     "filter": {
       "all": "All",
-      "enabled": "Enabled",
-      "disabled": "Disabled",
+      "enabled": "Partially Enabled",
+      "disabled": "Not Enabled",
       "noResults": "No skills match the current filter"
     },
     "total": "Total Skills",
-    "enabled": "Enabled",
-    "disabled": "Disabled",
+    "enabled": "Partially Enabled",
+    "disabled": "Not Enabled",
+    "toast": {
+      "nativeAgentWarning": "Belongs to {{agent}} native directory, cannot be disabled",
+      "nativeAgentsWarning": "Belongs to {{agents}} native directory, cannot be disabled",
+      "skillDeleted": "Skill \"{{name}}\" has been deleted",
+      "skillDeleteFailed": "Failed to delete skill",
+      "skillDeletedFrom": "Skill \"{{name}}\" has been deleted from {{sources}}",
+      "skillDeleteFromFailed": "Failed to delete skill \"{{name}}\" from {{sources}}",
+      "skillCopiedToRoot": "Skill \"{{name}}\" has been copied to root directory",
+      "cannotGetSkillPath": "Cannot get skill path",
+      "importSkillsSuccess": "Successfully imported {{count}} skills",
+      "loadDetailFailed": "Failed to load skill details",
+      "readFileFailed": "Failed to read file"
+    },
     "stats": {
       "total": "Total",
-      "enabled": "Enabled",
-      "disabled": "Disabled",
+      "enabled": "Partially Enabled",
+      "disabled": "Not Enabled",
       "dedupeFooter": "{{count}} duplicate row(s) filtered"
     },
     "agentsEnabled": "Agent Enabled",
@@ -98,6 +111,7 @@
     "noSkillsHint": "Try adjusting your search or filter",
     "retry": "Retry",
     "errorMessage": "Make sure the app is running in Tauri environment, not in a browser.",
+    "localAgentDirectory": "View Agent Root Directories",
     "viewFlat": "Flat View",
     "viewBySource": "By Source",
     "openAgentSettings": "Open Agents in Settings",
@@ -156,7 +170,11 @@
     },
     "star": {
       "starred": "Starred",
-      "star": "Star"
+      "star": "Star",
+      "toast": {
+        "starSuccess": "Starred successfully! Thanks for your support ⭐",
+        "starFailed": "Star failed, opening GitHub page..."
+      }
     },
     "form": {
       "connectedTitle": "Connected. Click Edit Config to modify"
@@ -334,8 +352,8 @@
     "edit": "Edit",
     "enable": "Enable",
     "disable": "Disable",
-    "enabled": "Enabled",
-    "disabled": "Disabled",
+    "enabled": "Partially Enabled",
+    "disabled": "Not Enabled",
     "required": "Required",
     "notInstalled": "Not Installed",
     "detected": "Detected"

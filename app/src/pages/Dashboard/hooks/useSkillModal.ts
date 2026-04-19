@@ -1,9 +1,11 @@
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { skillsApi } from '@/api/tauri';
 import { useToast } from '@/components/Toast';
 import type { SkillMetadata, SkillFileEntry } from '@/types';
 
 export const useSkillModal = () => {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const [detailSkill, setDetailSkill] = useState<SkillMetadata | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -68,9 +70,9 @@ export const useSkillModal = () => {
       loadSkillFiles(skill.id, skill.source);
     } catch (error) {
       console.error('Failed to load skill detail:', error);
-      showToast('error', '加载技能详情失败');
+      showToast('error', t('dashboard.toast.loadDetailFailed'));
     }
-  }, [loadSkillFiles, showToast]);
+  }, [loadSkillFiles, showToast, t]);
 
   const handleCloseDetailModal = useCallback(() => {
     setShowDetailModal(false);
@@ -109,9 +111,9 @@ export const useSkillModal = () => {
       if (showLoading) {
         setLoadingFile(false);
       }
-      showToast('error', '读取文件失败');
+      showToast('error', t('dashboard.toast.readFileFailed'));
     }
-  }, [detailSkill, showToast]);
+  }, [detailSkill, showToast, t]);
 
   return {
     detailSkill,

@@ -124,13 +124,13 @@ export const useGitHubActions = (repoConfig: any, setConnected?: (connected: boo
       const ok = await githubApi.starRepo(STAR_REPO_OWNER, STAR_REPO_NAME, repoConfig.token);
       if (ok) {
         setStarred(true);
-        showToast('success', 'Star 成功！感谢支持 ⭐');
+        showToast('success', t('githubBackup.star.toast.starSuccess'));
       } else {
-        showToast('error', 'Star 失败，正在打开 GitHub 页面...');
+        showToast('error', t('githubBackup.star.toast.starFailed'));
         open(STAR_REPO_URL);
       }
     } catch (error) {
-      const errMsg = typeof error === 'string' ? error : (error as Error)?.message || 'Star 失败';
+      const errMsg = typeof error === 'string' ? error : (error as Error)?.message || t('githubBackup.star.toast.starFailed');
       showToast('error', errMsg);
       open(STAR_REPO_URL);
     } finally {

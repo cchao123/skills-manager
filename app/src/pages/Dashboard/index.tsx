@@ -11,6 +11,7 @@ import { TabSwitcher } from '@/components/TabSwitcher';
 // Hooks
 import { useSkillData } from '@/pages/Dashboard/hooks/useSkillData';
 import { useSkillFilters } from '@/pages/Dashboard/hooks/useSkillFilters';
+import { usePrefixFilteredSkills } from '@/pages/Dashboard/hooks/usePrefixFilteredSkills';
 import { useSkillActions } from '@/pages/Dashboard/hooks/useSkillActions';
 import { useSkillModal } from '@/pages/Dashboard/hooks/useSkillModal';
 import { useDragDrop } from '@/pages/Dashboard/hooks/useDragDrop';
@@ -191,7 +192,8 @@ function Dashboard({ onNavigate }: { onNavigate: (page: Page) => void }) {
     };
   }, []);
   const { searchTerm, setSearchTerm, filterType, setFilterType, filteredSkills } = useSkillFilters(skills);
-  const { handleToggleSkill, handleToggleAgent, handleToggleSkillMerged, handleToggleAgentMerged, handleDeleteSkill, handleAddToRoot } = useSkillActions(skills, setSkills);
+  const prefixFilteredSkills = usePrefixFilteredSkills(skills);
+  const { handleToggleSkill, handleToggleAgent, handleToggleSkillMerged, handleToggleAgentMerged, handleDeleteSkill, handleAddToRoot } = useSkillActions(skills, setSkills, agents);
   const detectedAgents = useDetectedAgents(agents);
 
   /** 平铺视图：同 id 多来源合并为一张卡片 */
@@ -323,10 +325,10 @@ function Dashboard({ onNavigate }: { onNavigate: (page: Page) => void }) {
 
     const name = selected[0]?.name ?? '';
     if (succeeded.length > 0) {
-      showToast('success', `技能 "${name}" 已从 ${succeeded.join('、')} 删除`);
+      showToast('success', t('dashboard.toast.skillDeletedFrom', { name, sources: succeeded.join('、') }));
     }
     if (failed.length > 0) {
-      showToast('error', `技能 "${name}" 从 ${failed.join('、')} 删除失败`);
+      showToast('error', t('dashboard.toast.skillDeleteFromFailed', { name, sources: failed.join('、') }));
     }
   };
 
@@ -408,7 +410,7 @@ function Dashboard({ onNavigate }: { onNavigate: (page: Page) => void }) {
             >
               <span className="material-symbols-outlined text-lg text-slate-500 dark:text-gray-400">folder_open</span>
               <span className="text-xs font-medium text-slate-600 dark:text-gray-300">
-                本地 Agent 目录
+                {t('dashboard.localAgentDirectory')}
               </span>
             </button>
           </div>
@@ -423,7 +425,7 @@ function Dashboard({ onNavigate }: { onNavigate: (page: Page) => void }) {
             onSearchChange={setSearchTerm}
             filterType={filterType}
             onFilterChange={setFilterType}
-            skills={skills}
+            skills={prefixFilteredSkills}
             agents={agents}
             viewMode={viewMode}
             selectedSource={selectedSource}

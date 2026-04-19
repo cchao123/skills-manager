@@ -3,10 +3,22 @@ use crate::models::{SkillMetadata, SkillSource, SkillFileEntry, skill_state_key}
 use crate::scanner;
 use crate::settings::AppSettingsManager;
 use log::{info, error, warn};
+use regex::Regex;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::State;
+
+/// 从 SKILL.md 内容中提取 name 字段
+fn extract_skill_name_from_md(content: &str) -> Option<String> {
+    let re = Regex::new(r"^---\s*\n([\s\S]*?)\n---").ok()?;
+    let caps = re.captures(content)?;
+    let yaml_content = caps.get(1)?.as_str();
+    let yaml: serde_yaml::Value = serde_yaml::from_str(yaml_content).ok()?;
+    yaml.get("name")
+        .and_then(|v| v.as_str())
+        .map(|s| s.to_string())
+}
 
 /// 应用状态
 pub struct AppState {
@@ -512,24 +524,32 @@ pub async fn import_skill_folder(
         return Err("文件夹中没有找到 SKILL.md 文件，无法识别为有效技能".to_string());
     }
 
-    let folder_name = source.file_name()
-        .and_then(|n| n.to_str())
-        .ok_or("无法读取文件夹名")?
-        .to_string();
+    // 尝试从 SKILL.md 中提取技能名称
+    let content = std::fs::read_to_string(&skill_md)
+        .map_err(|e| format!("读取 SKILL.md 失败: {}", e))?;
+
+    let skill_name = extract_skill_name_from_md(&content)
+        .unwrap_or_else(|| {
+            // 如果无法提取名称，使用文件夹名作为后备
+            source.file_name()
+                .and_then(|n| n.to_str())
+                .unwrap_or("unknown")
+                .to_string()
+        });
 
     let skills_dir = AppSettingsManager::get_skills_dir();
     std::fs::create_dir_all(&skills_dir).map_err(|e| format!("创建技能目录失败: {}", e))?;
 
-    let target = skills_dir.join(&folder_name);
+    let target = skills_dir.join(&skill_name);
     if target.exists() {
-        return Err(format!("技能 '{}' 已存在，请先删除再导入", folder_name));
+        return Err(format!("技能 '{}' 已存在，请先删除再导入", skill_name));
     }
 
     copy_dir_recursive(source, &target)
         .map_err(|e| format!("复制文件夹失败: {}", e))?;
 
-    info!("Imported skill folder '{}' to {:?}", folder_name, target);
-    Ok(folder_name)
+    info!("Imported skill folder '{}' to {:?} (skill name: {})", folder_path, target, skill_name);
+    Ok(skill_name)
 }
 
 fn copy_dir_recursive(src: &std::path::Path, dst: &std::path::Path) -> std::io::Result<()> {

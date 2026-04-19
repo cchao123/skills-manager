@@ -39,17 +39,30 @@
     },
     "filter": {
       "all": "全部",
-      "enabled": "已启用",
-      "disabled": "已禁用",
+      "enabled": "部分启用",
+      "disabled": "未启用",
       "noResults": "没有符合条件的技能"
     },
     "total": "技能总数",
-    "enabled": "已启用",
-    "disabled": "已禁用",
+    "enabled": "部分启用",
+    "disabled": "未启用",
+    "toast": {
+      "nativeAgentWarning": "属于 {{agent}} 原生目录，无法一键关闭",
+      "nativeAgentsWarning": "属于 {{agents}} 原生目录，无法一键关闭",
+      "skillDeleted": "技能「{{name}}」已删除",
+      "skillDeleteFailed": "删除技能失败",
+      "skillDeletedFrom": "技能「{{name}}」已从 {{sources}} 删除",
+      "skillDeleteFromFailed": "技能「{{name}}」从 {{sources}} 删除失败",
+      "skillCopiedToRoot": "技能「{{name}}」已拷贝到根目录",
+      "cannotGetSkillPath": "无法获取技能路径",
+      "importSkillsSuccess": "成功导入 {{count}} 个技能",
+      "loadDetailFailed": "加载技能详情失败",
+      "readFileFailed": "读取文件失败"
+    },
     "stats": {
       "total": "总计",
-      "enabled": "已启用",
-      "disabled": "已禁用",
+      "enabled": "部分启用",
+      "disabled": "未启用",
       "dedupeFooter": "已过滤 {{count}} 条重复"
     },
     "agentsEnabled": "Agent 已启用",
@@ -98,6 +111,7 @@
     "noSkillsHint": "尝试调整搜索或筛选条件",
     "retry": "重试",
     "errorMessage": "请确保应用在 Tauri 环境中运行，而不是在浏览器中。",
+    "localAgentDirectory": "查看各Agent根目录",
     "viewFlat": "平铺展示",
     "viewBySource": "按来源展示",
     "openAgentSettings": "打开设置中的 Agents",
@@ -156,7 +170,11 @@
     },
     "star": {
       "starred": "已 Star",
-      "star": "Star"
+      "star": "Star",
+      "toast": {
+        "starSuccess": "Star 成功！感谢支持 ⭐",
+        "starFailed": "Star 失败，正在打开 GitHub 页面..."
+      }
     },
     "form": {
       "connectedTitle": "已连接，点击编辑按钮修改配置"
@@ -334,8 +352,8 @@
     "edit": "编辑",
     "enable": "启用",
     "disable": "禁用",
-    "enabled": "已启用",
-    "disabled": "已禁用",
+    "enabled": "部分启用",
+    "disabled": "未启用",
     "required": "必填",
     "notInstalled": "未安装",
     "detected": "已检测"
