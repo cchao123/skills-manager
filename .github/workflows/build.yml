@@ -70,8 +70,9 @@ jobs:
         shell: bash
         run: |
           echo "=== Testing Secret Access ==="
-          if [ -n "${{ secrets.VITE_APTABASE_APP_KEY }}" ]; then
-            echo "✅ Secret VITE_APTABASE_APP_KEY exists (length: ${# secrets.VITE_APTABASE_APP_KEY})"
+          APTABASE_KEY="${{ secrets.VITE_APTABASE_APP_KEY }}"
+          if [ -n "$APTABASE_KEY" ]; then
+            echo "✅ Secret VITE_APTABASE_APP_KEY exists (length: ${#APTABASE_KEY})"
           else
             echo "❌ Secret VITE_APTABASE_APP_KEY is NOT set or empty"
           fi
