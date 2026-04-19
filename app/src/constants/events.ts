@@ -1,0 +1,47 @@
+/**
+ * 统一的事件名称定义
+ * 用于 Aptabase 事件追踪
+ */
+export enum TelemetryEvent {
+  // 应用生命周期事件
+  APP_STARTED = 'app_started',
+  APP_OPENED = 'app_opened',
+  APP_READY = 'app_ready',
+  APP_EXITED = 'app_exited',
+
+  // 页面导航事件
+  PAGE_VIEW = 'page_view',
+
+  // 技能管理事件
+  SKILL_ENABLED = 'skill_enabled',
+  SKILL_DISABLED = 'skill_disabled',
+  SKILL_DELETED = 'skill_deleted',
+
+  // Agent 技能事件
+  SKILL_AGENT_ENABLED = 'skill_agent_enabled',
+  SKILL_AGENT_DISABLED = 'skill_agent_disabled',
+
+  // GitHub 相关事件
+  GITHUB_TEST_LINK_CLICKED = 'github_test_link_clicked',
+  GITHUB_SYNC_CLICKED = 'github_sync_clicked',
+  GITHUB_RESTORE_CLICKED = 'github_restore_clicked',
+}
+
+/**
+ * 事件属性类型定义
+ */
+export interface TelemetryEventProps {
+  [key: string]: string | number | undefined;
+
+  // 页面属性
+  page?: string;
+
+  // 技能属性
+  skill_id?: string;
+  source?: string;
+  agent?: string;
+
+  // 应用属性
+  timestamp?: number;
+  test?: string;
+}

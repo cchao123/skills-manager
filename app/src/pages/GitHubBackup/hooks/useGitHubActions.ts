@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { open } from '@tauri-apps/plugin-shell';
 import { githubApi } from '@/api/tauri';
 import { useToast } from '@/components/Toast';
+import { TelemetryEvent } from '@/constants/events';
+import { trackEvent } from '@/lib/telemetry';
 import { STAR_REPO_OWNER, STAR_REPO_NAME, STAR_REPO_URL } from '../constants/config';
 
 export const useGitHubActions = (repoConfig: any, setConnected?: (connected: boolean) => void, onSaveConfig?: () => void | Promise<void>) => {
@@ -30,6 +32,13 @@ export const useGitHubActions = (repoConfig: any, setConnected?: (connected: boo
       });
       showToast('success', t('githubBackup.messages.connectionSuccess'));
       setConnected?.(true);
+
+      // 追踪测试连接事件
+      trackEvent(TelemetryEvent.GITHUB_TEST_LINK_CLICKED, {
+        repo: `${repoConfig.owner}/${repoConfig.repo}`,
+        branch: repoConfig.branch || 'main'
+      });
+
       // Auto-save config after successful connection test
       if (onSaveConfig) {
         await onSaveConfig();
@@ -53,6 +62,14 @@ export const useGitHubActions = (repoConfig: any, setConnected?: (connected: boo
     try {
       setSyncing(true);
       await githubApi.syncRepo('default', repoConfig.branch, { overwriteRemote });
+
+      // 追踪同步事件
+      trackEvent(TelemetryEvent.GITHUB_SYNC_CLICKED, {
+        repo: `${repoConfig.owner}/${repoConfig.repo}`,
+        branch: repoConfig.branch || 'main',
+        overwrite_remote: overwriteRemote ? 'true' : 'false'
+      });
+
       showToast('success', `${t('githubBackup.messages.syncSuccess')}\nhttps://github.com/${repoConfig.owner}/${repoConfig.repo}`);
     } catch (error: any) {
       console.error('Sync failed:', error);
@@ -72,6 +89,14 @@ export const useGitHubActions = (repoConfig: any, setConnected?: (connected: boo
     try {
       setRestoring(true);
       const count = await githubApi.restoreFromGithub('default', overwriteLocal);
+
+      // 追踪恢复事件
+      trackEvent(TelemetryEvent.GITHUB_RESTORE_CLICKED, {
+        repo: 'default',
+        overwrite_local: overwriteLocal ? 'true' : 'false',
+        restored_count: count
+      });
+
       if (count > 0) {
         showToast('success', t('githubBackup.messages.restoreSuccess').replace('{count}', String(count)));
       } else {

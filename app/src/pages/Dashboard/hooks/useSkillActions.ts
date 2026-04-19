@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { skillsApi } from '@/api/tauri';
 import { useToast } from '@/components/Toast';
+import { TelemetryEvent } from '@/constants/events';
+import { trackEvent } from '@/lib/telemetry';
 import type { SkillMetadata, MergedSkillInfo } from '@/types';
 import { SOURCE } from '@/pages/Dashboard/utils/source';
 
@@ -41,7 +43,9 @@ export const useSkillActions = (
         );
 
         agentsToDisable.forEach(agent => {
-          skillsApi.disable(skill.id, agent, skill.source).catch(error => {
+          skillsApi.disable(skill.id, agent, skill.source).then(() => {
+            trackEvent(TelemetryEvent.SKILL_DISABLED, { skill_id: skill.id, agent });
+          }).catch(error => {
             console.error(`Failed to disable ${skill.id} for agent ${agent}:`, error);
           });
         });
@@ -67,7 +71,9 @@ export const useSkillActions = (
         );
 
         agentsToEnable.forEach(agent => {
-          skillsApi.enable(skill.id, agent, skill.source).catch(error => {
+          skillsApi.enable(skill.id, agent, skill.source).then(() => {
+            trackEvent(TelemetryEvent.SKILL_ENABLED, { skill_id: skill.id, agent });
+          }).catch(error => {
             console.error(`Failed to enable ${skill.id} for agent ${agent}:`, error);
           });
         });
@@ -106,12 +112,16 @@ export const useSkillActions = (
 
       if (isEnabled) {
         console.log(`Disabling skill ${skill.name} for agent ${agentName}`);
-        skillsApi.disable(skill.id, agentName, skill.source).catch(error => {
+        skillsApi.disable(skill.id, agentName, skill.source).then(() => {
+          trackEvent(TelemetryEvent.SKILL_AGENT_DISABLED, { skill_id: skill.id, agent: agentName });
+        }).catch(error => {
           console.error('Failed to disable skill:', error);
         });
       } else {
         console.log(`Enabling skill ${skill.name} for agent ${agentName}`);
-        skillsApi.enable(skill.id, agentName, skill.source).catch(error => {
+        skillsApi.enable(skill.id, agentName, skill.source).then(() => {
+          trackEvent(TelemetryEvent.SKILL_AGENT_ENABLED, { skill_id: skill.id, agent: agentName });
+        }).catch(error => {
           console.error('Failed to enable skill:', error);
         });
       }
@@ -158,6 +168,7 @@ export const useSkillActions = (
     try {
       await skillsApi.delete(skill.id, skill.source);
       setSkills(prevSkills => prevSkills.filter(s => !matchSkill(s, skill)));
+      trackEvent(TelemetryEvent.SKILL_DELETED, { skill_id: skill.id, source: skill.source || 'unknown' });
       if (!silent) showToast('success', `技能 "${skill.name}" 已删除`);
       console.log(`Skill ${skill.name} deleted`);
     } catch (error) {

@@ -37,8 +37,8 @@ jobs:
       VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
       VITE_SENTRY_ENVIRONMENT: ${{ vars.VITE_SENTRY_ENVIRONMENT || 'production' }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-      SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
-      APTABASE_APP_KEY: ${{ secrets.APTABASE_APP_KEY }}
+      # Aptabase Analytics (frontend only)
+      VITE_APTABASE_APP_KEY: ${{ secrets.VITE_APTABASE_APP_KEY }}
 
     steps:
       - uses: actions/checkout@v4
