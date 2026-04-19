@@ -66,14 +66,29 @@ jobs:
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Debug environment variables
+      - name: Test secret access
+        shell: bash
         run: |
-          echo "=== Vite Environment Variables ==="
+          echo "=== Testing Secret Access ==="
+          if [ -n "${{ secrets.VITE_APTABASE_APP_KEY }}" ]; then
+            echo "✅ Secret VITE_APTABASE_APP_KEY exists (length: ${# secrets.VITE_APTABASE_APP_KEY})"
+          else
+            echo "❌ Secret VITE_APTABASE_APP_KEY is NOT set or empty"
+          fi
+          echo "================================"
+
+      - name: Debug environment variables
+        shell: bash
+        run: |
+          echo "=== Environment Variables (Job Level) ==="
           echo "VITE_ENABLE_TELEMETRY: $VITE_ENABLE_TELEMETRY"
           if [ -n "$VITE_APTABASE_APP_KEY" ]; then
             echo "VITE_APTABASE_APP_KEY: ***SET*** (length: ${#VITE_APTABASE_APP_KEY})"
           else
             echo "VITE_APTABASE_APP_KEY: ***NOT SET***"
+            echo "  Checking alternative locations..."
+            # 尝试检查是否有其他可能的变量名
+            env | grep -i aptabase || echo "  No APTABASE variables found in environment"
           fi
           if [ -n "$VITE_SENTRY_DSN" ]; then
             echo "VITE_SENTRY_DSN: ***SET***"
@@ -82,6 +97,13 @@ jobs:
           fi
           echo "VITE_SENTRY_ENVIRONMENT: $VITE_SENTRY_ENVIRONMENT"
           echo "TAG_NAME: $TAG_NAME"
+          echo "================================"
+
+      - name: List all VITE_ prefixed variables
+        shell: bash
+        run: |
+          echo "=== All VITE_ Variables ==="
+          env | grep "^VITE_" || echo "No VITE_ variables found"
           echo "================================"
 
       - name: Build (macOS)
