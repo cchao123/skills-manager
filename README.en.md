@@ -2,8 +2,7 @@
 
 <img src="docs/assets/logo.png" alt="Skills Manager" width="520" />
 
-<hr>
-Skills Manager: <strong>One-Click Sharing + One-Click Sync</strong>. Use skills more elegantly across multiple Agents, and build your personal skill repository more gracefully through <strong>Skills Manager</strong>.
+### <strong>One-Click Sharing + One-Click Sync</strong>. Use skills more elegantly across multiple Agents, and build your personal skill repository more gracefully through <strong>Skills Manager</strong>.
 
 [![Tauri](https://img.shields.io/badge/Tauri-2.0-FFC131?logo=tauri&logoColor=000)](https://tauri.app/)
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=000)](https://reactjs.org/)

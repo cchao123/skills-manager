@@ -2,8 +2,7 @@
 
 <img src="docs/assets/logo.png" alt="Skills Manager" width="520" />
 
-<hr>
-技能管理器： <strong>一键共享 + 一键同步</strong>、在多Agent中更优雅的使用skill，并通过 <strong>Skills Manager</strong> 更优雅的管理并构建你的专属技能仓库。
+### <strong>一键共享 + 一键同步</strong>、在多Agent中更优雅的使用skill，并通过 <strong>Skills Manager</strong> 更优雅的管理并构建你的专属技能仓库。
 
 
 [![Tauri](https://img.shields.io/badge/Tauri-2.0-FFC131?logo=tauri&logoColor=000)](https://tauri.app/)
