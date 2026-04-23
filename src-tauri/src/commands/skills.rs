@@ -608,6 +608,11 @@ pub async fn delete_skill(
 }
 
 /// 导入技能文件夹（从外部路径复制到中央存储）
+///
+/// 目录冲突策略：
+/// - 目标不存在：直接拷贝
+/// - 目标存在但是"空壳"（无 SKILL.md）：自动清理后拷贝，修复历史残留
+/// - 目标存在且有 SKILL.md：视为真实技能，拒绝覆盖，返回带路径的错误
 #[tauri::command]
 pub async fn import_skill_folder(folder_path: String) -> Result<String, String> {
     let source = std::path::Path::new(&folder_path);
@@ -637,7 +642,21 @@ pub async fn import_skill_folder(folder_path: String) -> Result<String, String> 
 
     let target = skills_dir.join(&skill_name);
     if target.exists() {
-        return Err(format!("技能 '{}' 已存在，请先删除再导入", skill_name));
+        let target_skill_md = target.join("SKILL.md");
+        if target_skill_md.exists() {
+            return Err(format!(
+                "根目录中已存在技能 '{}'（路径: {}），请先删除再导入",
+                skill_name,
+                target.display()
+            ));
+        }
+        // 空壳 / 残缺目录：没 SKILL.md，直接清理掉避免死锁
+        info!(
+            "Target '{}' exists but is empty/corrupted, auto-cleaning before import",
+            target.display()
+        );
+        std::fs::remove_dir_all(&target)
+            .map_err(|e| format!("清理残缺目录失败: {} ({})", target.display(), e))?;
     }
 
     copy_dir_recursive(source, &target).map_err(|e| format!("复制文件夹失败: {}", e))?;

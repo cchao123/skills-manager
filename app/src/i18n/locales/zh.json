@@ -121,6 +121,7 @@
       "panelTitle": "触发\"复制到根目录\"的操作",
       "empty": "暂无拷贝/导入/启用记录",
       "clear": "清空",
+      "close": "关闭",
       "copyFromSource": "从 {{source}} 拷贝「{{skill}}」到根目录",
       "dragImport": "拖拽导入「{{skill}}」到根目录",
       "enableAgent": "为 {{target}} 启用「{{skill}}」（来源：{{source}}）"

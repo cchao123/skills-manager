@@ -18,26 +18,36 @@ export const useDragDrop = (onImportComplete?: (importedNames: string[]) => void
     setImporting(true);
 
     const importedNames: string[] = [];
+    // 与后端 `import_skill_folder` 的错误文案保持一致：`根目录中已存在技能 'xxx'...`
+    const EXISTS_REGEX = /已存在技能\s*'([^']+)'/;
+    const resolvedNames: string[] = []; // 包括成功导入的 + 冲突已存在的，用于前端定位
     let errorMsg = '';
 
     for (const folder of paths) {
       try {
         const name = await skillsApi.importFolder(folder);
         importedNames.push(name);
+        resolvedNames.push(name);
         appendOperationLog({ type: 'dragImport', skillName: name, folderPath: folder });
       } catch (error) {
         const msg = typeof error === 'string' ? error : (error as Error)?.message || '导入失败';
         errorMsg = msg;
+        // 冲突（根目录已存在同名技能）时仍然能从错误消息抠出 skill name，
+        // 交给 onImportComplete 让前端把搜索框 + tab 定位过去，避免"报错了但找不到在哪"的体验。
+        const existsMatch = msg.match(EXISTS_REGEX);
+        if (existsMatch) resolvedNames.push(existsMatch[1]);
         console.error(`Failed to import ${folder}:`, error);
       }
     }
 
     if (importedNames.length > 0) {
       showToast('success', t('dashboard.toast.importSkillsSuccess', { count: importedNames.length }));
-      onImportComplete?.(importedNames);
     }
     if (errorMsg) {
       showToast('error', errorMsg);
+    }
+    if (resolvedNames.length > 0) {
+      onImportComplete?.(resolvedNames);
     }
     importingRef.current = false;
     setImporting(false);

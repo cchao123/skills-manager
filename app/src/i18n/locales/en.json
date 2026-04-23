@@ -121,6 +121,7 @@
       "panelTitle": "Actions that triggered \"Copy to Root\"",
       "empty": "No copy/import/enable records yet",
       "clear": "Clear",
+      "close": "Close",
       "copyFromSource": "Copied \"{{skill}}\" from {{source}} to root",
       "dragImport": "Drag-imported \"{{skill}}\" to root",
       "enableAgent": "Enabled \"{{skill}}\" for {{target}} (source: {{source}})"

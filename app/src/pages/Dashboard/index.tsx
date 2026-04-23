@@ -285,6 +285,8 @@ function Dashboard({
   const { isDragOver, importing } = useDragDrop(useCallback((importedNames: string[]) => {
     // 拖拽导入通常几十毫秒就能完成，用静默刷新避免 loading spinner 闪一下
     void refreshSkills();
+    // 拖拽导入后新技能只会存在于根目录，切回根目录 tab 避免用户停留在其他 source tab 时误以为没导入成功
+    setSelectedSource(SOURCE.Global);
     if (importedNames.length === 1) {
       setSearchTerm(importedNames[0]);
     }

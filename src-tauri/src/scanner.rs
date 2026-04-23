@@ -16,12 +16,6 @@ use walkdir::WalkDir;
 pub enum ScannerError {
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
-
-    #[error("Invalid SKILL.md format: {0}")]
-    InvalidFormat(String),
-
-    #[error("Missing required field: {0}")]
-    MissingField(String),
 }
 
 fn path_to_display_string(path: &Path) -> String {
@@ -51,17 +45,26 @@ struct SkillDiscovery {
 }
 
 /// 解析 SKILL.md 的 YAML frontmatter，返回最小必要信息 + 发现条目。
+///
+/// 容错策略（与 `import_skill_folder` 的宽松处理保持一致，避免"导入成功但列表看不到"）：
+/// - frontmatter 缺失 / YAML 损坏 → 仍认为是一个合法 skill，用默认值填充
+/// - `name` 缺失 → 回退到文件夹名
+/// - `description` 缺失 → 回退到空串（前端负责显示占位）
 fn parse_discovery(skill_md_path: &Path, source: &str) -> Result<SkillDiscovery, ScannerError> {
     let content = fs::read_to_string(skill_md_path)?;
 
-    let frontmatter_re = Regex::new(r"(?s)^---[\r\n]+(.*?)[\r\n]+---").unwrap();
-    let captures = frontmatter_re
-        .captures(&content)
-        .ok_or_else(|| ScannerError::InvalidFormat("Missing frontmatter".to_string()))?;
+    let skill_dir = skill_md_path.parent().unwrap();
+    let folder_name = skill_dir
+        .file_name()
+        .and_then(|n| n.to_str())
+        .unwrap_or("unknown")
+        .to_string();
 
-    let yaml_content = captures.get(1).unwrap().as_str();
-    let yaml_map: serde_yaml::Value = serde_yaml::from_str(yaml_content)
-        .map_err(|e| ScannerError::InvalidFormat(format!("YAML parse error: {}", e)))?;
+    let frontmatter_re = Regex::new(r"(?s)^---[\r\n]+(.*?)[\r\n]+---").unwrap();
+    let yaml_map: serde_yaml::Value = frontmatter_re
+        .captures(&content)
+        .and_then(|c| serde_yaml::from_str(c.get(1).unwrap().as_str()).ok())
+        .unwrap_or(serde_yaml::Value::Null);
 
     let get_str = |key: &str| -> Option<String> {
         yaml_map
@@ -70,19 +73,13 @@ fn parse_discovery(skill_md_path: &Path, source: &str) -> Result<SkillDiscovery,
             .map(|s| s.to_string())
     };
 
-    let name = get_str("name").ok_or_else(|| ScannerError::MissingField("name".to_string()))?;
-    let description = get_str("description")
-        .ok_or_else(|| ScannerError::MissingField("description".to_string()))?;
+    let name = get_str("name").unwrap_or_else(|| folder_name.clone());
+    let description = get_str("description").unwrap_or_default();
     let category = get_str("category").unwrap_or_else(|| "Uncategorized".to_string());
     let author = get_str("author");
     let version = get_str("version");
 
-    let skill_dir = skill_md_path.parent().unwrap();
-    let id = skill_dir
-        .file_name()
-        .unwrap()
-        .to_string_lossy()
-        .to_string();
+    let id = folder_name.clone();
 
     let meta = fs::metadata(skill_md_path)?;
     let modified = meta.modified()?;
