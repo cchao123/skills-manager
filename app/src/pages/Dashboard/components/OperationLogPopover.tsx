@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { LIQUID_GLASS_TOAST_PANEL_CLASS } from '@/components/toastPanelStyles';
@@ -34,21 +34,13 @@ const formatTime = (ts: number) => {
 export const OperationLogPopover: React.FC<Props> = ({ anchorRect, onClose }) => {
   const { t } = useTranslation();
   const entries = useOperationLog();
-  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleOutside = (e: MouseEvent) => {
-      if (!panelRef.current) return;
-      if (panelRef.current.contains(e.target as Node)) return;
-      onClose();
-    };
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
-    document.addEventListener('mousedown', handleOutside);
     document.addEventListener('keydown', handleKey);
     return () => {
-      document.removeEventListener('mousedown', handleOutside);
       document.removeEventListener('keydown', handleKey);
     };
   }, [onClose]);
@@ -59,31 +51,56 @@ export const OperationLogPopover: React.FC<Props> = ({ anchorRect, onClose }) =>
   left = Math.max(8, Math.min(left, vw - width - 8));
 
   return createPortal(
-    <div
-      ref={panelRef}
-      style={{
-        position: 'fixed',
-        top: anchorRect.bottom + 6,
-        left,
-        width,
-        zIndex: 9998,
-      }}
-      className="pointer-events-auto"
-    >
+    <>
+      {/* 透明 backdrop：拦截点击并关闭 popover。
+          必须覆盖在 header 的 `data-tauri-drag-region` 之上，否则 OS 会吞掉 mousedown
+          导致点 header 关不掉弹窗。backdrop 本身不是 drag region，事件能正常冒泡。 */}
+      <div
+        onMouseDown={onClose}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9997,
+          // 兜底：即便外层祖先是 drag region，也显式声明这里不是，避免被 OS 接管
+          WebkitAppRegion: 'no-drag',
+        } as React.CSSProperties}
+      />
+      <div
+        style={{
+          position: 'fixed',
+          top: anchorRect.bottom + 6,
+          left,
+          width,
+          zIndex: 9998,
+        }}
+        className="pointer-events-auto"
+      >
       <div className={`${LIQUID_GLASS_TOAST_PANEL_CLASS} max-h-[min(70vh,28rem)] overflow-hidden p-3 animate-toast-in flex-col`}>
-        <div className="flex items-center justify-between mb-2 px-1">
-          <p className="text-sm font-bold text-slate-900 dark:text-white">
+        <div className="flex items-center justify-between mb-2 px-1 gap-2">
+          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
             {t('dashboard.operationLog.panelTitle')}
           </p>
-          {entries.length > 0 && (
+          <div className="flex items-center gap-1 flex-shrink-0">
+            {entries.length > 0 && (
+              <button
+                type="button"
+                onClick={clearOperationLog}
+                className="text-xs text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+              >
+                {t('dashboard.operationLog.clear')}
+              </button>
+            )}
             <button
               type="button"
-              onClick={clearOperationLog}
-              className="text-xs text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+              onClick={onClose}
+              aria-label={t('dashboard.operationLog.close')}
+              className="flex items-center justify-center w-6 h-6 rounded-md text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-white/10 transition-colors"
             >
-              {t('dashboard.operationLog.clear')}
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                close
+              </span>
             </button>
-          )}
+          </div>
         </div>
 
         {entries.length === 0 ? (
@@ -135,7 +152,8 @@ export const OperationLogPopover: React.FC<Props> = ({ anchorRect, onClose }) =>
           </ul>
         )}
       </div>
-    </div>,
+      </div>
+    </>,
     document.body,
   );
 };
