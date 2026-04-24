@@ -155,17 +155,13 @@ function Settings() {
             )}
 
             {activeTab === TAB_TYPE.Advanced && (
-              isPreview() ? (
-                <PreviewLockedSection feature="advanced" />
-              ) : (
-                <>
-                  <AdvancedSection
-                    advancedMode={advancedMode}
-                    onToggle={handleAdvancedModeToggle}
-                  />
-                  <SkillFilterSection />
-                </>
-              )
+              <>
+                <AdvancedSection
+                  advancedMode={advancedMode}
+                  onToggle={handleAdvancedModeToggle}
+                />
+                <SkillFilterSection />
+              </>
             )}
 
             {activeTab === TAB_TYPE.Agents && (

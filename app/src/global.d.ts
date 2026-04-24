@@ -12,11 +12,6 @@ declare module '*.svg' {
   export default value;
 }
 
-declare module '/octopus-logo.png' {
-  const value: string;
-  export default value;
-}
-
 interface Window {
   __TAURI__?: {
     core?: {
