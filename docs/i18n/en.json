@@ -1,0 +1,176 @@
+{
+  "htmlLang": "en",
+  "meta": {
+    "title": "Skills Manager · Desktop app for managing multi-Agent Skills",
+    "description": "Skills Manager — a desktop app that gives Claude Code, Cursor, Codex and other AI agents a unified skill library with one-click sharing and GitHub backup/restore.",
+    "ogTitle": "Skills Manager · Your multi-Agent Skills HQ",
+    "ogDescription": "One-click share, one-click sync — use Skills across multiple Agents with ease."
+  },
+  "nav": {
+    "features": "Features",
+    "views": "Views",
+    "backup": "Backup",
+    "faq": "FAQ",
+    "switchLabel": "中文",
+    "switchAria": "切换到中文",
+    "download": "Download"
+  },
+  "hero": {
+    "rotatingTexts": ["Manager", "Share", "Switch", "Async", "Marketplace"],
+    "rotatingAriaLabel": "Skills Manager, Share, Switch, Async, Marketplace",
+    "titleBefore": "Skills",
+    "tagline": "Your <span class=\"accent\">multi-Agent Skills HQ</span>",
+    "sub": "A desktop app built for Claude Code, Cursor, Codex and other AI Agents.<br /><strong style=\"color:var(--text)\">One-click share, one-click sync</strong> — manage Skills across agents and turn a GitHub repo into your personal skill library.",
+    "ctaDownload": "Download on GitHub",
+    "ctaSource": "View Source",
+    "previewBadge": "Live Preview",
+    "previewSkeleton": "Loading the Skills Manager live preview…",
+    "previewTitle": "Skills Manager · Live Preview"
+  },
+  "platforms": {
+    "mac": "● macOS 12+",
+    "windows": "● Windows 10+",
+    "arch": "● Apple Silicon / Intel"
+  },
+  "features": {
+    "eyebrow": "Core Features",
+    "title": "One window to manage Skills across every Agent",
+    "lead": "Stop jumping between Claude Code, Cursor and Codex skill folders. View, manage and distribute all your Skills from one place.",
+    "cards": [
+      {
+        "icon": "⚡",
+        "title": "One-click share to any Agent",
+        "body": "Master / sub switches cover both bulk and fine-grained control. Link any Skill to Cursor, Codex or Claude in a single click."
+      },
+      {
+        "icon": "☁",
+        "title": "GitHub backup & cross-machine sync",
+        "body": "Push local Skills to GitHub in one click, clone to restore on a new machine. The same repo doubles as a Claude Code Marketplace you can share with your team."
+      },
+      {
+        "icon": "⇣",
+        "title": "Drag-and-drop import · zero config",
+        "body": "Drop any folder containing a <code>SKILL.md</code> onto the window and it's imported in seconds — no CLI, no path arguments."
+      },
+      {
+        "icon": "⇆",
+        "title": "Flat & by-source dual views",
+        "body": "Flat view answers \"what Skills do I have\"; by-source view answers \"what's inside each Agent\". Switch perspective without losing context."
+      },
+      {
+        "icon": "✦",
+        "title": "Smart tri-state switches",
+        "body": "Red / gray / yellow clearly show \"all enabled / none enabled / native only\". Even native Skills are easy to spot."
+      },
+      {
+        "icon": "◆",
+        "title": "Native-grade desktop experience",
+        "body": "Built on <strong>Tauri 2 + Rust</strong> — cold start &lt; 1s with tiny memory footprint. Frontend is React 18 + Tailwind, buttery smooth."
+      }
+    ]
+  },
+  "views1": {
+    "eyebrow": "View · Flat",
+    "title": "Scan every local Agent<br />and aggregate Skills into one list",
+    "lead": "Aggregated by Skill, not by source. No more jumping between <code>.claude/skills</code>, <code>.cursor/agents</code> and <code>~/.codex</code>.",
+    "bullets": [
+      { "dot": "1", "html": "<strong>Search & filter</strong> instant keyword search, filter by enabled state" },
+      { "dot": "2", "html": "<strong>See every Agent at a glance</strong> each card shows the enabled state across all 4 agents" },
+      { "dot": "3", "html": "<strong>Tri-state master switch</strong> gray / yellow / red clearly mark disabled / native-only / partially-or-fully enabled" }
+    ],
+    "imgAlt": "Flat view"
+  },
+  "views2": {
+    "eyebrow": "View · By source",
+    "title": "Curious what's really<br />inside each Agent? One click away",
+    "lead": "Grouped by source so you can instantly see which Agents have a given Skill. Decide what goes into the central repo and what stays local.",
+    "bullets": [
+      { "dot": "✓", "html": "<strong>Copy to central repo</strong> into a unified library that every Agent can reuse" },
+      { "dot": "✓", "html": "<strong>Native Skill indicator</strong> a yellow dot signals \"this one ships with the Agent\"" },
+      { "dot": "✓", "html": "<strong>Action log</strong> every \"copy to central\" action is recorded and traceable" }
+    ],
+    "imgAlt": "By-source view"
+  },
+  "detail": {
+    "eyebrow": "Skill Detail",
+    "title": "Skill detail · file tree +<br />per-Agent state",
+    "lead": "Click any Skill to view its full file tree, <code>SKILL.md</code> contents, and how it's shared across Agents. The side panel is drag-resizable to fit any screen.",
+    "bullets": [
+      { "dot": "◎", "html": "<strong>Inline file preview</strong> click a file to read its content, no external editor needed" },
+      { "dot": "◎", "html": "<strong>Delete protection</strong> Agent folders are read-only by default; flip Advanced Mode to enable precise deletes" }
+    ],
+    "imgAlt": "Skill detail"
+  },
+  "github": {
+    "eyebrow": "GitHub · Backup / Restore / Marketplace",
+    "title": "Turn your Skills<br />into a Marketplace",
+    "lead": "Connect your personal GitHub repo and you get <strong style=\"color:var(--text)\">one-click sync · one-click restore</strong>. The same repo works as your cloud Skill library and as a <strong style=\"color:var(--text)\">Claude Code Plugin Marketplace</strong> for your team or community.",
+    "bullets": [
+      { "dot": "↑", "html": "<strong>Sync to GitHub</strong> push every central Skill to the remote with incremental commits" },
+      { "dot": "↓", "html": "<strong>Restore from GitHub</strong> pull all your Skills back on a fresh machine" },
+      { "dot": "★", "html": "<strong>One-click share</strong> let anyone install your Skills via Claude Code's Marketplace command" }
+    ],
+    "imgAlt": "GitHub backup UI"
+  },
+  "dragdrop": {
+    "eyebrow": "Drag & Drop · zero friction",
+    "title": "Drop it in. Done.",
+    "lead": "No CLI required. Drag any folder containing a <code>SKILL.md</code> from your file manager onto the window and it's imported and ready to share with other Agents.",
+    "bullets": [
+      { "dot": "⇣", "html": "<strong>Instant feedback</strong> the list silently refreshes after import, no loading flicker" },
+      { "dot": "⇣", "html": "<strong>Batch drop</strong> drop multiple folders at once; failures are reported individually" }
+    ],
+    "imgAlt": "Drag and drop import"
+  },
+  "settings": {
+    "eyebrow": "Settings · safe & controllable",
+    "title": "Memory filters · delete protection ·<br />Advanced Mode all included",
+    "lead": "Skills Manager joins your Agent ecosystem as a read-only observer by default. Flip Advanced Mode only when you need to write or delete — so your existing Skills stay safe.",
+    "bullets": [
+      { "dot": "✦", "html": "<strong>Memory filters</strong> hide temporary Skills injected by CLIs or workflows" },
+      { "dot": "✦", "html": "<strong>中/EN toggle · dark mode</strong> follow the system or switch manually" },
+      { "dot": "✦", "html": "<strong>Zero setup</strong> no account required, configure and go" }
+    ],
+    "imgAlt": "Settings page"
+  },
+  "ctaBanner": {
+    "eyebrow": "Free · Open Source · MIT",
+    "title": "Take charge of your Skills today",
+    "body": "Free, open-source, cross-platform. Grab the latest installer from GitHub Releases or clone and build it yourself.",
+    "ctaDownload": "Download on GitHub",
+    "ctaStar": "⭐ Star the project"
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "q": "Is Skills Manager paid software?",
+        "a": "No — it's fully free and open-source under MIT License, with the repo public on GitHub. Use, modify and redistribute as you like. Issues and PRs are welcome."
+      },
+      {
+        "q": "Will it modify my existing local Skills?",
+        "a": "By default, no. The app scans Agent folders in observer mode and only creates symlinks or copies when you explicitly opt in (flip a switch, drag to import, copy to central). Delete protection is on by default; writes require flipping Advanced Mode under Settings."
+      },
+      {
+        "q": "Which Agents are supported?",
+        "a": "Claude Code, Cursor, Codex and OpenClaw are supported today. Any Agent whose Skill folder follows the <code>SKILL.md</code> convention should work — PRs for new Agents welcome."
+      },
+      {
+        "q": "Does GitHub backup require a paid account?",
+        "a": "No. Any personal GitHub account works (Public or Private repos). If you want to share your Skills as a Claude Code Marketplace, a Public repo is recommended."
+      },
+      {
+        "q": "Which platforms are supported?",
+        "a": "Installers ship for macOS (Apple Silicon + Intel) and Windows 10+. Linux users can clone the repo and run <code>npm run tauri:build</code> to build locally."
+      },
+      {
+        "q": "How is it different from a CLI script or another Skill manager?",
+        "a": "The key difference is \"cross-Agent perspective + desktop-grade interaction\". Most CLIs handle one Agent at a time; Skills Manager brings every Agent's Skills into a single UI, with tri-state master switches, per-Agent toggles and drag-and-drop — no more folder hunting or command typing."
+      }
+    ]
+  },
+  "footer": {
+    "copyright": "© 2026 Skills Manager · MIT License · <a href=\"https://github.com/cchao123/skills-managers\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--accent)\">GitHub</a>"
+  }
+}
