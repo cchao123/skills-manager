@@ -342,6 +342,29 @@
         .hero-preview .preview-frame-wrap { height: 460px; }
       }
 
+      /* 轻量提示：告知用户 iframe 只是 UI 演示，不会操作真实数据 */
+      .hero-preview-hint {
+        margin: 14px auto 0;
+        max-width: 620px;
+        color: var(--text-muted);
+        font-size: 13px;
+        line-height: 1.6;
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .hero-preview-hint .hint-ico {
+        flex-shrink: 0;
+        width: 16px; height: 16px; border-radius: 50%;
+        background: var(--accent-soft);
+        color: var(--accent);
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 11px; font-weight: 700;
+        font-family: 'Manrope', 'Inter', sans-serif;
+      }
+
       /* ---- SECTION ---- */
       section { padding: 96px 0; position: relative; }
       section .eyebrow {
@@ -540,6 +563,10 @@
             ></iframe>
           </div>
         </div>
+        <p class="hero-preview-hint" role="note">
+          <span class="hint-ico" aria-hidden="true">i</span>
+          <span>{{hero.previewHint}}</span>
+        </p>
       </div>
     </header>
 

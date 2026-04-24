@@ -16,16 +16,17 @@
     "download": "Download"
   },
   "hero": {
-    "rotatingTexts": ["Manager", "Share", "Switch", "Async", "Marketplace"],
-    "rotatingAriaLabel": "Skills Manager, Share, Switch, Async, Marketplace",
+    "rotatingTexts": ["Manager", "Hub", "Share", "Switch", "Async", "Backup", "Marketplace"],
+    "rotatingAriaLabel": "Skills Manager, Hub, Share, Switch, Async, Backup, Marketplace",
     "titleBefore": "Skills",
     "tagline": "Your <span class=\"accent\">multi-Agent Skills HQ</span>",
     "sub": "A desktop app built for Claude Code, Cursor, Codex and other AI Agents.<br /><strong style=\"color:var(--text)\">One-click share, one-click sync</strong> — manage Skills across agents and turn a GitHub repo into your personal skill library.",
     "ctaDownload": "Download on GitHub",
     "ctaSource": "View Source",
-    "previewBadge": "Live Preview",
-    "previewSkeleton": "Loading the Skills Manager live preview…",
-    "previewTitle": "Skills Manager · Live Preview"
+    "previewBadge": "UI Demo · Read-only",
+    "previewSkeleton": "Loading the Skills Manager demo…",
+    "previewTitle": "Skills Manager · Live UI Demo",
+    "previewHint": "This is the real desktop UI running in a sandbox — every action is a demo and won't read or touch your local Skills."
   },
   "platforms": {
     "mac": "● macOS 12+",
