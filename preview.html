@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="icon" href="/logo-mini.png" />
+    <title>Skills Manager · Live Preview</title>
+    <style>
+      html, body, #root { height: 100%; margin: 0; background: #f8f9fa; }
+      .preview-boot {
+        position: fixed; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        color: #475569; font: 500 14px -apple-system, "Segoe UI", Inter, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="preview-boot">正在加载 Skills Manager 在线体验…</div>
+    </div>
+    <script type="module" src="/app/src/preview/main.tsx"></script>
+  </body>
+</html>

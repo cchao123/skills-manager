@@ -10,6 +10,8 @@
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
+    "preview:dev": "vite --config vite.preview.config.ts",
+    "preview:build": "vite build --config vite.preview.config.ts",
     "version:sync": "node scripts/sync-version.mjs",
     "release": "node scripts/release.mjs"
   },

@@ -11,8 +11,10 @@ import { AgentsSection } from './components/AgentsSection';
 import { SkillFilterSection } from './components/SkillFilterSection';
 import { AboutSection } from './components/AboutSection';
 import { AdvancedSection } from './components/AdvancedSection';
+import { PreviewLockedSection } from './components/PreviewLockedSection';
 import { invoke } from '@tauri-apps/api/core';
 import { isTauri } from '@/lib/tauri-env';
+import { isPreview } from '@/lib/preview-env';
 import { SESSION_STORAGE_KEYS, LOCAL_STORAGE_KEYS, WINDOW_EVENTS } from '@/constants';
 
 function Settings() {
@@ -153,16 +155,26 @@ function Settings() {
             )}
 
             {activeTab === TAB_TYPE.Advanced && (
-              <>
-                <AdvancedSection
-                  advancedMode={advancedMode}
-                  onToggle={handleAdvancedModeToggle}
-                />
-                <SkillFilterSection />
-              </>
+              isPreview() ? (
+                <PreviewLockedSection feature="advanced" />
+              ) : (
+                <>
+                  <AdvancedSection
+                    advancedMode={advancedMode}
+                    onToggle={handleAdvancedModeToggle}
+                  />
+                  <SkillFilterSection />
+                </>
+              )
             )}
 
-            {activeTab === TAB_TYPE.Agents && <AgentsSection agents={agents} />}
+            {activeTab === TAB_TYPE.Agents && (
+              isPreview() ? (
+                <PreviewLockedSection feature="agents" />
+              ) : (
+                <AgentsSection agents={agents} />
+              )
+            )}
 
             {activeTab === TAB_TYPE.About && <AboutSection />}
           </div>
