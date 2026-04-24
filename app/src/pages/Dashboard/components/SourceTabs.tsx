@@ -5,6 +5,7 @@ import { getAgentIcon } from '@/pages/Dashboard/utils/agentHelpers';
 import { SOURCE } from '@/pages/Dashboard/utils/source';
 import { SOURCE_TAB_ICON_ONLY_THRESHOLD } from '@/pages/Dashboard/constants/panel';
 import { useDetectedAgents } from '@/pages/Dashboard/hooks/useDetectedAgents';
+import { OCTOPUS_LOGO_URL } from '@/lib/assets';
 
 interface TabItem {
   id: string;
@@ -23,7 +24,7 @@ export const SourceTabs: React.FC<SourceTabsProps> = ({ agents, selectedSource, 
   const detectedAgents = useDetectedAgents(agents);
 
   const tabs = useMemo<TabItem[]>(() => [
-    { id: SOURCE.Global, label: t('dashboard.source.global'), icon: '/octopus-logo.png' },
+    { id: SOURCE.Global, label: t('dashboard.source.global'), icon: OCTOPUS_LOGO_URL },
     ...detectedAgents.map(a => ({
       id: a.name,
       label: a.display_name,

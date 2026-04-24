@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { PROJECT_NAME, PROJECT_VERSION, PAGE, SESSION_STORAGE_KEYS, WINDOW_EVENTS, pageToPath, type Page } from '@/constants';
+import { OCTOPUS_LOGO_URL } from '@/lib/assets';
 
 interface SideNavBarProps {
   isCollapsed: boolean;
@@ -119,7 +120,7 @@ function AppInfo({ isCollapsed, onClick, title }: AppInfoProps) {
           title={title}
           className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-white dark:bg-dark-bg-card hover:opacity-80 active:scale-[0.98] transition-all cursor-pointer"
         >
-          <img src="/octopus-logo.png" alt="Octopus Logo" className="w-full h-full object-cover" />
+          <img src={OCTOPUS_LOGO_URL} alt="Octopus Logo" className="w-full h-full object-cover" />
         </button>
       </div>
     );
@@ -133,7 +134,7 @@ function AppInfo({ isCollapsed, onClick, title }: AppInfoProps) {
       className="flex items-center gap-3 mb-12 px-2 text-left hover:opacity-80 active:scale-[0.98] transition-all cursor-pointer"
     >
       <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-white dark:bg-dark-tertiary">
-        <img src="/octopus-logo.png" alt="Octopus Logo" className="w-full h-full object-cover" />
+        <img src={OCTOPUS_LOGO_URL} alt="Octopus Logo" className="w-full h-full object-cover" />
       </div>
       <div>
         <h1 className="text-xl font-black text-[#b71422] font-['Manrope'] tracking-tight">

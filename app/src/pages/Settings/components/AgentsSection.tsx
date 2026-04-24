@@ -5,6 +5,7 @@ import { agentsApi } from '@/api/tauri';
 import type { AgentConfig } from '@/types';
 import { getAgentScanPaths } from '@/pages/Settings/constants/agentScanPaths';
 import { KNOWN_AGENTS } from '@/constants';
+import { OCTOPUS_LOGO_URL } from '@/lib/assets';
 
 interface AgentsSectionProps {
   agents: AgentConfig[];
@@ -38,7 +39,7 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
       >
         <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-dark-bg-tertiary flex items-center justify-center shrink-0 overflow-hidden">
           <img
-            src="/octopus-logo.png"
+            src={OCTOPUS_LOGO_URL}
             alt="Skills Manager"
             className="w-5 h-5 object-contain"
           />

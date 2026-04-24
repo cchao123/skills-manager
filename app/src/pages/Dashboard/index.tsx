@@ -7,6 +7,7 @@ import { useToast } from '@/components/Toast';
 import type { SkillMetadata, Skill, SkillDeletionRow } from '@/types';
 import { SESSION_STORAGE_KEYS, LOCAL_STORAGE_KEYS, PAGE, type Page, getAgentRootPath } from '@/constants';
 import { TabSwitcher } from '@/components/TabSwitcher';
+import { OCTOPUS_LOGO_URL } from '@/lib/assets';
 
 // Hooks
 import { useSkillData } from '@/pages/Dashboard/hooks/useSkillData';
@@ -482,7 +483,7 @@ function Dashboard({
             <div className="bg-[#f8f9fa] dark:bg-dark-bg-secondary">
               {selectedSource === SOURCE.Global && (
                 <div className="mb-4 flex items-center gap-2">
-                  <img src="/octopus-logo.png" alt="Skills Manager" className="w-4 h-4 flex-shrink-0" />
+                  <img src={OCTOPUS_LOGO_URL} alt="Skills Manager" className="w-4 h-4 flex-shrink-0" />
                   <p className="text-xs text-[#5e5e5e] dark:text-gray-400">
                     {t('dashboard.rootPathLabel')}
                     <span

@@ -10,6 +10,7 @@ import { useMergedView } from '@/pages/Dashboard/hooks/useMergedView';
 import CardFileTree from '@/components/CardFileTree';
 import { FILE_TREE_HEIGHT } from '@/pages/Dashboard/constants/panel';
 import { agentsApi } from '@/api/tauri';
+import { OCTOPUS_LOGO_URL } from '@/lib/assets';
 
 interface SkillDetailModalProps {
   skill: SkillMetadata;
@@ -109,7 +110,7 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
                             className={`w-3.5 h-3.5 object-contain ${needsInvertInDark(onlySource) ? 'dark:invert' : ''}`}
                           />
                         ) : (
-                          <img src="/octopus-logo.png" alt="Skills Manager" className="w-3.5 h-3.5" />
+                          <img src={OCTOPUS_LOGO_URL} alt="Skills Manager" className="w-3.5 h-3.5" />
                         )}
                         <span className="text-sm text-gray-500 dark:text-gray-400">
                           {isSingle
