@@ -23,9 +23,9 @@
     "sub": "A desktop app built for Claude Code, Cursor, Codex and other AI Agents.<br /><strong style=\"color:var(--text)\">One-click share, one-click sync</strong> — manage Skills across agents and turn a GitHub repo into your personal skill library.",
     "ctaDownload": "Download on GitHub",
     "ctaSource": "View Source",
-    "previewBadge": "UI Demo · Read-only",
+    "previewBadge": "Live Experience · Read-only",
     "previewSkeleton": "Loading the Skills Manager demo…",
-    "previewTitle": "Skills Manager · Live UI Demo",
+    "previewTitle": "Skills Manager · Live UI Experience",
     "previewHint": "This is the real desktop UI running in a sandbox — every action is a demo and won't read or touch your local Skills."
   },
   "platforms": {

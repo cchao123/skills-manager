@@ -23,9 +23,9 @@
     "sub": "一款为 Claude Code、Cursor、Codex 等 AI Agent 打造的桌面应用。<br /><strong style=\"color:var(--text)\">一键共享、一键同步</strong>、跨 Agent 统一管理 Skills，用 GitHub 备份打造专属的技能仓库。",
     "ctaDownload": "在 GitHub 下载",
     "ctaSource": "查看源码",
-    "previewBadge": "UI 演示 · 只读预览",
+    "previewBadge": "Live 体验 · 只读预览",
     "previewSkeleton": "正在加载 Skills Manager 演示…",
-    "previewTitle": "Skills Manager · 在线 UI 演示",
+    "previewTitle": "Skills Manager · 在线 Live 体验",
     "previewHint": "这是桌面应用的真实界面预览，所有操作都是沙盒里的演示效果，不会读写你本地的 Skills。"
   },
   "platforms": {
