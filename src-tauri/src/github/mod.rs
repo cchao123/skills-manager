@@ -147,8 +147,8 @@ impl GitHubIntegrator {
             Ok(resp) if resp.status() == 200 => {}
             Ok(resp) => anyhow::bail!("检查分支时返回状态码 {}", resp.status()),
             Err(ureq::Error::Status(404, _)) => {
-                // 分支不存在，可能是空仓库。尝试自动初始化
-                return Self::try_init_empty_repo(owner, repo, branch, token);
+                // 分支不存在，尝试使用 GitHub API 创建分支
+                return Self::create_remote_branch(owner, repo, branch, token);
             }
             Err(ureq::Error::Status(code, _)) => {
                 anyhow::bail!("检查分支时返回错误 (HTTP {})", code);
@@ -161,7 +161,102 @@ impl GitHubIntegrator {
         Ok(true)
     }
 
+    /// 使用 GitHub API 创建远程分支（基于仓库的默认分支）
+    fn create_remote_branch(owner: &str, repo: &str, branch: &str, token: &str) -> Result<bool> {
+        eprintln!("[test] 分支 '{}' 不存在，尝试创建远程分支...", branch);
+
+        // 1. 获取仓库信息，找到默认分支
+        let repo_url = format!("https://api.github.com/repos/{}/{}", owner, repo);
+        let repo_resp_str = ureq::get(&repo_url)
+            .set("User-Agent", "skills-manager")
+            .set("Authorization", &format!("token {}", token))
+            .set("Accept", "application/vnd.github.v3+json")
+            .call()
+            .map_err(|e| anyhow!("获取仓库信息失败: {}", e))?
+            .into_string()
+            .map_err(|e| anyhow!("读取仓库信息失败: {}", e))?;
+        let repo_resp: serde_json::Value = serde_json::from_str(&repo_resp_str)
+            .map_err(|e| anyhow!("解析仓库信息失败: {}", e))?;
+
+        let default_branch = repo_resp["default_branch"]
+            .as_str()
+            .ok_or_else(|| anyhow!("无法获取仓库的默认分支"))?;
+
+        eprintln!("[test] 仓库默认分支: {}", default_branch);
+
+        // 2. 获取默认分支的最新 commit SHA
+        let default_ref_url = format!(
+            "https://api.github.com/repos/{}/{}/git/refs/heads/{}",
+            owner, repo, default_branch
+        );
+        let ref_resp_str = ureq::get(&default_ref_url)
+            .set("User-Agent", "skills-manager")
+            .set("Authorization", &format!("token {}", token))
+            .set("Accept", "application/vnd.github.v3+json")
+            .call()
+            .map_err(|e| anyhow!("获取默认分支引用失败: {}", e))?
+            .into_string()
+            .map_err(|e| anyhow!("读取默认分支引用失败: {}", e))?;
+        let ref_resp: serde_json::Value = serde_json::from_str(&ref_resp_str)
+            .map_err(|e| anyhow!("解析默认分支引用失败: {}", e))?;
+
+        let commit_sha = ref_resp["object"]["sha"]
+            .as_str()
+            .ok_or_else(|| anyhow!("无法获取默认分支的 commit SHA"))?;
+
+        eprintln!("[test] 默认分支最新提交: {}", commit_sha);
+
+        // 3. 创建新分支
+        let create_ref_url = format!(
+            "https://api.github.com/repos/{}/{}/git/refs",
+            owner, repo
+        );
+        let body = serde_json::json!({
+            "ref": format!("refs/heads/{}", branch),
+            "sha": commit_sha
+        });
+
+        let create_resp = ureq::post(&create_ref_url)
+            .set("User-Agent", "skills-manager")
+            .set("Authorization", &format!("token {}", token))
+            .set("Accept", "application/vnd.github.v3+json")
+            .send_string(&body.to_string());
+
+        match create_resp {
+            Ok(r) if r.status() == 201 => {
+                eprintln!("[test] ✅ 分支 '{}' 创建成功！", branch);
+                Ok(true)
+            }
+            Ok(r) => anyhow::bail!("创建分支失败，HTTP 状态码: {}", r.status()),
+            Err(ureq::Error::Status(422, _)) => {
+                // 可能是分支已经存在（竞态条件），重新检查
+                eprintln!("[test] 分支可能已创建，重新验证...");
+                Self::verify_branch_exists(owner, repo, branch, token)
+            }
+            Err(e) => anyhow::bail!("创建分支失败: {}", e),
+        }
+    }
+
+    /// 验证分支是否存在
+    fn verify_branch_exists(owner: &str, repo: &str, branch: &str, token: &str) -> Result<bool> {
+        let branch_url = format!(
+            "https://api.github.com/repos/{}/{}/branches/{}",
+            owner, repo, branch
+        );
+        match ureq::get(&branch_url)
+            .set("User-Agent", "skills-manager")
+            .set("Authorization", &format!("token {}", token))
+            .set("Accept", "application/vnd.github.v3+json")
+            .call()
+        {
+            Ok(r) if r.status() == 200 => Ok(true),
+            Ok(r) => anyhow::bail!("验证分支失败，HTTP 状态码: {}", r.status()),
+            Err(e) => anyhow::bail!("验证分支失败: {}", e),
+        }
+    }
+
     /// 尝试初始化空仓库（创建初始提交和分支）
+    #[allow(dead_code)]
     fn try_init_empty_repo(owner: &str, repo: &str, branch: &str, token: &str) -> Result<bool> {
         eprintln!("[init] 检测到空仓库，尝试自动初始化...");
 
@@ -353,6 +448,9 @@ impl GitHubIntegrator {
         }
 
         // 3. 有变更则提交；镜像模式且无变更时仍可能需 force push（丢弃远端多出的提交）
+        // 无论是否有变更，先确保本地分支名正确
+        self.ensure_local_branch(&repo, &config.branch)?;
+
         if delta_count > 0 {
             let parent = repo.head()?.peel_to_commit()?;
             let sig = Signature::now("Skills Manager", "skills-manager@local")
@@ -378,11 +476,20 @@ impl GitHubIntegrator {
 
         // 4. 推送
         eprintln!("[sync] 开始推送到远端...");
+
+        // 在推送前再次 fetch，确保 origin/<branch> 是最新的
+        // 这对于检测 ahead/behind 和决定是否强制推送很关键
+        self.fetch_origin(&repo, config)?;
+
+        // 检测远程分支是否存在或是否无关历史，自动决定是否强制推送
+        let force_push = overwrite_remote || self.should_force_push(&repo, &config.branch)?;
+
+        // 无论是否强制推送，都要执行推送操作
         push_to_origin(
             &repo,
             &config.branch,
             config.token.as_deref(),
-            overwrite_remote,
+            force_push,
         )?;
 
         eprintln!("✅ [sync] 技能同步成功推送到 GitHub");
@@ -543,6 +650,10 @@ impl GitHubIntegrator {
             return self.open_or_init_repo(config);
         }
         let repo = Repository::open(&self.skills_dir)?;
+
+        // 验证并修正本地远程 URL 与配置一致
+        self.ensure_remote_url_correct(&repo, config)?;
+
         self.fetch_origin(&repo, config)?;
         Ok(repo)
     }
@@ -555,9 +666,59 @@ impl GitHubIntegrator {
             return self.open_or_init_repo(config);
         }
         let repo = Repository::open(&self.skills_dir)?;
+
+        // 验证并修正本地远程 URL 与配置一致
+        self.ensure_remote_url_correct(&repo, config)?;
+
         self.fetch_origin(&repo, config)?;
         self.fast_forward_if_possible(&repo, config)?;
         Ok(repo)
+    }
+
+    /// 验证本地远程 URL 与配置是否一致，不一致则修正
+    /// 以用户配置为准，因为用户可能在应用中修改了配置
+    fn ensure_remote_url_correct(&self, repo: &Repository, config: &GitHubRepoConfig) -> Result<()> {
+        let expected_url = build_auth_url(&config.owner, &config.repo, config.token.as_deref());
+
+        let remote = repo.find_remote("origin")?;
+        let current_url = remote.url();
+
+        // 提取 URL 中的 owner/repo 部分（去掉 token）
+        let extract_repo_path = |url: &str| -> Option<String> {
+            // 简单字符串操作，提取 "github.com/owner/repo" 部分
+            if let Some(start) = url.find("github.com/") {
+                let rest = &url[start + 11..]; // 跳过 "github.com/"
+                if let Some(end) = rest.find('/') {
+                    let owner = &rest[..end];
+                    let rest2 = &rest[end + 1..];
+                    if let Some(git_end) = rest2.find(".git") {
+                        return Some(format!("{}/{}", owner, &rest2[..git_end]));
+                    }
+                }
+            }
+            None
+        };
+
+        let current_repo = current_url.and_then(|u| extract_repo_path(u));
+        let expected_repo = extract_repo_path(&expected_url);
+
+        if current_repo != expected_repo {
+            eprintln!(
+                "[sync] ⚠️ 本地远程仓库与配置不一致！\
+                \n  当前本地指向: {:?}\
+                \n  配置文件指向: {:?}\
+                \n  将以配置为准，修正本地远程 URL",
+                current_repo, expected_repo
+            );
+
+            // 删除旧的 origin，创建新的
+            repo.remote_delete("origin")?;
+            repo.remote("origin", &expected_url)?;
+
+            eprintln!("[sync] ✅ 本地远程 URL 已修正为: {}", expected_repo.unwrap_or_default());
+        }
+
+        Ok(())
     }
 
     /// 若本地分支可 fast-forward 到 `origin/<branch>`，则前进 HEAD 并 safe-checkout 工作区；
@@ -675,6 +836,93 @@ impl GitHubIntegrator {
 
         let (ahead, _behind) = repo.graph_ahead_behind(local_oid, remote_oid)?;
         Ok(ahead)
+    }
+
+    /// 确保本地分支名与配置的分支名一致
+    fn ensure_local_branch(&self, repo: &Repository, branch: &str) -> Result<()> {
+        let branch_ref = format!("refs/heads/{}", branch);
+
+        // 检查本地是否已存在该分支
+        if repo.find_branch(branch, git2::BranchType::Local).is_ok() {
+            // 分支存在，确保 HEAD 指向它
+            match repo.head() {
+                Ok(head) => {
+                    let head_name = head.name().unwrap_or("");
+                    if head_name == branch_ref || head_name == "HEAD" {
+                        // 已经指向正确的分支或者是 detached HEAD（可以接受）
+                        return Ok(());
+                    }
+                }
+                Err(_) => {}
+            }
+
+            // 切换到已存在的分支
+            eprintln!("[sync] 切换到本地分支 '{}'", branch);
+            repo.set_head(&branch_ref)?;
+            repo.checkout_head(Some(git2::build::CheckoutBuilder::new().force()))?;
+        } else {
+            // 分支不存在，创建它并指向当前 HEAD
+            eprintln!("[sync] 创建本地分支 '{}'", branch);
+            let head_oid = repo.head()?.target()
+                .ok_or_else(|| anyhow!("无法获取当前 HEAD 的目标"))?;
+
+            repo.reference(
+                &branch_ref,
+                head_oid,
+                true,
+                "Create branch for Skills Manager sync"
+            )?;
+            repo.set_head(&branch_ref)?;
+        }
+
+        Ok(())
+    }
+
+    /// 检测是否需要强制推送
+    fn should_force_push(&self, repo: &Repository, branch: &str) -> Result<bool> {
+        let remote_ref = format!("origin/{}", branch);
+        let remote_oid = match repo.revparse_single(&remote_ref) {
+            Ok(obj) => obj.id(),
+            // 远端分支不存在，首次推送需要创建分支
+            Err(_) => {
+                eprintln!("[sync] 远端分支 '{}' 不存在，将创建分支", branch);
+                return Ok(true);
+            }
+        };
+
+        // 检查本地 HEAD 是否存在
+        let local_oid = match repo.head().ok().and_then(|h| h.target()) {
+            Some(oid) => oid,
+            None => {
+                eprintln!("[sync] 本地 HEAD 不存在");
+                return Ok(false);
+            }
+        };
+
+        // 检查本地是否领先于远程
+        let (ahead, behind) = repo.graph_ahead_behind(local_oid, remote_oid)?;
+
+        if ahead > 0 && behind == 0 {
+            // 本地领先，远程没有新提交
+            eprintln!("[sync] 本地领先远端 {} 个提交，将正常推送", ahead);
+            return Ok(false);
+        }
+
+        if ahead > 0 && behind > 0 {
+            // 分歧：本地和远程都有新提交
+            eprintln!("[sync] 本地与远端出现分歧（ahead={}, behind={}），将强制推送以本地为准", ahead, behind);
+            return Ok(true);
+        }
+
+        if ahead == 0 && behind > 0 {
+            // 远程领先，本地落后
+            eprintln!("[sync] 远端领先本地 {} 个提交，将强制推送以本地为准", behind);
+            return Ok(true);
+        }
+
+        // ahead == 0 && behind == 0，完全同步
+        eprintln!("[sync] 本地与远端已同步，无需推送");
+        Ok(false)
     }
 
     /// 软备份的 add：只把工作区**真实存在**的新增/修改文件写入索引。
