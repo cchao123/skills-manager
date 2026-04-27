@@ -2,9 +2,9 @@
   "htmlLang": "zh-CN",
   "meta": {
     "title": "Skills Manager · 多 Agent 技能管理桌面应用",
-    "description": "Skills Manager —— 为 Claude Code、Cursor、Codex 等多 Agent 提供统一的技能管理、一键共享与 GitHub 备份/恢复的桌面应用。",
+    "description": "Skills Manager —— 为 Claude、Cursor、Codex、OpenClaw、OpenCode 等 AI Agent 提供统一技能管理、跨 Agent 分发与 GitHub 备份/恢复的桌面应用。",
     "ogTitle": "Skills Manager · 你的多 Agent 技能总部",
-    "ogDescription": "一键共享、一键同步，在多 Agent 中更优雅地使用 Skills。"
+    "ogDescription": "统一管理本地 Skills，跨 Agent 分发，并通过 GitHub 完成备份与恢复。"
   },
   "nav": {
     "features": "功能",
@@ -16,17 +16,17 @@
     "download": "下载"
   },
   "hero": {
-    "rotatingTexts": ["Manager", "Hub", "Share", "Switch", "Async", "Backup", "Marketplace"],
-    "rotatingAriaLabel": "Skills Manager, Hub, Share, Switch, Async, Backup, Marketplace",
+    "rotatingTexts": ["Manager", "Hub", "Share", "Switch", "Sync", "Backup", "Repo"],
+    "rotatingAriaLabel": "Skills Manager, Hub, Share, Switch, Sync, Backup, Repo",
     "titleBefore": "Skills",
     "tagline": "你的 <span class=\"accent\">多 Agent 技能总部</span>",
-    "sub": "一款为 Claude Code、Cursor、Codex 等 AI Agent 打造的桌面应用。<br /><strong style=\"color:var(--text)\">一键共享、一键同步</strong>、跨 Agent 统一管理 Skills，用 GitHub 备份打造专属的技能仓库。",
+    "sub": "统一扫描本地 Skills，跨 Agent 分发，并通过 GitHub 完成备份与恢复。<br />把零散的技能目录收成一套可复用、可迁移的仓库。",
     "ctaDownload": "在 GitHub 下载",
     "ctaSource": "查看源码",
-    "previewBadge": "Live 体验 · 只读预览",
+    "previewBadge": "Live 预览 · 只读",
     "previewSkeleton": "正在加载 Skills Manager 演示…",
     "previewTitle": "Skills Manager · 在线 Live 体验",
-    "previewHint": "这是桌面应用的真实界面预览，所有操作都是沙盒里的演示效果，不会读写你本地的 Skills。"
+    "previewHint": "这是沙盒里的真实界面预览，不会读写你本地的 Skills。"
   },
   "platforms": {
     "mac": "● macOS 12+",
@@ -36,7 +36,7 @@
   "features": {
     "eyebrow": "Core Features",
     "title": "一个窗口，管理所有 Agent 的 Skills",
-    "lead": "不再为 Claude Code、Cursor、Codex 各自的技能目录反复切换。把 Skills 集中在一起看、一起管、一起分发。",
+    "lead": "把分散在不同 Agent 目录里的 Skills 收到一起，统一查看、统一分发、统一备份。",
     "cards": [
       {
         "icon": "⚡",
@@ -46,7 +46,7 @@
       {
         "icon": "☁",
         "title": "GitHub 备份 & 跨机同步",
-        "body": "一键把本地 Skills 推到 GitHub，新机器克隆即恢复。备份仓库可直接作为 Claude Code Marketplace，让团队共享你的技能。"
+        "body": "一键把本地 Skills 推到 GitHub，新机器拉取即恢复。同一仓库既能做个人备份，也能作为团队共享的技能仓库。"
       },
       {
         "icon": "⇣",
@@ -57,26 +57,16 @@
         "icon": "⇆",
         "title": "平铺 / 按来源双视图",
         "body": "平铺视图看\"有哪些 Skill\"；按来源视图看\"每个 Agent 里有啥\"。不同任务切不同视角，不丢信息。"
-      },
-      {
-        "icon": "✦",
-        "title": "智能三态开关",
-        "body": "红 / 灰 / 黄一目了然地显示\"全部启用 / 未启用 / 仅原生目录\"三态，包含 native 来源的 Skill 也能清晰识别。"
-      },
-      {
-        "icon": "◆",
-        "title": "原生级桌面体验",
-        "body": "基于 <strong>Tauri 2 + Rust</strong> 构建，冷启动 &lt; 1 秒，占用内存极低；前端 React 18 + Tailwind，流畅丝滑。"
       }
     ]
   },
   "views1": {
     "eyebrow": "View · 平铺展示",
     "title": "扫描本地所有 Agent，<br />把 Skill 聚合成一张清单",
-    "lead": "不区分来源，按 Skill 维度聚合。再也不用在 <code>.claude/skills</code>、<code>.cursor/agents</code>、<code>~/.codex</code> 之间来回跳。",
+    "lead": "不区分来源，按 Skill 维度聚合。哪些技能已经收录、哪些还散落在各个 Agent 里，一眼就能看清。",
     "bullets": [
       { "dot": "1", "html": "<strong>搜索 & 分类筛选</strong> 关键词秒筛、按启用状态快速过滤" },
-      { "dot": "2", "html": "<strong>一屏看全 Agent 状态</strong> 每张卡片显示 4/4 Agent 的启用情况" },
+      { "dot": "2", "html": "<strong>一屏看全 Agent 状态</strong> 每张卡片显示当前已支持 Agent 的启用情况" },
       { "dot": "3", "html": "<strong>主开关三态视觉</strong> 灰 / 黄 / 红 清晰区分未启用 / 仅 native / 部分或全部启用" }
     ],
     "imgAlt": "平铺视图"
@@ -84,7 +74,7 @@
   "views2": {
     "eyebrow": "View · 按来源展示",
     "title": "想看每个 Agent 里<br />到底装了啥？切一下",
-    "lead": "按来源分组展示，同一 Skill 在不同 Agent 的拷贝状态一目了然，方便你决定哪些收录到根目录、哪些保留在本地。",
+    "lead": "按来源分组展示，同一 Skill 在不同 Agent 里的状态一目了然，方便你决定哪些收录到中心仓库、哪些保留本地。",
     "bullets": [
       { "dot": "✓", "html": "<strong>一键拷贝到根目录</strong> 纳入统一仓库，可被其它 Agent 复用" },
       { "dot": "✓", "html": "<strong>原生 Skill 特殊标识</strong> 黄色圆点直观提示\"这是属于 Agent 自带的\"" },
@@ -103,13 +93,13 @@
     "imgAlt": "Skill 详情"
   },
   "github": {
-    "eyebrow": "GitHub · 备份 / 恢复 / Marketplace",
-    "title": "把你的技能<br />变成一个 Marketplace",
-    "lead": "接入个人 GitHub 仓库，<strong style=\"color:var(--text)\">一键同步 · 一键恢复</strong>。仓库既是你跨机器的\"云端技能库\"，又可直接作为 <strong style=\"color:var(--text)\">Claude Code Plugin Marketplace</strong> 给团队或社区使用。",
+    "eyebrow": "GitHub · 备份 / 恢复 / 分发",
+    "title": "把你的技能<br />变成一个可共享仓库",
+    "lead": "接入个人 GitHub 仓库后，就能完成 <strong style=\"color:var(--text)\">一键同步 · 一键恢复</strong>。同一份仓库既能做个人备份，也能作为团队共享来源。",
     "bullets": [
       { "dot": "↑", "html": "<strong>同步到 GitHub</strong> 全部中央仓库 Skills 推到远端，增量 commit" },
       { "dot": "↓", "html": "<strong>从 GitHub 恢复</strong> 新机器安装即可拉回你的全部技能" },
-      { "dot": "★", "html": "<strong>一键分享</strong> 让他人通过 Claude Code 的 Marketplace 命令一键安装你的 Skills" }
+      { "dot": "★", "html": "<strong>统一分发</strong> 让个人或团队围绕同一份仓库共享和复用 Skills" }
     ],
     "imgAlt": "GitHub 备份界面"
   },
@@ -126,7 +116,7 @@
   "settings": {
     "eyebrow": "Settings · 可控可靠",
     "title": "记忆过滤 · 删除保护 ·<br />高阶模式一应俱全",
-    "lead": "默认以\"只读观察者\"身份加入你的 Agent 生态，需要时再开启高阶模式执行写入或删除，避免误伤原有技能。",
+    "lead": "默认以只读方式接入你的 Agent 环境。需要写入或删除时再开启高阶模式，避免误伤原有技能。",
     "bullets": [
       { "dot": "✦", "html": "<strong>记忆过滤</strong> 把 CLI / workflow 注入的临时 Skill 从视图里屏蔽" },
       { "dot": "✦", "html": "<strong>中英文切换 · 暗色模式</strong> 跟随系统或手动切换" },
@@ -155,11 +145,11 @@
       },
       {
         "q": "支持哪些 Agent？",
-        "a": "当前已支持 Claude Code、Cursor、Codex、OpenClaw 等主流 AI Agent。只要 Agent 的 Skill 目录符合 <code>SKILL.md</code> 约定，理论上都能被扫描和管理。新增 Agent 的支持欢迎发起 PR。"
+        "a": "当前已支持 Claude、Cursor、Codex、OpenClaw、OpenCode。只要 Agent 的 Skill 目录符合 <code>SKILL.md</code> 约定，理论上都能被扫描和管理。新增 Agent 的支持欢迎发起 PR。"
       },
       {
         "q": "GitHub 备份需要付费账号吗？",
-        "a": "不需要。使用你自己的个人 GitHub 账号即可（Public / Private 仓库都支持）。如果希望作为 Claude Code Marketplace 分享给他人，建议使用 Public 仓库。"
+        "a": "不需要。使用你自己的个人 GitHub 账号即可（Public / Private 仓库都支持）。如果你希望把仓库作为共享来源提供给他人，使用 Public 仓库会更方便。"
       },
       {
         "q": "支持哪些平台？",

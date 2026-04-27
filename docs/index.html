@@ -9,9 +9,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Skills Manager —— 为 Claude Code、Cursor、Codex 等多 Agent 提供统一的技能管理、一键共享与 GitHub 备份/恢复的桌面应用。" />
+    <meta name="description" content="Skills Manager —— 为 Claude、Cursor、Codex、OpenClaw、OpenCode 等 AI Agent 提供统一技能管理、跨 Agent 分发与 GitHub 备份/恢复的桌面应用。" />
     <meta property="og:title" content="Skills Manager · 你的多 Agent 技能总部" />
-    <meta property="og:description" content="一键共享、一键同步，在多 Agent 中更优雅地使用 Skills。" />
+    <meta property="og:description" content="统一管理本地 Skills，跨 Agent 分发，并通过 GitHub 完成备份与恢复。" />
     <meta property="og:image" content="./assets/logo.png" />
     <title>Skills Manager · 多 Agent 技能管理桌面应用</title>
     <link rel="icon" href="./assets/logo-mini.png" />
@@ -345,9 +345,9 @@
       /* 轻量提示：告知用户 iframe 只是 UI 演示，不会操作真实数据 */
       .hero-preview-hint {
         margin: 14px auto 0;
-        max-width: 620px;
+        max-width: 520px;
         color: var(--text-muted);
-        font-size: 13px;
+        font-size: 12.5px;
         line-height: 1.6;
         text-align: center;
         display: inline-flex;
@@ -366,7 +366,7 @@
       }
 
       /* ---- SECTION ---- */
-      section { padding: 96px 0; position: relative; }
+      section { padding: 84px 0; position: relative; }
       section .eyebrow {
         text-transform: uppercase; letter-spacing: 0.25em; font-size: 12px;
         color: var(--accent); margin-bottom: 12px; font-weight: 600;
@@ -408,7 +408,10 @@
       /* ---- FEATURE CARDS ---- */
       .cards-grid {
         margin-top: 56px;
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;
+        max-width: 960px;
+        margin-left: auto;
+        margin-right: auto;
       }
       .card {
         background: var(--bg-card);
@@ -527,12 +530,12 @@
           <span
             class="rotate-pill"
             id="rotating-text"
-            data-texts="Manager|Hub|Share|Switch|Async|Backup|Marketplace"
-            aria-label="Skills Manager, Hub, Share, Switch, Async, Backup, Marketplace"
+            data-texts="Manager|Hub|Share|Switch|Sync|Backup|Repo"
+            aria-label="Skills Manager, Hub, Share, Switch, Sync, Backup, Repo"
           ></span>
         </h1>
         <p class="hero-tagline">你的 <span class="accent">多 Agent 技能总部</span></p>
-        <p class="hero-sub">一款为 Claude Code、Cursor、Codex 等 AI Agent 打造的桌面应用。<br /><strong style="color:var(--text)">一键共享、一键同步</strong>、跨 Agent 统一管理 Skills，用 GitHub 备份打造专属的技能仓库。</p>
+        <p class="hero-sub">统一扫描本地 Skills，跨 Agent 分发，并通过 GitHub 完成备份与恢复。<br />把零散的技能目录收成一套可复用、可迁移的仓库。</p>
         <div class="hero-ctas">
           <a class="btn btn-primary" href="https://github.com/cchao123/skills-managers/releases" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.77 5.46.77 11.73c0 4.94 3.2 9.12 7.64 10.6.56.1.76-.24.76-.54v-1.88c-3.11.67-3.77-1.5-3.77-1.5-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1 1.73 2.63 1.23 3.27.94.1-.73.39-1.23.71-1.51-2.48-.29-5.08-1.24-5.08-5.51 0-1.22.43-2.21 1.14-2.99-.11-.29-.5-1.43.11-2.97 0 0 .93-.3 3.06 1.14.89-.25 1.85-.38 2.8-.38.95 0 1.91.13 2.8.38 2.13-1.45 3.06-1.14 3.06-1.14.61 1.54.22 2.68.11 2.97.71.78 1.14 1.77 1.14 2.99 0 4.29-2.61 5.22-5.09 5.5.4.35.76 1.03.76 2.08v3.08c0 .3.2.65.77.54 4.43-1.48 7.63-5.66 7.63-10.6C23.23 5.46 18.27.5 12 .5z"/></svg>
@@ -551,12 +554,12 @@
 
         <div class="hero-preview">
           <div class="preview-frame-wrap" data-preview-embed>
-            <span class="preview-badge">UI 演示 · 只读预览</span>
+            <span class="preview-badge">Live 预览 · 只读</span>
             <div class="preview-skeleton" data-preview-skeleton>正在加载 Skills Manager 演示…</div>
             <iframe
               class="preview-frame"
               data-preview-frame
-              title="Skills Manager · 在线 UI 演示"
+              title="Skills Manager · 在线 Live 体验"
               loading="lazy"
               referrerpolicy="no-referrer"
               sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
@@ -565,7 +568,7 @@
         </div>
         <p class="hero-preview-hint" role="note">
           <span class="hint-ico" aria-hidden="true">i</span>
-          <span>这是桌面应用的真实界面预览，所有操作都是沙盒里的演示效果，不会读写你本地的 Skills。</span>
+          <span>这是沙盒里的真实界面预览，不会读写你本地的 Skills。</span>
         </p>
       </div>
     </header>
@@ -575,7 +578,7 @@
       <div class="container">
         <p class="eyebrow">Core Features</p>
         <h2>一个窗口，管理所有 Agent 的 Skills</h2>
-        <p class="lead">不再为 Claude Code、Cursor、Codex 各自的技能目录反复切换。把 Skills 集中在一起看、一起管、一起分发。</p>
+        <p class="lead">把分散在不同 Agent 目录里的 Skills 收到一起，统一查看、统一分发、统一备份。</p>
 
         <div class="cards-grid">
           <div class="card">
@@ -586,7 +589,7 @@
           <div class="card">
             <div class="ico">☁</div>
             <h3>GitHub 备份 & 跨机同步</h3>
-            <p>一键把本地 Skills 推到 GitHub，新机器克隆即恢复。备份仓库可直接作为 Claude Code Marketplace，让团队共享你的技能。</p>
+            <p>一键把本地 Skills 推到 GitHub，新机器拉取即恢复。同一仓库既能做个人备份，也能作为团队共享的技能仓库。</p>
           </div>
           <div class="card">
             <div class="ico">⇣</div>
@@ -597,16 +600,6 @@
             <div class="ico">⇆</div>
             <h3>平铺 / 按来源双视图</h3>
             <p>平铺视图看"有哪些 Skill"；按来源视图看"每个 Agent 里有啥"。不同任务切不同视角，不丢信息。</p>
-          </div>
-          <div class="card">
-            <div class="ico">✦</div>
-            <h3>智能三态开关</h3>
-            <p>红 / 灰 / 黄一目了然地显示"全部启用 / 未启用 / 仅原生目录"三态，包含 native 来源的 Skill 也能清晰识别。</p>
-          </div>
-          <div class="card">
-            <div class="ico">◆</div>
-            <h3>原生级桌面体验</h3>
-            <p>基于 <strong>Tauri 2 + Rust</strong> 构建，冷启动 &lt; 1 秒，占用内存极低；前端 React 18 + Tailwind，流畅丝滑。</p>
           </div>
         </div>
       </div>
@@ -619,10 +612,10 @@
           <div>
             <p class="eyebrow">View · 平铺展示</p>
             <h2>扫描本地所有 Agent，<br />把 Skill 聚合成一张清单</h2>
-            <p class="lead">不区分来源，按 Skill 维度聚合。再也不用在 <code>.claude/skills</code>、<code>.cursor/agents</code>、<code>~/.codex</code> 之间来回跳。</p>
+            <p class="lead">不区分来源，按 Skill 维度聚合。哪些技能已经收录、哪些还散落在各个 Agent 里，一眼就能看清。</p>
             <div class="bullet-list">
               <div class="bullet"><span class="dot">1</span><span><strong>搜索 & 分类筛选</strong> 关键词秒筛、按启用状态快速过滤</span></div>
-              <div class="bullet"><span class="dot">2</span><span><strong>一屏看全 Agent 状态</strong> 每张卡片显示 4/4 Agent 的启用情况</span></div>
+              <div class="bullet"><span class="dot">2</span><span><strong>一屏看全 Agent 状态</strong> 每张卡片显示当前已支持 Agent 的启用情况</span></div>
               <div class="bullet"><span class="dot">3</span><span><strong>主开关三态视觉</strong> 灰 / 黄 / 红 清晰区分未启用 / 仅 native / 部分或全部启用</span></div>
             </div>
           </div>
@@ -639,7 +632,7 @@
           <div>
             <p class="eyebrow">View · 按来源展示</p>
             <h2>想看每个 Agent 里<br />到底装了啥？切一下</h2>
-            <p class="lead">按来源分组展示，同一 Skill 在不同 Agent 的拷贝状态一目了然，方便你决定哪些收录到根目录、哪些保留在本地。</p>
+            <p class="lead">按来源分组展示，同一 Skill 在不同 Agent 里的状态一目了然，方便你决定哪些收录到中心仓库、哪些保留本地。</p>
             <div class="bullet-list">
               <div class="bullet"><span class="dot">✓</span><span><strong>一键拷贝到根目录</strong> 纳入统一仓库，可被其它 Agent 复用</span></div>
               <div class="bullet"><span class="dot">✓</span><span><strong>原生 Skill 特殊标识</strong> 黄色圆点直观提示"这是属于 Agent 自带的"</span></div>
@@ -677,13 +670,13 @@
       <div class="container">
         <div class="feature-row reverse">
           <div>
-            <p class="eyebrow">GitHub · 备份 / 恢复 / Marketplace</p>
-            <h2>把你的技能<br />变成一个 Marketplace</h2>
-            <p class="lead">接入个人 GitHub 仓库，<strong style="color:var(--text)">一键同步 · 一键恢复</strong>。仓库既是你跨机器的"云端技能库"，又可直接作为 <strong style="color:var(--text)">Claude Code Plugin Marketplace</strong> 给团队或社区使用。</p>
+            <p class="eyebrow">GitHub · 备份 / 恢复 / 分发</p>
+            <h2>把你的技能<br />变成一个可共享仓库</h2>
+            <p class="lead">接入个人 GitHub 仓库后，就能完成 <strong style="color:var(--text)">一键同步 · 一键恢复</strong>。同一份仓库既能做个人备份，也能作为团队共享来源。</p>
             <div class="bullet-list">
               <div class="bullet"><span class="dot">↑</span><span><strong>同步到 GitHub</strong> 全部中央仓库 Skills 推到远端，增量 commit</span></div>
               <div class="bullet"><span class="dot">↓</span><span><strong>从 GitHub 恢复</strong> 新机器安装即可拉回你的全部技能</span></div>
-              <div class="bullet"><span class="dot">★</span><span><strong>一键分享</strong> 让他人通过 Claude Code 的 Marketplace 命令一键安装你的 Skills</span></div>
+              <div class="bullet"><span class="dot">★</span><span><strong>统一分发</strong> 让个人或团队围绕同一份仓库共享和复用 Skills</span></div>
             </div>
           </div>
           <div class="shot">
@@ -719,7 +712,7 @@
           <div>
             <p class="eyebrow">Settings · 可控可靠</p>
             <h2>记忆过滤 · 删除保护 ·<br />高阶模式一应俱全</h2>
-            <p class="lead">默认以"只读观察者"身份加入你的 Agent 生态，需要时再开启高阶模式执行写入或删除，避免误伤原有技能。</p>
+            <p class="lead">默认以只读方式接入你的 Agent 环境。需要写入或删除时再开启高阶模式，避免误伤原有技能。</p>
             <div class="bullet-list">
               <div class="bullet"><span class="dot">✦</span><span><strong>记忆过滤</strong> 把 CLI / workflow 注入的临时 Skill 从视图里屏蔽</span></div>
               <div class="bullet"><span class="dot">✦</span><span><strong>中英文切换 · 暗色模式</strong> 跟随系统或手动切换</span></div>
@@ -767,11 +760,11 @@
           </details>
           <details class="faq">
             <summary>支持哪些 Agent？</summary>
-            <p>当前已支持 Claude Code、Cursor、Codex、OpenClaw 等主流 AI Agent。只要 Agent 的 Skill 目录符合 <code>SKILL.md</code> 约定，理论上都能被扫描和管理。新增 Agent 的支持欢迎发起 PR。</p>
+            <p>当前已支持 Claude、Cursor、Codex、OpenClaw、OpenCode。只要 Agent 的 Skill 目录符合 <code>SKILL.md</code> 约定，理论上都能被扫描和管理。新增 Agent 的支持欢迎发起 PR。</p>
           </details>
           <details class="faq">
             <summary>GitHub 备份需要付费账号吗？</summary>
-            <p>不需要。使用你自己的个人 GitHub 账号即可（Public / Private 仓库都支持）。如果希望作为 Claude Code Marketplace 分享给他人，建议使用 Public 仓库。</p>
+            <p>不需要。使用你自己的个人 GitHub 账号即可（Public / Private 仓库都支持）。如果你希望把仓库作为共享来源提供给他人，使用 Public 仓库会更方便。</p>
           </details>
           <details class="faq">
             <summary>支持哪些平台？</summary>

@@ -2,7 +2,7 @@
 
 <img src="docs/assets/logo.png" alt="Skills Manager" width="520" />
 
-### <strong>一键共享 + 一键同步</strong>、在多Agent中更优雅的使用skill，并通过 <strong>Skills Manager</strong> 更优雅的管理并构建你的专属技能仓库。
+### 在多个 AI Agent 之间管理、同步和分发 Skills 的桌面应用。
 
 
 [![Tauri](https://img.shields.io/badge/Tauri-2.0-FFC131?logo=tauri&logoColor=000)](https://tauri.app/)
@@ -24,30 +24,49 @@
 
 <a id="zh"></a>
 
+## Skills Manager 是什么
+
+**Skills Manager** 是一个基于 **Tauri 2 + React + Rust** 的桌面应用，用来统一管理本地 Skills，并在不同 AI Agent 之间完成扫描、共享、同步和恢复。
+
+它当前围绕以下工作流展开：
+
+- **统一扫描**：聚合本地多个 Agent 的 skill 目录，合并成一份可管理视图
+- **跨 Agent 分发**：通过链接或复制，把同一个 skill 分发到不同 Agent
+- **集中存储**：把可复用的 skills 放进中心目录，便于维护与迁移
+- **GitHub 备份与恢复**：将技能仓库推送到远端，或在新机器上一键恢复
+
+默认支持的 Agent 包括：**Claude、Cursor、Codex、OpenClaw、OpenCode**。
+
+---
+
 ## 功能概览
 
-### 已安装技列表
+### Skills 总览与管理
 
-- **一键共享**：通过总开关/子开关链接至目标Agent；
-- **多种试图**：汇总展示、高效管理已有Skill，快速查看Skill详情；
-- **拖拽导入**： 支持文件夹拖入导入（需含 SKILL.md）
+- **统一视图**：把来自不同来源的 skills 聚合到一个界面中管理
+- **跨 Agent 开关**：通过总开关 / 子开关控制 skill 在不同 Agent 中的启用状态
+- **多来源查看**：查看 skill 的详情、来源和文件结构
+- **拖拽导入**：支持将包含 `SKILL.md` 的文件夹直接拖入导入
 
 ![主页](docs/screen-shot/zh-skills-home.png)
 ![主页](docs/screen-shot/zh-skills-source.png)
 ![技能详情](docs/screen-shot/zh-skills-detail.png)
 ![拖拽导入](docs/screen-shot/zh-skills-drop.png)
 
-### GitHub 备份 / 构建Claude Code Marketplace
+### GitHub 备份与分发
 
-- **同步到 GitHub**：将中央存储技能推送到远端
-- **从 GitHub 恢复**：在新机器上拉取仓库中的技能到本地
-- **构建Marketplace**：备份后的仓库可作为Claude Code Marketplace提供他人使用。
+- **同步到 GitHub**：将本地 skills 仓库推送到远端
+- **从 GitHub 恢复**：在新机器上拉取远端仓库并恢复本地 skills
+- **分发技能仓库**：把整理好的 skills 作为共享仓库提供给自己或团队使用
 
 ![GitHub](docs/screen-shot/zh-github.png)
 
 ### 设置
-- **记忆过滤**：在视图中过滤由cli/workflow 注入的skill，列表更清爽。
-- **删除保护**：作为插件，默认无权限编辑Agent下文件，需要手动开启。
+
+- **扫描与检测**：查看和管理本地已检测到的 Agent
+- **链接策略**：按需选择以链接或复制的方式分发 skill
+- **过滤规则**：过滤由 CLI / workflow 注入的 skill，保持列表清爽
+- **删除保护**：默认避免直接改动 Agent 目录下的文件，需要手动开启相关操作
 
 ![设置](docs/screen-shot/zh-setting.png)
 
@@ -89,11 +108,7 @@ npm install
 
 ### 可选：启用统计与监控（Aptabase + Sentry）
 
-```bash
-cp .env.example .env
-```
-
-按需填写以下变量：
+项目会按需读取 `.env` / `.env.local` / `src-tauri/.env` 等环境变量文件。若你需要启用统计或监控，可自行创建 `.env` 并填写以下变量：
 
 - `APTABASE_APP_KEY`：事件统计（前端 `trackEvent` + Rust 生命周期事件）
 - `VITE_SENTRY_DSN`：前端 React 错误上报
@@ -106,7 +121,7 @@ cp .env.example .env
 npm run tauri:dev
 ```
 
-将启动 Vite（默认 `http://localhost:5173`）并打开桌面窗口；前端热更新，后端修改后需按 Tauri  usual 流程重新编译。
+将启动 Vite（默认 `http://localhost:5173`）并打开桌面窗口；前端支持热更新，后端修改后按 Tauri 常规流程重新编译。
 
 在**纯浏览器**中打开前端时，部分能力会使用 Mock 数据，完整功能请在 Tauri 窗口中使用。
 
@@ -137,7 +152,7 @@ cargo build --manifest-path=src-tauri/Cargo.toml
 
 - 应用配置：`~/.skills-manager/config.json`（技能启用状态、Agent、语言等）
 - 中央技能目录：`~/.skills-manager/skills/`
-- GitHub 备份相关配置由应用写入上述配置体系（具体字段以当前版本为准）
+- GitHub 配置：`~/.skills-manager/github-config.json`
 
 技能元数据来自各目录下的 **`SKILL.md`**（建议含 YAML frontmatter：`name`、`description` 等）。
 
@@ -152,7 +167,7 @@ cargo build --manifest-path=src-tauri/Cargo.toml
 | macOS OpenSSL | 设置上文 `OPENSSL_DIR` / `PKG_CONFIG_PATH` |
 | 列表里没有技能 | 确认本机已安装对应 Agent、技能路径存在且含 `SKILL.md`，在界面中执行重新扫描 |
 
-更细的开发者说明见仓库根目录 **`CLAUDE.md`**；历史设计文档见 **`docs/`**（部分为阶段性记录，以代码为准）。
+更多截图、说明和静态文档可参考 **`docs/`** 目录；若文档与代码不一致，以当前代码实现为准。
 
 ---
 

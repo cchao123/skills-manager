@@ -2,9 +2,9 @@
   "htmlLang": "en",
   "meta": {
     "title": "Skills Manager · Desktop app for managing multi-Agent Skills",
-    "description": "Skills Manager — a desktop app that gives Claude Code, Cursor, Codex and other AI agents a unified skill library with one-click sharing and GitHub backup/restore.",
+    "description": "Skills Manager — a desktop app for managing, distributing, and restoring skills across Claude, Cursor, Codex, OpenClaw, OpenCode, and other AI agents.",
     "ogTitle": "Skills Manager · Your multi-Agent Skills HQ",
-    "ogDescription": "One-click share, one-click sync — use Skills across multiple Agents with ease."
+    "ogDescription": "Manage local Skills in one place, distribute them across agents, and back them up with GitHub."
   },
   "nav": {
     "features": "Features",
@@ -16,17 +16,17 @@
     "download": "Download"
   },
   "hero": {
-    "rotatingTexts": ["Manager", "Hub", "Share", "Switch", "Async", "Backup", "Marketplace"],
-    "rotatingAriaLabel": "Skills Manager, Hub, Share, Switch, Async, Backup, Marketplace",
+    "rotatingTexts": ["Manager", "Hub", "Share", "Switch", "Sync", "Backup", "Repo"],
+    "rotatingAriaLabel": "Skills Manager, Hub, Share, Switch, Sync, Backup, Repo",
     "titleBefore": "Skills",
     "tagline": "Your <span class=\"accent\">multi-Agent Skills HQ</span>",
-    "sub": "A desktop app built for Claude Code, Cursor, Codex and other AI Agents.<br /><strong style=\"color:var(--text)\">One-click share, one-click sync</strong> — manage Skills across agents and turn a GitHub repo into your personal skill library.",
+    "sub": "Scan local Skills in one place, distribute them across agents, and back them up with GitHub.<br />Turn scattered skill folders into a reusable, portable library.",
     "ctaDownload": "Download on GitHub",
     "ctaSource": "View Source",
-    "previewBadge": "Live Experience · Read-only",
+    "previewBadge": "Live Preview · Read-only",
     "previewSkeleton": "Loading the Skills Manager demo…",
     "previewTitle": "Skills Manager · Live UI Experience",
-    "previewHint": "This is the real desktop UI running in a sandbox — every action is a demo and won't read or touch your local Skills."
+    "previewHint": "This sandbox preview shows the real UI and won't read or touch your local Skills."
   },
   "platforms": {
     "mac": "● macOS 12+",
@@ -36,7 +36,7 @@
   "features": {
     "eyebrow": "Core Features",
     "title": "One window to manage Skills across every Agent",
-    "lead": "Stop jumping between Claude Code, Cursor and Codex skill folders. View, manage and distribute all your Skills from one place.",
+    "lead": "Bring Skills scattered across different agent folders into one place for management, distribution, and backup.",
     "cards": [
       {
         "icon": "⚡",
@@ -46,7 +46,7 @@
       {
         "icon": "☁",
         "title": "GitHub backup & cross-machine sync",
-        "body": "Push local Skills to GitHub in one click, clone to restore on a new machine. The same repo doubles as a Claude Code Marketplace you can share with your team."
+        "body": "Push local Skills to GitHub in one click, then pull them back on a new machine. The same repo can serve as both your personal backup and a shared team skill library."
       },
       {
         "icon": "⇣",
@@ -57,26 +57,16 @@
         "icon": "⇆",
         "title": "Flat & by-source dual views",
         "body": "Flat view answers \"what Skills do I have\"; by-source view answers \"what's inside each Agent\". Switch perspective without losing context."
-      },
-      {
-        "icon": "✦",
-        "title": "Smart tri-state switches",
-        "body": "Red / gray / yellow clearly show \"all enabled / none enabled / native only\". Even native Skills are easy to spot."
-      },
-      {
-        "icon": "◆",
-        "title": "Native-grade desktop experience",
-        "body": "Built on <strong>Tauri 2 + Rust</strong> — cold start &lt; 1s with tiny memory footprint. Frontend is React 18 + Tailwind, buttery smooth."
       }
     ]
   },
   "views1": {
     "eyebrow": "View · Flat",
     "title": "Scan every local Agent<br />and aggregate Skills into one list",
-    "lead": "Aggregated by Skill, not by source. No more jumping between <code>.claude/skills</code>, <code>.cursor/agents</code> and <code>~/.codex</code>.",
+    "lead": "Aggregated by Skill, not by source. See what's already collected and what's still scattered across agents at a glance.",
     "bullets": [
       { "dot": "1", "html": "<strong>Search & filter</strong> instant keyword search, filter by enabled state" },
-      { "dot": "2", "html": "<strong>See every Agent at a glance</strong> each card shows the enabled state across all 4 agents" },
+      { "dot": "2", "html": "<strong>See every Agent at a glance</strong> each card shows the enabled state across all currently supported agents" },
       { "dot": "3", "html": "<strong>Tri-state master switch</strong> gray / yellow / red clearly mark disabled / native-only / partially-or-fully enabled" }
     ],
     "imgAlt": "Flat view"
@@ -84,7 +74,7 @@
   "views2": {
     "eyebrow": "View · By source",
     "title": "Curious what's really<br />inside each Agent? One click away",
-    "lead": "Grouped by source so you can instantly see which Agents have a given Skill. Decide what goes into the central repo and what stays local.",
+    "lead": "Grouped by source so you can instantly see where a Skill lives and decide what belongs in the central repo versus what should stay local.",
     "bullets": [
       { "dot": "✓", "html": "<strong>Copy to central repo</strong> into a unified library that every Agent can reuse" },
       { "dot": "✓", "html": "<strong>Native Skill indicator</strong> a yellow dot signals \"this one ships with the Agent\"" },
@@ -103,13 +93,13 @@
     "imgAlt": "Skill detail"
   },
   "github": {
-    "eyebrow": "GitHub · Backup / Restore / Marketplace",
-    "title": "Turn your Skills<br />into a Marketplace",
-    "lead": "Connect your personal GitHub repo and you get <strong style=\"color:var(--text)\">one-click sync · one-click restore</strong>. The same repo works as your cloud Skill library and as a <strong style=\"color:var(--text)\">Claude Code Plugin Marketplace</strong> for your team or community.",
+    "eyebrow": "GitHub · Backup / Restore / Distribution",
+    "title": "Turn your Skills<br />into a shareable repository",
+    "lead": "Connect your GitHub repo for <strong style=\"color:var(--text)\">one-click sync · one-click restore</strong>. The same repo can act as both your personal backup and a shared source for a team.",
     "bullets": [
       { "dot": "↑", "html": "<strong>Sync to GitHub</strong> push every central Skill to the remote with incremental commits" },
       { "dot": "↓", "html": "<strong>Restore from GitHub</strong> pull all your Skills back on a fresh machine" },
-      { "dot": "★", "html": "<strong>One-click share</strong> let anyone install your Skills via Claude Code's Marketplace command" }
+      { "dot": "★", "html": "<strong>Shared distribution</strong> keep personal and team Skills aligned around one repository" }
     ],
     "imgAlt": "GitHub backup UI"
   },
@@ -126,7 +116,7 @@
   "settings": {
     "eyebrow": "Settings · safe & controllable",
     "title": "Memory filters · delete protection ·<br />Advanced Mode all included",
-    "lead": "Skills Manager joins your Agent ecosystem as a read-only observer by default. Flip Advanced Mode only when you need to write or delete — so your existing Skills stay safe.",
+    "lead": "Skills Manager joins your agent setup in read-only mode by default. Turn on Advanced Mode only when you need to write or delete.",
     "bullets": [
       { "dot": "✦", "html": "<strong>Memory filters</strong> hide temporary Skills injected by CLIs or workflows" },
       { "dot": "✦", "html": "<strong>中/EN toggle · dark mode</strong> follow the system or switch manually" },
@@ -155,11 +145,11 @@
       },
       {
         "q": "Which Agents are supported?",
-        "a": "Claude Code, Cursor, Codex and OpenClaw are supported today. Any Agent whose Skill folder follows the <code>SKILL.md</code> convention should work — PRs for new Agents welcome."
+        "a": "Claude, Cursor, Codex, OpenClaw, and OpenCode are supported today. Any Agent whose Skill folder follows the <code>SKILL.md</code> convention should work in principle — PRs for new Agents are welcome."
       },
       {
         "q": "Does GitHub backup require a paid account?",
-        "a": "No. Any personal GitHub account works (Public or Private repos). If you want to share your Skills as a Claude Code Marketplace, a Public repo is recommended."
+        "a": "No. Any personal GitHub account works, whether the repo is public or private. If you want to use the repo as a shared source for others, a public repo is usually more convenient."
       },
       {
         "q": "Which platforms are supported?",
