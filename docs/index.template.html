@@ -345,9 +345,9 @@
       /* 轻量提示：告知用户 iframe 只是 UI 演示，不会操作真实数据 */
       .hero-preview-hint {
         margin: 14px auto 0;
-        max-width: 620px;
+        max-width: 520px;
         color: var(--text-muted);
-        font-size: 13px;
+        font-size: 12.5px;
         line-height: 1.6;
         text-align: center;
         display: inline-flex;
@@ -366,7 +366,7 @@
       }
 
       /* ---- SECTION ---- */
-      section { padding: 96px 0; position: relative; }
+      section { padding: 84px 0; position: relative; }
       section .eyebrow {
         text-transform: uppercase; letter-spacing: 0.25em; font-size: 12px;
         color: var(--accent); margin-bottom: 12px; font-weight: 600;
@@ -408,7 +408,10 @@
       /* ---- FEATURE CARDS ---- */
       .cards-grid {
         margin-top: 56px;
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;
+        max-width: 960px;
+        margin-left: auto;
+        margin-right: auto;
       }
       .card {
         background: var(--bg-card);
@@ -597,16 +600,6 @@
             <div class="ico">{{features.cards.3.icon}}</div>
             <h3>{{features.cards.3.title}}</h3>
             <p>{{features.cards.3.body}}</p>
-          </div>
-          <div class="card">
-            <div class="ico">{{features.cards.4.icon}}</div>
-            <h3>{{features.cards.4.title}}</h3>
-            <p>{{features.cards.4.body}}</p>
-          </div>
-          <div class="card">
-            <div class="ico">{{features.cards.5.icon}}</div>
-            <h3>{{features.cards.5.title}}</h3>
-            <p>{{features.cards.5.body}}</p>
           </div>
         </div>
       </div>

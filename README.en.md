@@ -2,7 +2,7 @@
 
 <img src="docs/assets/logo.png" alt="Skills Manager" width="520" />
 
-### <strong>One-Click Sharing + One-Click Sync</strong>. Use skills more elegantly across multiple Agents, and build your personal skill repository more gracefully through <strong>Skills Manager</strong>.
+### A desktop app for managing, syncing, and distributing skills across AI agents.
 
 [![Tauri](https://img.shields.io/badge/Tauri-2.0-FFC131?logo=tauri&logoColor=000)](https://tauri.app/)
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=000)](https://reactjs.org/)
@@ -21,30 +21,49 @@
 
 ---
 
+## What It Is
+
+**Skills Manager** is a desktop app built with **Tauri 2 + React + Rust** for organizing local skills and moving them across different AI agents.
+
+It is designed around a few core workflows:
+
+- **Unified scanning**: collect skills from multiple agent directories into one manageable view
+- **Cross-agent distribution**: link or copy the same skill into different agents
+- **Central storage**: keep reusable skills in one place for easier maintenance and migration
+- **GitHub backup and restore**: push your skills repository to GitHub or restore it on a new machine
+
+Supported agents currently include **Claude, Cursor, Codex, OpenClaw, and OpenCode**.
+
+---
+
 ## Features
 
-### Installed Skills List
+### Skill Overview and Management
 
-- **One-Click Sharing**: Link to target Agents via master toggle/sub-toggles;
-- **Multiple Views**: Aggregate and efficiently manage existing skills, quickly view skill details;
-- **Drag & Drop Import**: Support dragging folders into the app (requires SKILL.md)
+- **Unified view**: manage skills from different sources in one interface
+- **Per-agent toggles**: control whether a skill is enabled for each agent
+- **Source and file inspection**: view skill details, sources, and file trees
+- **Drag-and-drop import**: import any folder that contains a `SKILL.md`
 
 ![Home](docs/screen-shot/en-skills-home.png)
 ![Source View](docs/screen-shot/en-skills-source.png)
 ![Skill Details](docs/screen-shot/en-skills-detail.png)
 ![Drag Import](docs/screen-shot/en-skills-drop.png)
 
-### GitHub Backup / Build Claude Code Marketplace
+### GitHub Backup and Distribution
 
-- **Sync to GitHub**: Push central storage skills to remote
-- **Restore from GitHub**: Pull skills from repo to local on new machine
-- **Build Marketplace**: Backed up repo can serve as Claude Code Marketplace for others
+- **Sync to GitHub**: push your local skills repository to a remote repo
+- **Restore from GitHub**: pull the repository back onto a new machine
+- **Share a curated repository**: use a GitHub repo as a portable skills distribution source
 
 ![GitHub](docs/screen-shot/en-github.png)
 
 ### Settings
-- **Memory Filtering**: Filter skills injected by cli/workflow in views for cleaner lists
-- **Delete Protection**: As a plugin, no permission to edit Agent files by default, manual enable required
+
+- **Agent detection**: inspect and manage supported local agents
+- **Link strategy**: choose whether skills are distributed via links or copies
+- **Filter rules**: hide skills injected by CLI or workflow tooling for a cleaner list
+- **Delete protection**: avoid editing agent-owned files unless you explicitly allow it
 
 ![Settings](docs/screen-shot/en-setting.png)
 
@@ -85,11 +104,7 @@ npm install
 
 ### Optional: enable analytics & monitoring (Aptabase + Sentry)
 
-```bash
-cp .env.example .env
-```
-
-Fill in what you need:
+The app reads environment variables from files such as `.env`, `.env.local`, and `src-tauri/.env`. If you want analytics or monitoring, create a `.env` file and fill in what you need:
 
 - `APTABASE_APP_KEY`: product events (frontend `trackEvent` + Rust lifecycle events)
 - `VITE_SENTRY_DSN`: frontend React error reporting
@@ -102,7 +117,7 @@ Fill in what you need:
 npm run tauri:dev
 ```
 
-Starts Vite (default `http://localhost:5173`) and opens the desktop window; frontend hot reload, Rust changes follow the usual Tauri rebuild flow.
+Starts Vite (default `http://localhost:5173`) and opens the desktop window; frontend changes hot reload, while Rust changes follow the normal Tauri rebuild flow.
 
 In a **plain browser**, some features use mock data; use the Tauri window for full behavior.
 
@@ -133,7 +148,7 @@ cargo build --manifest-path=src-tauri/Cargo.toml
 
 - App config: `~/.skills-manager/config.json` (skill enablement, agents, language, etc.)
 - Central skills dir: `~/.skills-manager/skills/`
-- GitHub backup fields are stored in that config system (exact fields depend on version)
+- GitHub config: `~/.skills-manager/github-config.json`
 
 Skill metadata comes from **`SKILL.md`** in each folder (YAML frontmatter recommended: `name`, `description`, etc.).
 
@@ -148,7 +163,7 @@ Skill metadata comes from **`SKILL.md`** in each folder (YAML frontmatter recomm
 | macOS OpenSSL | Set `OPENSSL_DIR` / `PKG_CONFIG_PATH` as above |
 | Empty skill list | Install agents, ensure paths and `SKILL.md` exist, rescan in the UI |
 
-More developer notes: **`CLAUDE.md`** at repo root; design history under **`docs/`** (some are snapshots—trust the code).
+For more screenshots and static documentation, see **`docs/`**. If docs and code ever disagree, trust the current code.
 
 ---
 
