@@ -161,6 +161,7 @@ export const useGitHubConfig = () => {
     config,
     repoConfig,
     loading,
+    saving,
     useMock,
     connected,
     setConnected,
