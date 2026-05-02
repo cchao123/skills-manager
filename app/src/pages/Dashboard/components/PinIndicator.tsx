@@ -19,7 +19,7 @@ export function PinIndicator({ pinned }: PinIndicatorProps) {
       width="30"
       height="30"
       viewBox="0 0 30 30"
-      className="absolute top-0 left-0 z-30 pointer-events-none"
+      className="absolute -top-1 -left-1 z-30 pointer-events-none"
       aria-hidden="true"
     >
       <polygon
