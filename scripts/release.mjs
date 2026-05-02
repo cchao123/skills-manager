@@ -100,7 +100,9 @@ const checkGitStatus = () => {
 // 检查当前分支
 const checkCurrentBranch = () => {
   const branch = git('git rev-parse --abbrev-ref HEAD');
-  if (branch !== 'main') {
+  // 接受 "main" 或 "heads/main" 作为有效的主分支
+  const isMainBranch = branch === 'main' || branch === 'heads/main';
+  if (!isMainBranch) {
     console.warn(`⚠️  You are on '${branch}' branch. Recommend using 'main' branch for release.`);
     const answer = process.stdin.isTTY ? readlineSync.question('Continue? (y/N) ') : 'n';
     if (answer.toLowerCase() !== 'y') {
