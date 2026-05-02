@@ -56,7 +56,7 @@ export const GitHubForm = ({
                   className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
-              <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.ownerHelper')}</p>
+              {!connected && <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.ownerHelper')}</p>}
             </div>
             <div className="flex-1 min-w-0">
               <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">
@@ -70,7 +70,7 @@ export const GitHubForm = ({
                 placeholder={t('githubBackup.config.branchPlaceholder')}
                 className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               />
-              <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.branchHelper')}</p>
+              {!connected && <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.branchHelper')}</p>}
             </div>
           </div>
         </div>

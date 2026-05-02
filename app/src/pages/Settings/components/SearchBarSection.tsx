@@ -12,8 +12,8 @@ export const SearchBarSection: React.FC = () => {
   const { prefs, setPref, resetPrefs } = useSearchBarPrefs();
 
   return (
-    <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-6 shadow-sm border border-[#e1e3e4] dark:border-dark-border">
-      <div className="mb-6 flex items-start justify-between gap-4">
+    <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[#e1e3e4] dark:border-dark-border">
+      <div className="mb-5 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Icon name="search" className="text-2xl text-slate-600 dark:text-gray-300" />

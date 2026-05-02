@@ -41,6 +41,15 @@ export const skillsApi = {
   importFolder: async (folderPath: string): Promise<string> => {
     return await invoke<string>('import_skill_folder', { folderPath });
   },
+
+  copyToAgent: async (skillId: string, sourceAgent: string, targetAgent: string, defaultEnabled: boolean): Promise<string> => {
+    return await invoke<string>('copy_skill_to_agent', {
+      skillId,
+      sourceAgent,
+      targetAgent,
+      defaultEnabled,
+    });
+  },
 };
 
 export const agentsApi = {

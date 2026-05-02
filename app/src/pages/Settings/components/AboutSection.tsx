@@ -75,7 +75,7 @@ export const AboutSection: React.FC = () => {
   const checking = status === 'checking';
 
   return (
-    <div className="flex-1 bg-white dark:bg-dark-bg-card rounded-2xl p-8 shadow-sm border border-[#e1e3e4] dark:border-dark-border flex flex-col justify-start">
+    <div className="flex-1 bg-white dark:bg-dark-bg-card rounded-2xl shadow-sm border border-[#e1e3e4] dark:border-dark-border flex flex-col justify-center">
       <div className="flex flex-col items-center text-center">
         <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#fff] to-[#f0f0f0] flex items-center justify-center mb-6 shadow-lg">
           <img src={OCTOPUS_LOGO_URL} alt="Octopus Logo" className="w-full h-full object-cover" />

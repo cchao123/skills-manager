@@ -21,7 +21,7 @@ export default function RootLayout() {
     try {
       return localStorage.getItem(LOCAL_STORAGE_KEYS.sidebarCollapsed) === '1';
     } catch {
-      return false;
+      return true; // 默认收起
     }
   });
   const setIsSidebarCollapsed = useCallback((value: boolean) => {
@@ -86,16 +86,12 @@ export default function RootLayout() {
   }, [currentPage]);
 
   return (
-    <div className="h-screen bg-[#f8f9fa] dark:bg-dark-bg-secondary">
+    <div className="h-screen bg-[#f8f9fa] dark:bg-dark-bg-secondary flex">
       <SideNavBar
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
-      <main
-        className={`h-screen overflow-hidden ${
-          isSidebarCollapsed ? 'ml-20' : 'ml-64'
-        }`}
-      >
+      <main className="flex-1 h-screen overflow-hidden">
         {/* Dashboard 是最重的页面（扫描所有 SKILL.md），始终挂载避免每次切页都重新扫描。
             其他页面走 Outlet，按 Route 配置渲染。 */}
         <div

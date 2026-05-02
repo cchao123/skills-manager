@@ -155,6 +155,7 @@ pub fn run() {
             commands::skills::rescan_skills,
             commands::skills::delete_skill,
             commands::skills::import_skill_folder,
+            commands::skills::copy_skill_to_agent,
             // Settings commands
             commands::settings::get_agents,
             commands::settings::add_agent,

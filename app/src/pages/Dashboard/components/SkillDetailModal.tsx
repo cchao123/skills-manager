@@ -4,7 +4,6 @@ import type { SkillMetadata, AgentConfig, SkillFileEntry } from '@/types';
 import { getSkillIcon, getSkillColor } from '@/pages/Dashboard/utils/skillHelpers';
 import { getAgentIcon, needsInvertInDark } from '@/pages/Dashboard/utils/agentHelpers';
 import { badgeClass, sourceLabel, SOURCE } from '@/pages/Dashboard/utils/source';
-import { getAgentDisplayName } from '@/constants';
 import { useVisibleAgents } from '@/pages/Dashboard/hooks/useVisibleAgents';
 import { useMergedView } from '@/pages/Dashboard/hooks/useMergedView';
 import CardFileTree from '@/components/CardFileTree';
@@ -52,6 +51,21 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
   onDelete,
   onResizeStart,
 }) => {
+  // 注入抽屉动画样式
+  if (typeof document !== 'undefined' && !document.getElementById('drawer-animation')) {
+    const style = document.createElement('style');
+    style.id = 'drawer-animation';
+    style.textContent = `
+      @keyframes drawerSlideIn {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+      }
+      .drawer-animate-in {
+        animation: drawerSlideIn 0.3s ease-out forwards;
+      }
+    `;
+    document.head.appendChild(style);
+  }
   const { t } = useTranslation();
   const isWindows = typeof navigator !== 'undefined' && navigator.platform.toLowerCase().includes('win');
   const { allSources, nativeAgents, allPaths } = useMergedView(skill);
@@ -74,60 +88,32 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-[2px] flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 z-50 bg-black/10 backdrop-blur-[2px]"
       onClick={(e) => {
         // 仅当点击的是遮罩自身（不是其内部内容）时关闭
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-white dark:bg-dark-bg-card rounded-xl shadow-xl w-[65%] max-w-[1400px] max-h-[85vh] overflow-hidden flex flex-col">
+      <div
+        className="absolute right-0 top-0 bottom-0 w-[600px] max-w-[85vw] bg-white dark:bg-dark-bg-card shadow-2xl flex flex-col drawer-animate-in"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
-        <div className="p-6 pb-3 border-b border-gray-200 dark:border-dark-border">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-lg ${getSkillColor(skill.id)} flex items-center justify-center`}>
-                <Icon name={getSkillIcon(skill.id)} className="text-2xl" />
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <h2 className="text-xl font-bold text-black dark:text-white">{skill.name}</h2>
-                  {allSources.map(src => (
-                    <span key={src} className={`text-[10px] font-bold py-0.5 px-1.5 rounded flex-shrink-0 ${badgeClass(src)}`}>
-                      {sourceLabel(src)}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  {(() => {
-                    const sourceToFullName = (s: string) =>
-                      s === SOURCE.Global
-                        ? t('dashboard.source.global')
-                        : getAgentDisplayName(s);
-                    const isSingle = allSources.length === 1;
-                    const onlySource = allSources[0];
-                    const showAgentIcon = isSingle && onlySource && onlySource !== SOURCE.Global && getAgentIcon(onlySource);
-                    return (
-                      <>
-                        {showAgentIcon ? (
-                          <img
-                            src={getAgentIcon(onlySource)}
-                            alt={onlySource}
-                            className={`w-3.5 h-3.5 object-contain ${needsInvertInDark(onlySource) ? 'dark:invert' : ''}`}
-                          />
-                        ) : (
-                          <img src={OCTOPUS_LOGO_URL} alt="Skills Manager" className="w-3.5 h-3.5" />
-                        )}
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          {isSingle
-                            ? `From ${sourceToFullName(onlySource ?? SOURCE.Global)}`
-                            : `From ${allSources.map(sourceToFullName).join(' + ')}`}
-                        </span>
-                      </>
-                    );
-                  })()}
-                </div>
-              </div>
-            </div>
+        <div
+          className="flex-shrink-0 p-6 pb-3 border-b border-gray-200 dark:border-dark-border"
+          data-tauri-drag-region
+        >
+          {/* Action buttons */}
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            {onDelete && (
+              <button
+                onClick={onDelete}
+                className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                title={t('dashboard.detail.deleteSkill')}
+              >
+                <Icon name="delete" className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400" />
+              </button>
+            )}
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors"
@@ -135,12 +121,30 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
               <Icon name="close" className="text-gray-600 dark:text-gray-300" />
             </button>
           </div>
+
+          {/* Title section */}
+          <div className="flex items-center gap-3 mb-3 pr-20">
+            <div className={`w-12 h-12 rounded-lg ${getSkillColor(skill.id)} flex items-center justify-center`}>
+              <Icon name={getSkillIcon(skill.id)} className="text-2xl" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h2 className="text-xl font-bold text-black dark:text-white">{skill.name}</h2>
+                {allSources.map(src => (
+                  <span key={src} className={`text-[10px] font-bold py-0.5 px-1.5 rounded flex-shrink-0 ${badgeClass(src)}`}>
+                    {sourceLabel(src)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Description */}
           <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{skill.description}</p>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 pb-20 py-3">
+        <div className="flex-1 overflow-y-auto p-6 py-3" data-tauri-drag-region>
           <div className="space-y-4">
             {/* File Tree with Content Preview - Split View */}
             {skillFiles.length > 0 ? (
@@ -149,8 +153,19 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
                   <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex-shrink-0">{t('dashboard.detail.fileDirectory')}</h3>
                   {allPaths.map(({ source, path }) => {
                     const display = normalizePath(path, isWindows);
+                    const isAgentSource = source !== SOURCE.Global;
+                    const agentIcon = isAgentSource ? getAgentIcon(source) : null;
                     return (
                       <div key={`${source}:${path}`} className="flex items-center gap-1.5">
+                        {agentIcon ? (
+                          <img
+                            src={agentIcon}
+                            alt={source}
+                            className={`w-3.5 h-3.5 object-contain ${needsInvertInDark(source) ? 'dark:invert' : ''}`}
+                          />
+                        ) : (
+                          <img src={OCTOPUS_LOGO_URL} alt="Skills Manager" className="w-3.5 h-3.5" />
+                        )}
                         <span className={`text-[10px] font-bold py-0.5 px-1 rounded ${badgeClass(source)}`}>
                           {sourceLabel(source)}
                         </span>
@@ -228,8 +243,19 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
                   <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex-shrink-0">{t('dashboard.detail.fileDirectory')}</h3>
                   {allPaths.map(({ source, path }) => {
                     const display = normalizePath(path, isWindows);
+                    const isAgentSource = source !== SOURCE.Global;
+                    const agentIcon = isAgentSource ? getAgentIcon(source) : null;
                     return (
                       <div key={`${source}:${path}`} className="flex items-center gap-1.5">
+                        {agentIcon ? (
+                          <img
+                            src={agentIcon}
+                            alt={source}
+                            className={`w-3.5 h-3.5 object-contain ${needsInvertInDark(source) ? 'dark:invert' : ''}`}
+                          />
+                        ) : (
+                          <img src={OCTOPUS_LOGO_URL} alt="Skills Manager" className="w-3.5 h-3.5" />
+                        )}
                         <span className={`text-[10px] font-bold py-0.5 px-1 rounded ${badgeClass(source)}`}>
                           {sourceLabel(source)}
                         </span>
@@ -342,19 +368,6 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="border-t border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-bg-secondary relative">
-          {onDelete && (
-            <button
-              onClick={onDelete}
-              className="w-12 h-12 flex items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors absolute left-1/2 -translate-x-1/2 bottom-4 shadow-lg"
-              title={t('dashboard.detail.deleteSkill')}
-            >
-              <Icon name="delete" className="text-lg" />
-            </button>
-          )}
         </div>
       </div>
     </div>

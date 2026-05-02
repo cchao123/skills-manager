@@ -12,7 +12,6 @@ interface ActionButtonsProps {
   onEdit: () => void;
   onRestore: (overwriteLocal: boolean) => void | Promise<void>;
   onSync: (overwriteRemote: boolean) => void | Promise<void>;
-  onOpenFolder: () => void;
 }
 
 export const ActionButtons: React.FC<ActionButtonsProps> = ({
@@ -24,7 +23,6 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   onEdit,
   onRestore,
   onSync,
-  onOpenFolder,
 }) => {
   const { t } = useTranslation();
   const [syncMenuOpen, setSyncMenuOpen] = useState(false);
@@ -239,16 +237,6 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             document.body
           )}
       </div>
-
-      {/* Open local folder */}
-      <button
-        onClick={onOpenFolder}
-        className="ml-auto px-3 py-2 rounded-xl text-sm font-medium bg-white dark:bg-dark-bg-secondary hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary text-slate-700 dark:text-white transition-all border border-[#e1e3e4] dark:border-dark-border flex items-center gap-2 shadow-sm"
-        title={t('githubBackup.buttons.openLocal')}
-      >
-        <Icon name="folder_open" className="text-lg" />
-        {t('githubBackup.buttons.openLocal')}
-      </button>
 
       {/* 强制同步确认框 */}
       {showForceConfirm && (

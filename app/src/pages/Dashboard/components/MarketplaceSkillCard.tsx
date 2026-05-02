@@ -50,6 +50,14 @@ function MarketplaceSkillCard({
     .map(a => a.name)
     .filter(name => nativeAgents?.has(name));
 
+  // 检查是否所有检测到的 agents 都是原生目录（第四种状态：全部原生）
+  // 关键：所有检测到的 agents（不管是否启用）都必须在原生目录中
+  const allDetectedAreNative =
+    detectedAgents.length > 0 &&
+    nativeAgents &&
+    detectedAgents.length === nativeAgents.size &&
+    detectedAgents.every(agent => nativeAgents.has(agent.name));
+
   return (
     <article
       className={`relative bg-white dark:bg-dark-bg-card rounded-xl border ${
@@ -86,12 +94,25 @@ function MarketplaceSkillCard({
           onMouseEnter={() => canExpand && setExpanded(true)}
         >
           <div className="flex items-center gap-1 min-w-0">
-            {skill.enabledAgentCount > 0 ? (
-              <Icon name="check_circle" className="text-xs text-green-500" />
+            {allDetectedAreNative ? (
+              // 第四种状态：全部原生（琥珀色，跟子开关样式一致）
+              <>
+                <Icon name="check_circle" className="text-xs text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                <span className="text-[10px] font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200/70 dark:border-amber-500/20 px-1.5 py-[1px] rounded-full whitespace-nowrap">
+                  全部原生
+                </span>
+              </>
             ) : (
-              <Icon name="radio_button_unchecked" className="text-xs text-gray-400 dark:text-gray-500" />
+              // 原有三种状态
+              <>
+                {skill.enabledAgentCount > 0 ? (
+                  <Icon name="check_circle" className="text-xs text-green-500" />
+                ) : (
+                  <Icon name="radio_button_unchecked" className="text-xs text-gray-400 dark:text-gray-500" />
+                )}
+                <span className="text-[#191c1d] dark:text-white truncate">{skill.enabledAgentCount}/{skill.totalAgentCount} {t('dashboard.source.agentEnabled')}</span>
+              </>
             )}
-            <span className="text-[#191c1d] dark:text-white truncate">{skill.enabledAgentCount}/{skill.totalAgentCount} {t('dashboard.source.agentEnabled')}</span>
           </div>
           {canExpand && (
             <span
@@ -159,8 +180,19 @@ function MarketplaceSkillCard({
             onClick={() => setExpanded(false)}
             className="w-full flex items-center justify-between px-4 py-2.5 border-b border-[#f0f0f0] dark:border-dark-border text-[12px] font-semibold hover:bg-slate-50 dark:hover:bg-dark-bg-secondary transition-colors"
           >
-            <span className="text-[#191c1d] dark:text-white truncate">
-              {skill.enabledAgentCount}/{skill.totalAgentCount} {t('dashboard.source.agentEnabled')}
+            <span className="text-[#191c1d] dark:text-white truncate flex items-center gap-1.5">
+              {allDetectedAreNative ? (
+                <>
+                  <Icon name="check_circle" className="text-xs text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                  <span className="text-[10px] font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200/70 dark:border-amber-500/20 px-1.5 py-[1px] rounded-full whitespace-nowrap">
+                    全部原生
+                  </span>
+                </>
+              ) : (
+                <>
+                  {skill.enabledAgentCount}/{skill.totalAgentCount} {t('dashboard.source.agentEnabled')}
+                </>
+              )}
             </span>
             <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
               <Icon name="expand_less" className="text-base text-slate-500 dark:text-gray-400" />

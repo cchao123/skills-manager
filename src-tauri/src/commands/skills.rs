@@ -8,6 +8,17 @@ use regex::Regex;
 use std::path::PathBuf;
 use tauri::State;
 
+/// 展开路径中的 ~ 为用户主目录
+fn expand_tilde_path(path: &str) -> Option<PathBuf> {
+    if let Some(rest) = path.strip_prefix("~/") {
+        dirs::home_dir().map(|h| h.join(rest))
+    } else if path == "~" {
+        dirs::home_dir()
+    } else {
+        Some(PathBuf::from(path))
+    }
+}
+
 /// 从 SKILL.md 内容中提取 name 字段
 fn extract_skill_name_from_md(content: &str) -> Option<String> {
     let re = Regex::new(r"^---\s*\n([\s\S]*?)\n---").ok()?;
@@ -680,5 +691,160 @@ fn copy_dir_recursive(src: &std::path::Path, dst: &std::path::Path) -> std::io::
             std::fs::copy(entry.path(), dest_path)?;
         }
     }
+    Ok(())
+}
+
+/// 复制技能到目标 Agent
+///
+/// 将指定技能从源 Agent 复制到目标 Agent 的 skills 目录
+#[tauri::command]
+pub async fn copy_skill_to_agent(
+    skill_id: String,
+    source_agent: String,
+    target_agent: String,
+    default_enabled: bool,
+    state: State<'_, AppState>,
+) -> Result<String, String> {
+    let mut settings = state
+        .settings_manager
+        .lock()
+        .map_err(|e| format!("Failed to acquire lock: {}", e))?;
+
+    // 先扫描获取技能的完整元数据
+    let skills = scan_only(&mut settings)?;
+
+    // 查找技能
+    let skill = skills
+        .iter()
+        .find(|s| s.id == skill_id)
+        .ok_or_else(|| format!("Skill '{}' not found", skill_id))?;
+
+    // 获取源路径
+    let source_path = skill
+        .source_paths
+        .get(&source_agent)
+        .ok_or_else(|| format!("Skill '{}' has no path for agent '{}'", skill_id, source_agent))?;
+
+    let source_path_buf = PathBuf::from(source_path);
+    if !source_path_buf.exists() {
+        return Err(format!("Source path does not exist: {}", source_path));
+    }
+
+    // 获取目标 Agent 配置
+    let target_agent_config = settings
+        .get_config()
+        .agents
+        .iter()
+        .find(|a| a.name == target_agent)
+        .ok_or_else(|| format!("Target agent '{}' not found", target_agent))?;
+
+    // 构建目标路径
+    let target_agent_path = expand_tilde_path(&target_agent_config.path)
+        .ok_or_else(|| format!("Failed to expand path for agent '{}'", target_agent))?;
+    let target_skills_dir = target_agent_path.join(&target_agent_config.skills_path);
+
+    // 确保目标目录存在
+    std::fs::create_dir_all(&target_skills_dir)
+        .map_err(|e| format!("Failed to create target skills directory: {}", e))?;
+
+    // 构建目标技能路径
+    let target_skill_path = target_skills_dir.join(&skill.id);
+
+    // 检查目标是否已存在
+    if target_skill_path.exists() {
+        return Err(format!(
+            "Skill '{}' already exists in agent '{}', please delete it first",
+            skill.name, target_agent
+        ));
+    }
+
+    // 复制技能目录
+    copy_dir_recursive(&source_path_buf, &target_skill_path)
+        .map_err(|e| format!("Failed to copy skill directory: {}", e))?;
+
+    info!(
+        "Copied skill '{}' from '{}' to '{}' (path: {:?})",
+        skill.name, source_agent, target_agent, target_skill_path
+    );
+
+    // 如果需要默认启用，则启用技能
+    if default_enabled {
+        // 释放锁后再调用 enable_skill，避免死锁
+        drop(settings);
+
+        // 调用启用逻辑
+        let mut settings = state
+            .settings_manager
+            .lock()
+            .map_err(|e| format!("Failed to acquire lock: {}", e))?;
+
+        enable_skill_internal(skill_id.clone(), Some(target_agent.clone()), &mut settings)?;
+
+        info!(
+            "Enabled skill '{}' for agent '{}' after copy",
+            skill.name, target_agent
+        );
+    }
+
+    Ok(skill.name.clone())
+}
+
+/// 内部启用技能逻辑（避免重复代码）
+fn enable_skill_internal(
+    skill_id: String,
+    agent: Option<String>,
+    settings: &mut crate::settings::AppSettingsManager,
+) -> Result<(), String> {
+    // 先收集需要启用的 agents
+    let target_agents = {
+        let config = settings.get_config();
+        if let Some(agent_name) = agent {
+            vec![agent_name]
+        } else {
+            // 如果没有指定 agent，则启用到所有已配置的 agents
+            config
+                .agents
+                .iter()
+                .filter(|a| a.enabled)
+                .map(|a| a.name.clone())
+                .collect()
+        }
+    };
+
+    for agent_name in target_agents {
+        // 检查 agent 是否启用
+        let agent_enabled = {
+            let config = settings.get_config();
+            let agent_config = config
+                .agents
+                .iter()
+                .find(|a| a.name == agent_name)
+                .ok_or_else(|| format!("Agent '{}' not found", agent_name))?;
+            agent_config.enabled
+        };
+
+        if !agent_enabled {
+            warn!("Agent '{}' is not enabled, skipping", agent_name);
+            continue;
+        }
+
+        // 添加到 open 列表
+        let skill_states = &mut settings.get_config_mut().skill_states;
+        let skill_state = skill_states
+            .get_mut(&skill_id)
+            .ok_or_else(|| format!("Skill '{}' not found in states", skill_id))?;
+
+        // 添加到 open 列表
+        if !skill_state.open.contains(&agent_name) {
+            skill_state.open.push(agent_name.clone());
+        }
+
+        info!("Enabled skill '{}' for agent '{}'", skill_id, agent_name);
+    }
+
+    settings
+        .save()
+        .map_err(|e| format!("Failed to save config: {}", e))?;
+
     Ok(())
 }

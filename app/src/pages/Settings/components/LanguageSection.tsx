@@ -14,8 +14,8 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-6 shadow-sm border border-[#e1e3e4] dark:border-dark-border">
-      <div className="mb-6">
+    <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[#e1e3e4] dark:border-dark-border">
+      <div className="mb-5">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Icon name="language" className="text-2xl text-slate-600 dark:text-gray-300" />
           {t('settings.language')}

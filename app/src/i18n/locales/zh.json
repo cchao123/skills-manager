@@ -49,7 +49,8 @@
     "mainToggle": {
       "allOn": "全部启用",
       "allOff": "全部关闭",
-      "nativeOnly": "仅原生目录启用：{{agents}}，点此可开启其他 Agent"
+      "nativeOnly": "仅原生目录启用：{{agents}}，点此可开启其他 Agent",
+      "allNative": "全部原生：所有 Agent 目录下都存在物理文件"
     },
     "toast": {
       "nativeAgentWarning": "属于 {{agent}} 原生目录，无法一键关闭",
@@ -136,6 +137,22 @@
       "dragImport": "拖拽导入「{{skill}}」到根目录",
       "enableAgent": "为 {{target}} 启用「{{skill}}」（来源：{{source}}）"
     },
+    "import": {
+      "fromOther": "从 Agent 导入到原生目录",
+      "hint": "复制技能到原生目录",
+      "title": "导入技能",
+      "subtitle": "从其他 Agent 选择技能导入到当前 Agent",
+      "selectSource": "选择源 Agent",
+      "selectAgentHint": "请先选择一个源 Agent",
+      "available": "可选技能",
+      "noSkills": "该 Agent 暂无可导入的技能",
+      "current": "当前 Agent 技能",
+      "noImported": "尚未导入任何技能",
+      "selectAll": "全选",
+      "deselectAll": "清空",
+      "defaultEnabled": "导入后默认开启",
+      "import": "导入"
+    },
     "viewFlat": "平铺展示",
     "viewBySource": "按来源展示",
     "viewSwitch": "切换视图",
@@ -146,7 +163,8 @@
       "title": "主开关状态",
       "off": "未启用",
       "nativeOnly": "仅原生目录启用",
-      "on": "部分或全部启用"
+      "on": "部分或全部启用",
+      "allNative": "全部原生：所有 Agent 目录下都存在物理文件"
     },
     "pinHelp": {
       "title": "卡片置顶标记",
