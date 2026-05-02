@@ -7,6 +7,16 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      keyframes: {
+        'drawer-in': {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        'drawer-out': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+      },
       colors: {
         // 保持原有的 Claude Code 风格配色
         gray: {

@@ -6,7 +6,7 @@
  */
 import type { MouseEventHandler } from 'react';
 
-export type MainToggleState = 'off' | 'nativeOnly' | 'on';
+export type MainToggleState = 'off' | 'nativeOnly' | 'on' | 'allNative';
 
 interface ToggleStyle {
   track: string;
@@ -30,10 +30,15 @@ const STYLE_MAP: Record<MainToggleState, ToggleStyle> = {
     thumbPosition: 'translate-x-4',
     thumbBg: 'bg-white',
   },
+  allNative: {
+    track: 'bg-amber-500 dark:bg-amber-600',
+    thumbPosition: 'translate-x-4',
+    thumbBg: 'bg-white',
+  },
 };
 
 /** 图例遍历顺序（保持和帮助弹层一致） */
-export const MAIN_TOGGLE_STATES: readonly MainToggleState[] = ['off', 'nativeOnly', 'on'] as const;
+export const MAIN_TOGGLE_STATES: readonly MainToggleState[] = ['off', 'nativeOnly', 'on', 'allNative'] as const;
 
 interface Props {
   state: MainToggleState;

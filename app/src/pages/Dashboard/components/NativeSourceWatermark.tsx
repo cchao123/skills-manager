@@ -16,10 +16,10 @@ interface NativeSourceWatermarkProps {
 /**
  * 来源水印：根据 skill 的来源在卡片右下角投一个淡淡的图标，体现"这条 skill 来自哪里"。
  *
- * 优先级（每次只显示一个）：
- * 1. `nativeAgents` 的第一个原生 agent → 该 agent 的 SVG 图标
- *    （因为 Root 通常是把原生目录复制 / 链接过来，原生来源更能代表 skill 的"出身"）
- * 2. 否则当 `inRoot === true` → 章鱼 logo（`OCTOPUS_LOGO_URL`），表示仅存在于根目录
+ * 显示规则：
+ * - Global tab：显示第一个原生 agent 的图标（可能有多个）
+ * - Agent tab（如 Cursor/Claude）：只显示当前 tab 的 agent 图标（如果该技能在此 agent 中是原生的）
+ * - 根目录：显示章鱼 logo（`OCTOPUS_LOGO_URL`）
  *
  * 使用要求：父容器需要 `position: relative` 且建议 `overflow-hidden`。
  * 自身 `pointer-events-none` 不阻挡交互。

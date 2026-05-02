@@ -89,7 +89,7 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
   };
 
   return (
-    <div className="flex items-center gap-3 h-11">
+    <div className="flex items-center gap-3 h-11" data-tauri-drag-region>
       <div className="relative">
         {/* 滑块式视图切换 */}
         <div className="relative flex items-center rounded-lg border border-[#e1e3e4] dark:border-dark-border bg-slate-100 dark:bg-dark-bg-tertiary p-0.5 h-9">
@@ -195,7 +195,6 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
           )}
         </div>
       )}
-      {!searchBarPrefs.showSearch && <div className="flex-1" />}
 
       {viewMode === VIEW_MODE.Flat && (
         <>

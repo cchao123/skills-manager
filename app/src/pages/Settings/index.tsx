@@ -78,7 +78,7 @@ function Settings() {
   return (
     <div className="h-full flex flex-col">
       {/* Tab bar - fixed outside scroll container */}
-      <div className="flex-shrink-0 px-8 pt-4 pb-3 bg-[#f8f9fa] dark:bg-dark-bg-secondary" data-tauri-drag-region>
+      <div className="flex-shrink-0 px-5 pt-6 pb-3 bg-[#f8f9fa] dark:bg-dark-bg-secondary" data-tauri-drag-region>
         <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-2 shadow-sm border border-[#e1e3e4] dark:border-dark-border flex gap-2">
           {tabs.map((tab) => (
             <button
@@ -100,11 +100,11 @@ function Settings() {
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto bg-[#f8f9fa] dark:bg-dark-bg-secondary flex flex-col">
         {activeTab === TAB_TYPE.About ? (
-          <div className="flex-1 p-8 flex flex-col">
+          <div className="flex-1 px-5 py-1 flex flex-col">
             <AboutSection />
           </div>
         ) : (
-          <div className="px-8 pt-3 pb-8 space-y-6">
+          <div className="px-5 pt-1 pb-8 space-y-6">
             {activeTab === TAB_TYPE.General && (
               <>
                 <LanguageSection

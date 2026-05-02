@@ -357,7 +357,7 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
       {/* Manage Agents Modal */}
       {manageOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-[2px] z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/10 backdrop-blur-[2px] flex items-center justify-center p-4"
           onClick={() => setManageOpen(false)}
         >
           <div

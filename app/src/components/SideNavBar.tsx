@@ -46,22 +46,19 @@ export default function SideNavBar({ isCollapsed, onToggleCollapse }: SideNavBar
 
   return (
     <aside
-      className={`h-screen fixed left-0 top-0 bg-[#edeeef] dark:bg-dark-bg flex flex-col pt-14 pb-8 z-50 border-r border-[#e1e3e4] dark:border-dark-border ${
-        isCollapsed ? 'w-20 px-2' : 'w-64 px-4'
+      className={`h-screen bg-[#edeeef] dark:bg-dark-bg flex flex-col pt-14 pb-8 z-50 border-r border-[#e1e3e4] dark:border-dark-border shrink-0 relative ${
+        isCollapsed ? 'w-20 px-3' : 'w-55 px-4'
       }`}
+      data-tauri-drag-region
     >
-      {/* Drag region for window movement */}
-      <div
-        className="absolute top-0 left-0 right-0 h-14"
-        data-tauri-drag-region
-      />
+      {/* 顶部拖动区域已被容器的 data-tauri-drag-region 覆盖 */}
       <AppInfo
         isCollapsed={isCollapsed}
         onClick={handleLogoClick}
         title={t('settings.tabAbout')}
       />
 
-      <nav className="flex-1 space-y-2">
+      <nav className="flex-1 space-y-2" data-tauri-drag-region>
         {navItems.map((item) => (
           <NavLink
             key={item.id}
@@ -89,12 +86,7 @@ export default function SideNavBar({ isCollapsed, onToggleCollapse }: SideNavBar
       {/* Collapse Toggle Button - Fixed on the right edge */}
       <button
         onClick={onToggleCollapse}
-        className="fixed top-1/2 -translate-y-1/2 w-4 h-10 rounded-lg bg-white dark:bg-dark-bg-card shadow-md flex items-center justify-center z-50 border border-transparent dark:border-dark-border"
-        style={{
-          left: isCollapsed ? '80px' : '256px',
-          transform: 'translate(-50%, -50%)',
-          boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.1)',
-        }}
+        className="absolute top-1/2 -translate-y-1/2 -right-2 w-4 h-10 rounded-lg bg-white dark:bg-dark-bg-card shadow-md flex items-center justify-center z-50 border border-transparent dark:border-dark-border"
         title={isCollapsed ? t('nav.expand') : t('nav.collapse')}
       >
         <Icon name={isCollapsed ? 'chevron_right' : 'chevron_left'} className="text-gray-400 dark:text-gray-500 text-xl" />

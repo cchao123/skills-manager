@@ -28,11 +28,13 @@ import { ImportingOverlay } from '@/pages/Dashboard/components/ImportingOverlay'
 import { DeleteConfirmModal } from '@/pages/Dashboard/components/DeleteConfirmModal';
 import { EmptyView } from '@/pages/Dashboard/components/EmptyView';
 import { SkillDetailModal } from '@/pages/Dashboard/components/SkillDetailModal';
+import { PlusCard } from '@/pages/Dashboard/components/PlusCard';
+import { SkillImportModal } from '@/pages/Dashboard/components/SkillImportModal';
+import { getAgentIcon, needsInvertInDark } from '@/pages/Dashboard/utils/agentHelpers';
 import { getSkillIcon, getSkillColor } from '@/pages/Dashboard/utils/skillHelpers';
 import MarketplaceSkillCard from '@/pages/Dashboard/components/MarketplaceSkillCard';
 import { CardContextMenu } from '@/pages/Dashboard/components/CardContextMenu';
-import { agentsApi, pinApi } from '@/api/tauri';
-import { getAgentIcon, needsInvertInDark } from '@/pages/Dashboard/utils/agentHelpers';
+import { skillsApi, agentsApi, pinApi } from '@/api/tauri';
 import { SOURCE, sourceDisplayName, isSource } from '@/pages/Dashboard/utils/source';
 import { useVisibleAgents } from '@/pages/Dashboard/hooks/useVisibleAgents';
 import { VIEW_MODE, type ViewMode, isViewMode } from '@/pages/Dashboard/constants/viewMode';
@@ -89,6 +91,8 @@ function Dashboard({
   const [deleteTarget, setDeleteTarget] = useState<SkillMetadata | null>(null);
   /** 删除是否来自"根目录 tab 的卡片"：true = 仅单行删除中央存储副本；false = 多源展开 */
   const [deleteTargetFromRoot, setDeleteTargetFromRoot] = useState(false);
+  /** 跨 Agent 技能导入弹窗状态 */
+  const [showImportModal, setShowImportModal] = useState(false);
   const [selectedSource, setSelectedSource] = useState<string>(() => readPersistedSelectedSource());
   const [githubTipDismissed, setGithubTipDismissed] = useState(
     () => sessionStorage.getItem(SESSION_STORAGE_KEYS.githubTipDismissed) === 'true'
@@ -392,6 +396,38 @@ function Dashboard({
     await refreshSkills();
   };
 
+  // 处理跨 Agent 技能导入
+  const handleImportSkills = async (importedSkills: SkillMetadata[], defaultEnabled: boolean) => {
+    try {
+      const targetAgent = selectedSource;
+
+      for (const skill of importedSkills) {
+        // 找到该技能在源 Agent 中的路径
+        const sourceAgent = skill.sources.find(s => s !== SOURCE.Global && s !== targetAgent);
+
+        if (!sourceAgent) {
+          console.warn(`技能 ${skill.name} 没有找到有效的源 Agent`);
+          continue;
+        }
+
+        // 调用复制 API
+        const result = await skillsApi.copyToAgent(skill.id, sourceAgent, targetAgent, defaultEnabled);
+        console.log(`成功复制技能: ${result}`);
+      }
+
+      showToast(
+        'success',
+        t('dashboard.toast.importSkillsSuccess', { count: importedSkills.length })
+      );
+
+      // 导入后刷新技能列表
+      await refreshSkills();
+    } catch (error) {
+      console.error('导入失败:', error);
+      showToast('error', t('common.error'));
+    }
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -437,7 +473,7 @@ function Dashboard({
       {/* 搜索栏 - 固定；overflow-visible 供统计条 hover 气泡向上伸出
           原 PageHeader 已移除，此处增加 data-tauri-drag-region 以保留窗口拖拽 */}
       <div
-        className="overflow-visible bg-[#f8f9fa] dark:bg-dark-bg-secondary px-8 pt-5 pb-4"
+        className="overflow-visible bg-[#f8f9fa] dark:bg-dark-bg-secondary px-5 pt-5 pb-4"
         data-tauri-drag-region
       >
         <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-screen-2xl mx-auto">
@@ -492,7 +528,7 @@ function Dashboard({
       </div>
 
       {/* 内容区域 - 可滚动；底部加 pb-6 防止最后一行卡片贴到窗口底边 */}
-      <div className={`relative flex-1 overflow-y-auto bg-[#f8f9fa] dark:bg-dark-bg-secondary pb-6 ${isDragOver ? 'px-0 border-4 border-[#b71422] bg-white/90 dark:bg-dark-bg-primary rounded-xl mx-8' : 'px-8'}`}>
+      <div className={`relative flex-1 overflow-y-auto bg-[#f8f9fa] dark:bg-dark-bg-secondary pb-6 ${isDragOver ? 'px-0 border-4 border-[#b71422] bg-white/90 dark:bg-dark-bg-primary rounded-xl mx-8' : 'px-5'}`}>
         <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-screen-2xl mx-auto">
           {viewMode === VIEW_MODE.Flat && (
             <>
@@ -528,12 +564,23 @@ function Dashboard({
               <div className="space-y-6 pb-8">
                 {/* Skills Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+                  {/* Plus Card - First in grid when not Global source */}
+                  {selectedSource !== SOURCE.Global && (
+                    <PlusCard
+                      agents={agents}
+                      currentAgent={selectedSource}
+                      onOpen={() => setShowImportModal(true)}
+                    />
+                  )}
                   {marketplaceSkills.map((skill, idx) => {
                     const originalSkill = filteredBySource[idx];
 
                     // 浮层需要的数据：每个 Agent 的开启情况，以及原生副本所在 Agent
+                    // 在 Agent 视图中，只显示当前选中的 agent 作为水印
                     const nativeAgentSet = new Set(
-                      (originalSkill?.sources ?? []).filter(s => s !== SOURCE.Global)
+                      selectedSource === SOURCE.Global
+                        ? (originalSkill?.sources ?? []).filter(s => s !== SOURCE.Global)
+                        : (originalSkill?.sources ?? []).includes(selectedSource) ? [selectedSource] : []
                     );
 
                     // 基础props：始终存在
@@ -708,8 +755,17 @@ function Dashboard({
               {marketplaceSkills.length > 0 && selectedSource !== SOURCE.Global && (() => {
                 const path = getAgentRootPath(selectedSource);
                 return path ? (
-                  <p className="mt-3 text-[11px] text-slate-400 dark:text-gray-600">
-                    {t('dashboard.agentSourcePath')}
+                  <p className="mt-3 text-[11px] text-slate-400 dark:text-gray-400 flex items-center gap-1.5">
+                    {getAgentIcon(selectedSource) ? (
+                      <img
+                        src={getAgentIcon(selectedSource)}
+                        alt={selectedSource}
+                        className={`w-3.5 h-3.5 object-contain ${needsInvertInDark(selectedSource) ? 'dark:invert' : ''}`}
+                      />
+                    ) : (
+                      <img src={OCTOPUS_LOGO_URL} alt="Skills Manager" className="w-3.5 h-3.5" />
+                    )}
+                    <span>{t('dashboard.agentSourcePath')}</span>
                     <span
                       className="cursor-pointer hover:underline font-mono hover:text-slate-500 dark:hover:text-gray-400"
                       onClick={() => agentsApi.openFolderPath(path).catch(() => { })}
@@ -769,6 +825,19 @@ function Dashboard({
           setDeleteTargetFromRoot(false);
         }}
       />
+
+      {/* Skill Import Modal */}
+      {showImportModal && (
+        <SkillImportModal
+          isOpen={showImportModal}
+          onClose={() => setShowImportModal(false)}
+          agents={agents}
+          currentAgent={selectedSource}
+          allSkills={skills}
+          currentAgentSkills={filteredBySource}
+          onImport={handleImportSkills}
+        />
+      )}
 
       {helpPopover.open &&
         helpPopover.anchor &&

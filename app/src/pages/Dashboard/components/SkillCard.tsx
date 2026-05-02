@@ -47,19 +47,29 @@ export const SkillCard: React.FC<SkillCardProps> = ({
   const togglableEnabledCount = togglableAgents.filter(a => skill.agent_enabled[a.name]).length;
 
   // 样式映射与图例共享在 MainToggleIndicator 内，这里只负责状态推导
+  // 添加第四种状态：allNative - 所有检测到的 agents 都是原生目录
+  const allDetectedAreNative =
+    detectedAgents.length > 0 &&
+    detectedAgents.length === nativeAgents.size &&
+    detectedAgents.every(agent => nativeAgents.has(agent.name));
+
   const mainToggleState: MainToggleState =
-    togglableEnabledCount > 0
-      ? 'on'
-      : enabledCount > 0
-        ? 'nativeOnly'
-        : 'off';
+    allDetectedAreNative
+      ? 'allNative'
+      : togglableEnabledCount > 0
+        ? 'on'
+        : enabledCount > 0
+          ? 'nativeOnly'
+          : 'off';
 
   const mainToggleTitle =
     mainToggleState === 'off'
       ? t('dashboard.mainToggle.allOff')
       : mainToggleState === 'nativeOnly'
         ? t('dashboard.mainToggle.nativeOnly', { agents: detectedNativeAgents.join('、') })
-        : t('dashboard.mainToggle.allOn');
+        : mainToggleState === 'allNative'
+          ? t('dashboard.mainToggle.allNative')
+          : t('dashboard.mainToggle.allOn');
 
   const handleMainToggle = () => onToggleSkill(skill);
   const handleAgentToggle = (agentName: string, e?: React.MouseEvent<HTMLButtonElement>) =>

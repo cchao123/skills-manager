@@ -73,7 +73,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
       {/* Toast container — top-right stacked */}
-      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col-reverse items-end gap-3 pointer-events-none w-[360px]">
+      <div className="fixed top-20 right-6 z-[9999] flex flex-col items-end gap-3 pointer-events-none w-[360px]">
         {toasts.map(toast => {
           const cfg = typeConfig[toast.type];
           const isCompact = !toast.description && toast.type === TOAST_TYPE.Info;

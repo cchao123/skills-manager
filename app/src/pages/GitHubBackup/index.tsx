@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/components/Toast';
+import { Icon } from '@/components/Icon';
 import { agentsApi } from '@/api/tauri';
 import { useGitHubConfig } from './hooks/useGitHubConfig';
 import { useGitHubActions } from './hooks/useGitHubActions';
@@ -44,21 +45,32 @@ function GitHubBackup() {
   if (loading) {
     return (
       <div className="h-full flex flex-col">
-        <div className="h-4 flex-shrink-0" data-tauri-drag-region />
+        <div className="flex-shrink-0 overflow-visible bg-[#f8f9fa] dark:bg-dark-bg-secondary px-4 pt-5 pb-4" data-tauri-drag-region></div>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-200 dark:border-dark-bg-tertiary border-t-[#b71422] mb-4"></div>
             <p className="text-slate-500 dark:text-gray-300 font-medium">{t('common.loading')}</p>
           </div>
         </div>
+        {/* 右下角悬浮按钮（FAB） */}
+        <button
+          onClick={() => agentsApi.openFolder().catch(() => {})}
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-white dark:bg-dark-bg-card shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110"
+          title={t('githubBackup.buttons.openLocal')}
+        >
+          <Icon name="folder_open" className="text-xl text-slate-600 dark:text-gray-300" />
+        </button>
       </div>
     );
   }
 
   return (
     <div className="h-full flex flex-col">
+      {/* 顶部操作栏 */}
+      <div className="flex-shrink-0 overflow-visible bg-[#f8f9fa] dark:bg-dark-bg-secondary px-5 pt-4 pb-2" data-tauri-drag-region></div>
+
       <div className="flex-1 overflow-y-auto bg-[#f8f9fa] dark:bg-dark-bg-secondary">
-        <div className="px-6 pt-3 pb-6 space-y-4" data-tauri-drag-region>
+        <div className="px-5 pb-6 space-y-4" data-tauri-drag-region>
           {/* GitHub Repository Configuration Form */}
           <Collapse
             maxHeight="600px"
@@ -91,7 +103,6 @@ function GitHubBackup() {
               syncing={syncing}
               onTest={handleTestConnection}
               onEdit={() => setConnected(false)}
-              onOpenFolder={() => agentsApi.openFolder().catch(() => {})}
               onRestore={async (overwriteLocal) => {
                 if (!connected) {
                   showToast('warning', t('githubBackup.messages.testFirst'));
@@ -123,6 +134,15 @@ function GitHubBackup() {
           <Shared owner={repoConfig.owner} repo={repoConfig.repo} />
         </div>
       </div>
+
+      {/* 右下角悬浮按钮（FAB） */}
+      <button
+        onClick={() => agentsApi.openFolder().catch(() => {})}
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-white dark:bg-dark-bg-card shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110"
+        title={t('githubBackup.buttons.openLocal')}
+      >
+        <Icon name="folder_open" className="text-xl text-slate-600 dark:text-gray-300" />
+      </button>
     </div>
   );
 }
