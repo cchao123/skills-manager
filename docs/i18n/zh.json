@@ -23,7 +23,7 @@
     "sub": "统一扫描本地 Skills，跨 Agent 分发，并通过 GitHub 完成备份与恢复。<br />把零散的技能目录收成一套可复用、可迁移的仓库。",
     "ctaDownload": "在 GitHub 下载",
     "ctaSource": "查看源码",
-    "previewBadge": "Live 预览 · 只读",
+    "previewBadge": "Live 预览",
     "previewSkeleton": "正在加载 Skills Manager 演示…",
     "previewTitle": "Skills Manager · 在线 Live 体验",
     "previewHint": "这是沙盒里的真实界面预览，不会读写你本地的 Skills。"

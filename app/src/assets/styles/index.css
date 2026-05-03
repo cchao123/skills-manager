@@ -139,6 +139,34 @@ select:focus {
   animation: toast-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
+/* Drawer/Slide-up animation */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Slide-in from right animation */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* Hide scrollbars but keep scroll functionality */
 *:not([data-tauri-drag-region]) {
   scrollbar-width: none;

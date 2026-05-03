@@ -81,6 +81,10 @@
         background: rgba(255, 255, 255, 0.82);
         backdrop-filter: saturate(160%) blur(18px);
         border-bottom: 1px solid var(--panel-border);
+        transition: transform 0.3s ease;
+      }
+      .nav.nav-hidden {
+        transform: translateY(-100%);
       }
       .nav-inner {
         display: flex; align-items: center; justify-content: space-between;
@@ -285,7 +289,7 @@
         position: relative;
         width: 100%;
         /* 预览是一个完整应用，给够空间展示 SideNavBar + Dashboard 主区域 */
-        height: clamp(520px, 68vh, 720px);
+        height: clamp(650px, 80vh, 900px);
         border-radius: 12px;
         overflow: hidden;
         background: #f8f9fa;
@@ -314,7 +318,7 @@
       }
       .hero-preview .preview-badge {
         position: absolute;
-        top: 14px; left: 14px;
+        top: 4px; left: 8px;
         z-index: 2;
         display: inline-flex; align-items: center; gap: 6px;
         padding: 6px 12px;
@@ -339,7 +343,7 @@
       }
 
       @media (max-width: 768px) {
-        .hero-preview .preview-frame-wrap { height: 460px; }
+        .hero-preview .preview-frame-wrap { height: 550px; }
       }
 
       /* 轻量提示：告知用户 iframe 只是 UI 演示，不会操作真实数据 */
@@ -554,7 +558,7 @@
 
         <div class="hero-preview">
           <div class="preview-frame-wrap" data-preview-embed>
-            <span class="preview-badge">Live Preview · Read-only</span>
+            <span class="preview-badge">Live Preview</span>
             <div class="preview-skeleton" data-preview-skeleton>Loading the Skills Manager demo…</div>
             <iframe
               class="preview-frame"
@@ -790,6 +794,60 @@
     </footer>
 
     <script>
+      /**
+       * 智能导航栏：向下滚动隐藏，向上滚动显示
+       */
+      (function initSmartNav() {
+        const nav = document.querySelector('.nav');
+        if (!nav) return;
+
+        let lastScrollY = 0;
+        let scrollThreshold = 100; // 滚动超过 100px 才触发隐藏逻辑
+        let isNavHidden = false;
+
+        function updateNav() {
+          const currentScrollY = window.scrollY;
+
+          // 在顶部时始终显示导航栏
+          if (currentScrollY <= 0) {
+            nav.classList.remove('nav-hidden');
+            isNavHidden = false;
+            lastScrollY = currentScrollY;
+            return;
+          }
+
+          // 只有滚动超过阈值才触发
+          if (Math.abs(currentScrollY - lastScrollY) < 10) return;
+
+          // 向下滚动：隐藏导航栏
+          if (currentScrollY > lastScrollY && currentScrollY > scrollThreshold && !isNavHidden) {
+            nav.classList.add('nav-hidden');
+            isNavHidden = true;
+          }
+          // 向上滚动：显示导航栏
+          else if (currentScrollY < lastScrollY && isNavHidden) {
+            nav.classList.remove('nav-hidden');
+            isNavHidden = false;
+          }
+
+          lastScrollY = currentScrollY;
+        }
+
+        // 使用 requestAnimationFrame 节流
+        let ticking = false;
+        function onScroll() {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              updateNav();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+      })();
+
       /**
        * 把嵌入的 Live Preview 应用的语言同步成当前官网语言。
        *

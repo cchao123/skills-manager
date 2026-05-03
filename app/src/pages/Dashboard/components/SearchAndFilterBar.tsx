@@ -52,6 +52,10 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
   const { prefs: searchBarPrefs } = useSearchBarPrefs();
   const detectedAgents = useDetectedAgents(agents);
 
+  // 检测操作系统以显示正确的快捷键
+  const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const shortcutKey = isMac ? '⌘' : 'Ctrl';
+
   // 隐藏搜索框时同时清空已输入的关键字，避免出现"看不到输入但仍在过滤"的隐式状态
   useEffect(() => {
     if (!searchBarPrefs.showSearch && searchTerm) {
@@ -109,7 +113,7 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
             </button>
             <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 z-[9999] pointer-events-none hidden group-hover:block">
               <div className="whitespace-nowrap rounded-lg bg-slate-800 dark:bg-slate-700 text-white text-xs font-medium px-2.5 py-1 shadow-lg">
-                {t('dashboard.viewFlat')}
+                {t('dashboard.viewFlat')} {shortcutKey}1
               </div>
             </div>
           </div>
@@ -123,7 +127,7 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
             </button>
             <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 z-[9999] pointer-events-none hidden group-hover:block">
               <div className="whitespace-nowrap rounded-lg bg-slate-800 dark:bg-slate-700 text-white text-xs font-medium px-2.5 py-1 shadow-lg">
-                {t('dashboard.viewBySource')}
+                {t('dashboard.viewBySource')} {shortcutKey}2
               </div>
             </div>
           </div>
@@ -163,9 +167,10 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
             {searchTerm && (
               <button
                 onClick={() => onSearchChange('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-gray-200"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-dark-bg-tertiary transition-colors flex-shrink-0"
+                title={t('dashboard.search.clear')}
               >
-                <Icon name="close" className="text-lg" />
+                <Icon name="close" className="text-slate-400 dark:text-gray-500 text-sm" />
               </button>
             )}
           </div>

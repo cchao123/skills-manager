@@ -14,8 +14,8 @@ import type { SkillMetadata, AppConfig, AgentConfig, GitHubConfig, SkillFileEntr
 import { PREVIEW_SKILLS, PREVIEW_SKILL_CONTENT } from '../data/skills';
 import { PREVIEW_AGENTS, PREVIEW_APP_CONFIG } from '../data/agents';
 
-const STORAGE_KEY = 'preview:skills-v1';
-const CONFIG_KEY = 'preview:config-v1';
+const STORAGE_KEY = 'preview:skills-v2';
+const CONFIG_KEY = 'preview:config-v2';
 
 type State = {
   skills: SkillMetadata[];
@@ -214,6 +214,20 @@ const handlers: Record<string, (args: Record<string, unknown>) => unknown | Prom
   },
   set_skill_hide_prefixes: ({ prefixes }) => {
     state.config.skill_hide_prefixes = (prefixes as string[]) ?? [];
+    persist();
+    return simulateLatency(undefined);
+  },
+  get_pinned_skills: () => simulateLatency(state.config.pinned_skills ?? []),
+  set_skill_pinned: ({ skillId, pinned }) => {
+    const id = String(skillId);
+    const current = state.config.pinned_skills ?? [];
+    if (pinned) {
+      if (!current.includes(id)) {
+        state.config.pinned_skills = [...current, id];
+      }
+    } else {
+      state.config.pinned_skills = current.filter((x) => x !== id);
+    }
     persist();
     return simulateLatency(undefined);
   },

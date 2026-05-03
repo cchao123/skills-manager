@@ -26,7 +26,7 @@ interface SkillDetailModalProps {
   onToggleFolder: (path: string) => void;
   onReadFile: (path: string) => void;
   onToggleAgent: (skill: SkillMetadata, agentName: string, e?: React.MouseEvent<HTMLButtonElement>) => void;
-  onDelete?: () => void;
+  onDelete: () => void;
   onResizeStart: (e: React.MouseEvent) => void;
 }
 
@@ -105,15 +105,13 @@ export const SkillDetailModal: React.FC<SkillDetailModalProps> = ({
         >
           {/* Action buttons */}
           <div className="absolute top-4 right-4 flex items-center gap-2">
-            {onDelete && (
-              <button
-                onClick={onDelete}
-                className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                title={t('dashboard.detail.deleteSkill')}
-              >
-                <Icon name="delete" className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400" />
-              </button>
-            )}
+            <button
+              onClick={onDelete}
+              className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+              title={t('dashboard.detail.deleteSkill')}
+            >
+              <Icon name="delete" className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400" />
+            </button>
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors"

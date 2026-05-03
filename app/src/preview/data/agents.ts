@@ -32,18 +32,11 @@ export const PREVIEW_AGENTS: AgentConfig[] = [
     enabled: true,
     detected: true,
   },
-  {
-    name: 'openclaw',
-    display_name: 'OpenClaw',
-    path: '~/.openclaw',
-    skills_path: 'skills',
-    enabled: true,
-    detected: true,
-  },
 ];
 
 export const PREVIEW_APP_CONFIG: AppConfig = {
   linking_strategy: LINK_TYPE.Symlink,
   agents: PREVIEW_AGENTS,
   skill_hide_prefixes: [],
+  pinned_skills: ['pinned-demo'],
 };

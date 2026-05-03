@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { AgentConfig } from '@/types';
+import { getAgentDisplayName } from '@/constants';
+import { SOURCE } from '@/pages/Dashboard/utils/source';
 
 import { Icon } from '@/components/Icon';
 
@@ -12,6 +14,15 @@ interface PlusCardProps {
 export const PlusCard: React.FC<PlusCardProps> = ({ agents, currentAgent, onOpen }) => {
   const { t } = useTranslation();
 
+  // 根据当前 source 获取目标名称
+  const getTargetName = () => {
+    if (currentAgent === SOURCE.Global) {
+      return t('dashboard.source.global');
+    }
+    const agent = agents.find(a => a.name === currentAgent);
+    return agent ? agent.display_name : currentAgent;
+  };
+
   return (
     <div
       onClick={onOpen}
@@ -21,10 +32,10 @@ export const PlusCard: React.FC<PlusCardProps> = ({ agents, currentAgent, onOpen
         <Icon name="add" className="text-3xl text-slate-400 dark:text-gray-500 group-hover:text-[#b71422] transition-colors" />
       </div>
       <p className="text-sm font-medium text-slate-600 dark:text-gray-300 group-hover:text-[#b71422] transition-colors">
-        {t('dashboard.import.fromOther')}
+        从其他 Agent 导入到 {getTargetName()}
       </p>
       <p className="text-xs text-slate-400 dark:text-gray-500 mt-1">
-        {t('dashboard.import.hint')}
+        点击选择要导入的技能
       </p>
     </div>
   );
