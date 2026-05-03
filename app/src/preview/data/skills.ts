@@ -4,7 +4,7 @@ import type { SkillMetadata } from '@/types';
  * Preview 模式预设技能。
  *
  * 选取原则：
- * - 覆盖所有 source（global/root、claude、cursor、codex、openclaw）
+ * - 覆盖所有 source（global/root、claude、cursor、codex）
  * - 覆盖所有主开关状态（off / nativeOnly / on）
  * - 内容贴合真实用户的 skills 生态（lark-*、create-*、canvas 等）
  * - 数量控制在 ~15，首屏一次加载完毕，凸显列表 + 分组交互
@@ -24,6 +24,7 @@ const mk = (partial: Partial<SkillMetadata> & Pick<SkillMetadata, 'id' | 'name' 
   category: partial.category ?? 'general',
   enabled: partial.enabled ?? false,
   agent_enabled: partial.agent_enabled ?? {},
+  is_collected: partial.is_collected,
   author: partial.author,
   version: partial.version ?? '1.0.0',
   size: partial.size,
@@ -36,6 +37,19 @@ const mk = (partial: Partial<SkillMetadata> & Pick<SkillMetadata, 'id' | 'name' 
 });
 
 export const PREVIEW_SKILLS: SkillMetadata[] = [
+  mk({
+    id: 'pinned-demo',
+    name: 'pinned-demo',
+    description: '这是一个置顶 skill，右键可取消置顶',
+    category: 'demo',
+    author: 'demo',
+    sources: ['global'],
+    is_collected: true,
+    size: 1_000,
+    installed_at: daysAgo(1),
+    last_updated: daysAgo(0),
+    
+  }),
   mk({
     id: 'canvas',
     name: 'canvas',
@@ -263,7 +277,7 @@ ${skill.description}
 ## 下载桌面版体验完整功能
 
 - 一键开关：把技能链接 / 复制到任意 AI Agent 原生目录
-- 多 Agent 联动：同一条技能同步到 Claude Code / Cursor / Codex / OpenClaw
+- 多 Agent 联动：同一条技能同步到 Claude Code / Cursor / Codex
 - GitHub 备份：技能库一键推送到你自己的私有仓库
 
 ---

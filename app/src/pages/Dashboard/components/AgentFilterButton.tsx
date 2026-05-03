@@ -165,10 +165,28 @@ export const AgentFilterButton: React.FC<AgentFilterButtonProps> = ({
             {t('dashboard.agentFilter.all')}
           </span>
         )}
-        <Icon
-          name="expand_more"
-          className="text-base text-slate-400 dark:text-gray-500"
-        />
+        {selectedOption ? (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect('');
+            }}
+            onMouseEnter={(e) => {
+              e.stopPropagation();
+              cancelClose();
+            }}
+            className="w-5 h-5 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-dark-bg-tertiary transition-colors flex-shrink-0"
+            title={t('dashboard.agentFilter.clear')}
+          >
+            <Icon name="close" className="text-slate-400 dark:text-gray-500 text-sm" />
+          </button>
+        ) : (
+          <Icon
+            name="expand_more"
+            className="text-base text-slate-400 dark:text-gray-500"
+          />
+        )}
         {selectedOption && (
           <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#b71422] border-2 border-white dark:border-dark-bg-secondary" />
         )}

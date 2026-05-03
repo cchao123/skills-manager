@@ -139,6 +139,7 @@
     },
     "import": {
       "fromOther": "从 Agent 导入到原生目录",
+      "fromOtherRepo": "从其他仓库导入",
       "hint": "复制技能到原生目录",
       "title": "导入技能",
       "subtitle": "从其他 Agent 选择技能导入到当前 Agent",

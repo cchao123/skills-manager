@@ -185,6 +185,28 @@ function Dashboard({
     onViewModeChange(isViewMode(mode) ? mode : VIEW_MODE.Flat);
   };
 
+  // 键盘快捷键：Command/Ctrl + 1/2 切换视图
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 检查是否按下了 Command (Mac) 或 Ctrl (Windows/Linux)
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+
+      if (!isCmdOrCtrl) return;
+
+      // 检查是否按下了数字键
+      if (e.key === '1') {
+        e.preventDefault();
+        onViewModeChange(VIEW_MODE.Flat);
+      } else if (e.key === '2') {
+        e.preventDefault();
+        onViewModeChange(VIEW_MODE.Agent);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onViewModeChange]);
+
   // Custom hooks
   const { skills, setSkills, agents: rawAgents, loading, error, loadSkills, refreshSkills, loadAgents } = useSkillData();
   const agents = useMemo(() => sortAgentsByStoredOrder(rawAgents), [rawAgents]);
@@ -564,8 +586,8 @@ function Dashboard({
               <div className="space-y-6 pb-8">
                 {/* Skills Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-                  {/* Plus Card - First in grid when not Global source */}
-                  {selectedSource !== SOURCE.Global && (
+                  {/* Plus Card - First in grid when not Global source and has skills */}
+                  {selectedSource !== SOURCE.Global && marketplaceSkills.length > 0 && (
                     <PlusCard
                       agents={agents}
                       currentAgent={selectedSource}
@@ -657,11 +679,25 @@ function Dashboard({
                 {marketplaceSkills.length === 0 && (
                   <div className="max-w-6xl mx-auto flex flex-col items-center justify-center py-20 gap-4">
                     <Icon name="search_off" className="text-6xl text-gray-300 dark:text-gray-600" />
-                    <p className="text-slate-500 dark:text-gray-400 font-medium">
-                      {searchTerm
-                        ? t('dashboard.noSkillsInSourceSearch', { keyword: searchTerm })
-                        : t('dashboard.noSkillsInSource')}
-                    </p>
+                    <div className="flex flex-col items-center gap-2">
+                      <p className="text-slate-500 dark:text-gray-400 font-medium">
+                        {searchTerm
+                          ? t('dashboard.noSkillsInSourceSearch', { keyword: searchTerm })
+                          : t('dashboard.noSkillsInSource')}
+                      </p>
+                      <div className="flex items-center gap-2 text-sm text-slate-400 dark:text-gray-500">
+                        <span>可从其他 agent 导入</span>
+                        <button
+                          onClick={() => setShowImportModal(true)}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-dark-bg-card border border-slate-200 dark:border-dark-border rounded-lg hover:border-[#b71422]/40 hover:bg-slate-50 dark:hover:bg-dark-bg-tertiary transition-all group"
+                        >
+                          <Icon name="add" className="text-base text-slate-400 dark:text-gray-500 group-hover:text-[#b71422] transition-colors" />
+                          <span className="text-slate-600 dark:text-gray-300 group-hover:text-[#b71422] font-medium transition-colors">
+                            导入技能
+                          </span>
+                        </button>
+                      </div>
+                    </div>
                     {selectedSource === SOURCE.Global && (
                       <div className="flex items-center gap-2">
                         <img src={OCTOPUS_LOGO_URL} alt="Skills Manager" className="w-4 h-4 flex-shrink-0" />
@@ -800,10 +836,10 @@ function Dashboard({
           onToggleFolder={toggleFolder}
           onReadFile={handleReadFile}
           onToggleAgent={handleToggleAgentMerged}
-          onDelete={((detailSkillLive.sources ?? []).includes(SOURCE.Global) || advancedMode) ? () => {
+          onDelete={() => {
             setDeleteTargetFromRoot(false);
             setDeleteTarget(detailSkillLive);
-          } : undefined}
+          }}
           onResizeStart={handleMouseDown}
         />
       )}

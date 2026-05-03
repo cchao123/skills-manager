@@ -23,7 +23,7 @@
     "sub": "Scan local Skills in one place, distribute them across agents, and back them up with GitHub.<br />Turn scattered skill folders into a reusable, portable library.",
     "ctaDownload": "Download on GitHub",
     "ctaSource": "View Source",
-    "previewBadge": "Live Preview · Read-only",
+    "previewBadge": "Live Preview",
     "previewSkeleton": "Loading the Skills Manager demo…",
     "previewTitle": "Skills Manager · Live UI Experience",
     "previewHint": "This sandbox preview shows the real UI and won't read or touch your local Skills."

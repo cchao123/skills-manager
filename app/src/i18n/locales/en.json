@@ -139,6 +139,7 @@
     },
     "import": {
       "fromOther": "Import from Agent to Native Directory",
+      "fromOtherRepo": "Import from Other Repository",
       "hint": "Copy skills to native directory",
       "title": "Import Skills",
       "subtitle": "Select skills from other agents to import into current agent",
