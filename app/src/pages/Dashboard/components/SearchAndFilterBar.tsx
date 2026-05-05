@@ -250,7 +250,7 @@ const FilterDropdownContent: React.FC<FilterDropdownContentProps> = ({
 }) => {
   const { t } = useTranslation();
   const visibleCount = skills.filter((s) => !matchesAnyPrefix(s.name, prefixes)).length;
-  const isPartial = prefixes.length > 0 && visibleCount < skills.length;
+  const _isPartial = prefixes.length > 0 && visibleCount < skills.length;
   const [draft, setDraft] = useState('');
   const inputRef = React.useRef<HTMLInputElement>(null);
 

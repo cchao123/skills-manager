@@ -86,7 +86,7 @@ export const useVersionCheck = (autoCheck = true) => {
     async () => {
       const release = await fetchLatestRelease();
       let tag: string | null = null;
-      let url = GITHUB_URLS.RELEASES;
+      let url: string = GITHUB_URLS.RELEASES;
       if (release) {
         tag = release.tag;
         url = release.url;
