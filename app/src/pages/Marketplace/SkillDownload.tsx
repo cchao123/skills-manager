@@ -969,17 +969,9 @@ export default function SkillDownload() {
               onToggleFolder={toggleFolder}
               onReadFile={handleReadFile}
               onToggleAgent={handleToggleAgentLocal}
-              onDelete={async () => {
-                const target = localDetailSkillLive ?? lastLocalSkillRef.current;
-                if (!target) return;
-                try {
-                  await invoke('delete_skill', { skillId: target.id });
-                  showToast('success', t('skillDownload.toast.uninstalled', { name: target.name }));
-                  handleCloseDetailModal();
-                  refreshInstalled();
-                } catch (error) {
-                  showToast('error', t('skillDownload.toast.uninstallFailed', { error: String(error) }));
-                }
+              onDeleteSuccess={() => {
+                handleCloseDetailModal();
+                refreshInstalled();
               }}
               onResizeStart={handleMouseDown}
             />

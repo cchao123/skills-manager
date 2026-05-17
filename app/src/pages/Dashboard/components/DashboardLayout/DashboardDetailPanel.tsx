@@ -17,8 +17,6 @@ interface DashboardDetailPanelProps {
   toggleFolder: (path: string) => void;
   handleReadFile: (filePath: string) => void;
   handleToggleAgentMerged: (skill: SkillMetadata, agent: string) => void;
-  setDeleteTargetFromRoot: (fromRoot: boolean) => void;
-  setDeleteTarget: (skill: SkillMetadata | null) => void;
   handleMouseDown: (e: React.MouseEvent) => void;
 }
 
@@ -40,8 +38,6 @@ export const DashboardDetailPanel: React.FC<DashboardDetailPanelProps> = ({
   toggleFolder,
   handleReadFile,
   handleToggleAgentMerged,
-  setDeleteTargetFromRoot,
-  setDeleteTarget,
   handleMouseDown,
 }) => {
   const isOpen = !!(showDetailModal && detailSkill);
@@ -126,10 +122,7 @@ export const DashboardDetailPanel: React.FC<DashboardDetailPanelProps> = ({
             onToggleFolder={toggleFolder}
             onReadFile={handleReadFile}
             onToggleAgent={handleToggleAgentMerged}
-            onDelete={() => {
-              setDeleteTargetFromRoot(false);
-              setDeleteTarget(detailSkill ?? lastSkillRef.current);
-            }}
+            onDeleteSuccess={onCloseDetailModal}
             onResizeStart={handleMouseDown}
           />
         )}
