@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { SkillMetadata } from '@/types';
 import { pinApi } from '@/api/tauri';
 
 /**

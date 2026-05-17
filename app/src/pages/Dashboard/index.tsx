@@ -157,7 +157,7 @@ function Dashboard({
   const filterTypeRef = useRef(filterType);
   filterTypeRef.current = filterType;
   const prefixFilteredSkills = usePrefixFilteredSkills(visibleSkills);
-  const { handleToggleSkillMerged, handleToggleAgentMerged, handleDeleteSkill } = useSkillActions(skills, setSkills, agents);
+  const { handleToggleSkillMerged, handleToggleAgentMerged } = useSkillActions(skills, setSkills, agents);
 
   // 按来源展示过滤：使用自定义 hook 简化逻辑
   const filteredBySource = useFilteredSkills(filteredSkills, selectedSource, pinnedIds);

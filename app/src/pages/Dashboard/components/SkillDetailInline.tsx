@@ -150,7 +150,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
       if (e.key === 'Escape') {
         // 检查组件是否可见（避免处理其他隐藏页面的 ESC 事件）
         const rootElement = document.querySelector('[data-skill-detail-inline]');
-        if (!rootElement || rootElement.offsetParent === null) {
+        if (!rootElement || (rootElement as HTMLElement).offsetParent === null) {
           return; // 组件不可见，不处理 ESC
         }
 
