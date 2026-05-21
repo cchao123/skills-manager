@@ -178,7 +178,11 @@ pub struct AppConfig {
 
 fn default_language() -> String {
     let lang = std::env::var("LANG").unwrap_or_default();
-    if lang.starts_with("zh") { "zh".to_string() } else { "en".to_string() }
+    if lang.starts_with("zh") {
+        "zh".to_string()
+    } else {
+        "en".to_string()
+    }
 }
 
 impl Default for AppConfig {
@@ -218,4 +222,3 @@ pub struct SkillFileEntry {
     pub size: Option<u64>,
     pub children: Option<Vec<SkillFileEntry>>,
 }
-

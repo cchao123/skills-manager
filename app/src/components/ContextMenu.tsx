@@ -81,7 +81,7 @@ export function ContextMenu({ open, x, y, items, onClose }: ContextMenuProps) {
       ref={ref}
       role="menu"
       style={{ position: 'fixed', top: pos.y, left: pos.x, zIndex: 9999 }}
-      className="min-w-[160px] py-1 bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-lg shadow-xl text-sm select-none"
+      className="min-w-[160px] py-1 bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border rounded-lg shadow-xl text-sm select-none"
       onContextMenu={(e) => e.preventDefault()}
     >
       {items.map((item, index) => (
@@ -94,10 +94,10 @@ export function ContextMenu({ open, x, y, items, onClose }: ContextMenuProps) {
             item.onClick();
             onClose();
           }}
-          className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-[#f3f4f5] dark:hover:bg-dark-hover text-slate-700 dark:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-[var(--hover-bg)] dark:hover:bg-dark-hover text-[var(--text-primary)] dark:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {item.icon && (
-            <Icon name={item.icon} className="text-base text-[#b71422]"
+            <Icon name={item.icon} className="text-base text-[var(--accent-primary)]"
               style={item.iconStyle}
               aria-hidden="true" />
           )}

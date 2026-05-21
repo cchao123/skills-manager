@@ -44,7 +44,7 @@ export const GitHubForm = ({
                   onChange={(e) => onChange('owner', e.target.value)}
                   disabled={connected}
                   placeholder={t('githubBackup.config.ownerPlaceholder')}
-                  className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[var(--accent-primary-border)] focus:border-[var(--accent-primary)] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 />
                 <span className="text-lg text-slate-400 dark:text-gray-500 font-light select-none shrink-0">/</span>
                 <input
@@ -53,7 +53,7 @@ export const GitHubForm = ({
                   onChange={(e) => onChange('repo', e.target.value)}
                   disabled={connected}
                   placeholder={t('githubBackup.config.repoPlaceholder')}
-                  className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[var(--accent-primary-border)] focus:border-[var(--accent-primary)] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
               {!connected && <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.ownerHelper')}</p>}
@@ -68,7 +68,7 @@ export const GitHubForm = ({
                 onChange={(e) => onChange('branch', e.target.value)}
                 disabled={connected}
                 placeholder={t('githubBackup.config.branchPlaceholder')}
-                className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[var(--accent-primary-border)] focus:border-[var(--accent-primary)] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               />
               {!connected && <p className="text-xs text-slate-500 dark:text-gray-400 mt-1.5">{t('githubBackup.config.branchHelper')}</p>}
             </div>
@@ -87,7 +87,7 @@ export const GitHubForm = ({
               onChange={(e) => onChange('token', e.target.value)}
               disabled={connected}
               placeholder={t('githubBackup.config.tokenPlaceholder')}
-              className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl px-4 py-3 pr-12 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border rounded-xl px-4 py-3 pr-12 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[var(--accent-primary-border)] focus:border-[var(--accent-primary)] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             />
             {!connected && (
               <button
@@ -106,7 +106,7 @@ export const GitHubForm = ({
                 href={GITHUB_TOKENS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+                className="text-[var(--accent-primary)] hover:text-[var(--accent-primary-strong)]"
               >
                 Personal access tokens
               </a>

@@ -27,8 +27,8 @@ export default function SideNavBar() {
       collapsed ? 'flex-col justify-center px-0 gap-1' : 'px-4'
     } ${
       active
-        ? 'text-[#b71422] bg-white dark:bg-dark-bg-card shadow-sm dark:shadow-none'
-        : 'text-slate-600 dark:text-gray-300 hover:text-[#b71422] hover:bg-white/50 dark:hover:bg-dark-bg-tertiary'
+        ? 'text-white bg-[var(--accent-primary)] shadow-[0_16px_30px_-18px_rgba(255,68,88,0.95)] dark:text-white'
+        : 'text-[var(--text-secondary)] dark:text-gray-300 hover:text-[var(--text-primary)] hover:bg-white/80 dark:hover:bg-dark-bg-tertiary'
     }`;
 
   const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
@@ -48,7 +48,7 @@ export default function SideNavBar() {
 
   return (
     <aside
-      className={`h-screen bg-[#edeeef] dark:bg-dark-bg flex flex-col pt-14 pb-8 z-50 border-r border-[#e1e3e4] dark:border-dark-border shrink-0 relative ${
+      className={`h-screen bg-[var(--shell-sidebar)] dark:bg-dark-bg flex flex-col pt-14 pb-8 z-50 border-r border-[var(--border-color)] dark:border-dark-border shrink-0 relative ${
         isCollapsed ? 'w-20 px-3' : 'w-55 px-4'
       }`}
       data-tauri-drag-region
@@ -62,7 +62,7 @@ export default function SideNavBar() {
 
       <nav className="flex-1 space-y-2" data-tauri-drag-region>
         {navItems.map((item) => (
-          <div key={item.id} className="relative group">
+          <div key={item.id} className="relative group/nav-item">
             <NavLink
               to={pageToPath(item.id)}
               end={item.id === PAGE.Dashboard}
@@ -70,10 +70,10 @@ export default function SideNavBar() {
             >
               <Icon name={item.icon} data-icon={item.icon} className="text-xl" />
               {!isCollapsed && (
-                <span className="font-['Manrope'] dark:text-gray-300 flex-1">{item.label}</span>
+                <span className="font-['Manrope'] flex-1">{item.label}</span>
               )}
               {isCollapsed && (
-                <span className="text-[9px] font-medium text-slate-500 dark:text-gray-500 leading-tight whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
+                <span className="text-[9px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis w-full text-center opacity-80">
                   {item.shortLabel}
                 </span>
               )}
@@ -84,14 +84,14 @@ export default function SideNavBar() {
       </nav>
 
       {/* Settings at the bottom */}
-      <div className="relative group">
+      <div className="relative group/nav-item">
         <NavLink
           to={pageToPath(settingsItem.id)}
           className={({ isActive }) => navButtonClass(isActive, isCollapsed)}
         >
           <Icon name={settingsItem.icon} data-icon={settingsItem.icon} className="text-xl" />
           {!isCollapsed && (
-            <span className="font-['Manrope'] dark:text-gray-300">{settingsItem.label}</span>
+            <span className="font-['Manrope']">{settingsItem.label}</span>
           )}
         </NavLink>
         <NavTooltip label={settingsItem.label} />
@@ -100,10 +100,10 @@ export default function SideNavBar() {
       {/* Collapse Toggle Button - Fixed on the right edge */}
       <button
         onClick={toggle}
-        className="absolute top-1/2 -translate-y-1/2 -right-2 w-4 h-10 rounded-lg bg-white dark:bg-dark-bg-card shadow-md flex items-center justify-center z-50 border border-transparent dark:border-dark-border"
+        className="absolute top-1/2 -translate-y-1/2 -right-2 w-4 h-10 rounded-lg bg-white/95 dark:bg-dark-bg-card shadow-[0_10px_24px_-16px_rgba(39,50,72,0.7)] flex items-center justify-center z-50 border border-[var(--border-color)] dark:border-dark-border"
         title={isCollapsed ? t('nav.expand') : t('nav.collapse')}
       >
-        <Icon name={isCollapsed ? 'chevron_right' : 'chevron_left'} className="text-gray-400 dark:text-gray-500 text-xl" />
+        <Icon name={isCollapsed ? 'chevron_right' : 'chevron_left'} className="text-[var(--text-tertiary)] dark:text-gray-500 text-xl" />
       </button>
     </aside>
   );
@@ -117,7 +117,7 @@ interface NavTooltipProps {
 /** 侧栏导航 hover 黑色提示框，向右弹出。父级需要 `relative group`。 */
 function NavTooltip({ label, shortcut }: NavTooltipProps) {
   return (
-    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-[9999] pointer-events-none hidden group-hover:block">
+    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-[9999] pointer-events-none hidden group-hover/nav-item:block">
       <div className="whitespace-nowrap rounded-lg bg-slate-800 dark:bg-slate-700 text-white text-xs font-medium px-2.5 py-1 shadow-lg flex items-center gap-2">
         <span>{label}</span>
         {shortcut && (
@@ -142,7 +142,7 @@ function AppInfo({ isCollapsed, onClick, title }: AppInfoProps) {
           type="button"
           onClick={onClick}
           title={title}
-          className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-white dark:bg-dark-bg-card hover:opacity-80 active:scale-[0.98] transition-all cursor-pointer"
+          className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] shadow-[0_14px_28px_-20px_rgba(39,50,72,0.75)] hover:opacity-80 active:scale-[0.98] transition-all cursor-pointer"
         >
           <img src={OCTOPUS_LOGO_URL} alt="Octopus Logo" className="w-full h-full object-cover" />
         </button>
@@ -157,14 +157,14 @@ function AppInfo({ isCollapsed, onClick, title }: AppInfoProps) {
       title={title}
       className="flex items-center gap-3 mb-12 px-2 text-left hover:opacity-80 active:scale-[0.98] transition-all cursor-pointer"
     >
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-white dark:bg-dark-tertiary">
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white dark:bg-dark-tertiary border border-[var(--border-color)] shadow-[0_14px_28px_-20px_rgba(39,50,72,0.75)]">
         <img src={OCTOPUS_LOGO_URL} alt="Octopus Logo" className="w-full h-full object-cover" />
       </div>
       <div>
-        <h1 className="text-xl font-black text-[#b71422] font-['Manrope'] tracking-tight">
+        <h1 className="text-xl font-black text-[var(--text-primary)] font-['Manrope'] tracking-tight">
           {PROJECT_NAME}
         </h1>
-        <p className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-gray-400 font-bold">
+        <p className="text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] dark:text-gray-400 font-bold">
           {PROJECT_VERSION}
         </p>
       </div>

@@ -59,9 +59,15 @@ pub(super) fn generate_readme(skills_dir: &Path, config: &GitHubRepoConfig) {
         } else {
             sanitize_plugin_name(first_name)
         };
-        content.push_str(&format!("/plugin install {}@{}\n", example, marketplace_name));
+        content.push_str(&format!(
+            "/plugin install {}@{}\n",
+            example, marketplace_name
+        ));
     } else {
-        content.push_str(&format!("/plugin install <skill-name>@{}\n", marketplace_name));
+        content.push_str(&format!(
+            "/plugin install <skill-name>@{}\n",
+            marketplace_name
+        ));
     }
     content.push_str("```\n\n");
     content.push_str(&format!(

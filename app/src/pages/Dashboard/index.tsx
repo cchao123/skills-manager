@@ -269,8 +269,8 @@ function Dashboard({
       <div className="h-full flex flex-col" data-tauri-drag-region>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-200 dark:border-dark-bg-tertiary border-t-[#b71422] mb-4"></div>
-            <p className="text-slate-500 dark:text-gray-300 font-medium">{t('common.loading')}</p>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-200 dark:border-dark-bg-tertiary border-t-[var(--accent-primary)] mb-4"></div>
+            <p className="text-[var(--text-secondary)] dark:text-gray-300 font-medium">{t('common.loading')}</p>
           </div>
         </div>
       </div>
@@ -282,18 +282,18 @@ function Dashboard({
     return (
       <div className="h-full flex flex-col" data-tauri-drag-region>
         <div className="flex-1 flex items-center justify-center p-8">
-          <div className="max-w-md w-full bg-white dark:bg-dark-bg-card rounded-xl p-6 border border-red-200 dark:border-red-900/30 shadow-sm">
+          <div className="max-w-md w-full bg-white dark:bg-dark-bg-card rounded-xl p-6 border border-[var(--border-color)] dark:border-red-900/30 shadow-sm">
             <div className="flex items-center gap-3 mb-4">
               <div className="text-3xl text-red-600 dark:text-red-400">❌</div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{t('common.error')}</h3>
+              <h3 className="text-lg font-bold text-[var(--text-primary)] dark:text-white">{t('common.error')}</h3>
             </div>
-            <p className="text-slate-600 dark:text-gray-300 mb-2">{error}</p>
-            <p className="text-sm text-slate-500 dark:text-gray-400 mb-4">
+            <p className="text-[var(--text-secondary)] dark:text-gray-300 mb-2">{error}</p>
+            <p className="text-sm text-[var(--text-tertiary)] dark:text-gray-400 mb-4">
               {t('dashboard.errorMessage')}
             </p>
             <button
               onClick={loadSkills}
-              className="w-full bg-[#b71422] hover:bg-[#a01220] text-white px-4 py-2 rounded-lg font-bold transition-all"
+              className="w-full bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-strong)] text-white px-4 py-2 rounded-lg font-bold transition-all"
             >
               {t('dashboard.retry')}
             </button>

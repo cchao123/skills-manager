@@ -12,16 +12,29 @@
   :root {
     color-scheme: light;
     /* 保持原有的亮色模式配色 */
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --bg-tertiary: #edeeef;
+    --bg-primary: #fcfcfe;
+    --bg-secondary: #f7f8fb;
+    --bg-tertiary: #f1f4f8;
     --bg-card: #ffffff;
-    --border-color: #e1e3e4;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-tertiary: #94a3b8;
-    --hover-bg: #f1f5f9;
-    --active-bg: #e2e8f0;
+    --border-color: #e7ebf2;
+    --text-primary: #273248;
+    --text-secondary: #5f6c84;
+    --text-tertiary: #8e98ad;
+    --hover-bg: #f5f7fb;
+    --active-bg: #fff1f4;
+    --accent-primary: #ff4458;
+    --accent-primary-strong: #e63c50;
+    --accent-primary-soft: #fff1f4;
+    --accent-primary-border: #ffd5dc;
+    --accent-primary-rgb: 255, 68, 88;
+    --shell-sidebar: #f4f6fa;
+    --shell-main-top: #fff5f7;
+    --shell-main: #fcfcfe;
+    --shell-surface-soft: #f5f7fb;
+    --shell-surface-muted: #F5F7FB;
+    /* --shell-surface-muted: #F7F9FC; */
+    /* --shell-surface-muted: #F2F5F9; */
+    --shell-line-strong: #dce3ee;
   }
 
   .dark {
@@ -37,6 +50,11 @@
     --text-tertiary: #9a9a9a;
     --hover-bg: #222222;
     --active-bg: #2a2a2a;
+    --accent-primary: #b71422;
+    --accent-primary-strong: #a01220;
+    --accent-primary-soft: rgba(183, 20, 34, 0.22);
+    --accent-primary-border: rgba(183, 20, 34, 0.42);
+    --accent-primary-rgb: 183, 20, 34;
   }
 }
 
@@ -45,8 +63,14 @@ body {
   font-family: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI',
     sans-serif;
   overflow: hidden;
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background:
+    linear-gradient(
+      180deg,
+      var(--shell-main-top) 0,
+      var(--shell-main) 180px,
+      var(--shell-main) 100%
+    );
+  color: var(--text-primary);
 }
 
 /* 图标统一通过 <Icon> 组件渲染（见 app/src/components/Icon.tsx）
@@ -74,43 +98,43 @@ button svg {
   transition: none !important;
 }
 
-/* Text selection - red theme #b71422 (project brand color), translucent */
+/* Text selection uses the new coral accent */
 ::selection {
-  background-color: rgba(183, 20, 34, 0.25);
+  background-color: rgba(var(--accent-primary-rgb), 0.22);
   color: inherit;
 }
 ::-moz-selection {
-  background-color: rgba(183, 20, 34, 0.25);
+  background-color: rgba(var(--accent-primary-rgb), 0.22);
   color: inherit;
 }
 .dark ::selection {
-  background-color: rgba(183, 20, 34, 0.45);
+  background-color: rgba(var(--accent-primary-rgb), 0.36);
   color: inherit;
 }
 .dark ::-moz-selection {
-  background-color: rgba(183, 20, 34, 0.45);
+  background-color: rgba(var(--accent-primary-rgb), 0.36);
   color: inherit;
 }
 
-/* Global input focus styles - red theme #b71422 */
+/* Global input focus styles */
 input:focus,
 textarea:focus,
 select:focus {
   outline: none !important;
-  border-color: #b71422 !important;
+  border-color: var(--accent-primary) !important;
   box-shadow: none !important;
 }
 
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  border-color: #b71422 !important;
+  border-color: var(--accent-primary) !important;
   box-shadow: none !important;
 }
 
-/* Input focus icon color change - when input is focused, adjacent icon turns red */
+/* Input focus icon color change */
 .group:focus-within svg {
-  color: #b71422 !important;
+  color: var(--accent-primary) !important;
 }
 
 /* Toast animations */
@@ -231,6 +255,67 @@ select:focus {
   background-clip: padding-box;
 }
 .dark .show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* Show only horizontal scrollbar while keeping vertical scrolling functional */
+.show-scrollbar-x-only {
+  scrollbar-width: auto;
+  -ms-overflow-style: auto;
+}
+.show-scrollbar-x-only::-webkit-scrollbar {
+  display: block;
+  width: 0;
+  height: 8px;
+}
+.show-scrollbar-x-only::-webkit-scrollbar:vertical {
+  display: none;
+  width: 0;
+}
+.show-scrollbar-x-only::-webkit-scrollbar:horizontal {
+  height: 8px;
+}
+.show-scrollbar-x-only::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.show-scrollbar-x-only::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.show-scrollbar-x-only::-webkit-scrollbar-track:horizontal {
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+.show-scrollbar-x-only::-webkit-scrollbar-thumb:horizontal {
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.show-scrollbar-x-only::-webkit-scrollbar-thumb:horizontal:hover {
+  background: rgba(0, 0, 0, 0.32);
+}
+.show-scrollbar-x-only::-webkit-scrollbar-track:vertical,
+.show-scrollbar-x-only::-webkit-scrollbar-thumb:vertical {
+  background: transparent;
+  border: none;
+}
+
+.dark .show-scrollbar-x-only {
+  scrollbar-color: auto;
+}
+.dark .show-scrollbar-x-only::-webkit-scrollbar-track:horizontal {
+  background: rgba(24, 24, 24, 0.92);
+  border-radius: 4px;
+}
+.dark .show-scrollbar-x-only::-webkit-scrollbar-thumb:horizontal {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.dark .show-scrollbar-x-only::-webkit-scrollbar-thumb:horizontal:hover {
   background: rgba(255, 255, 255, 0.32);
 }
 

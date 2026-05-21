@@ -34,8 +34,8 @@ export const SkillFilterSection: React.FC = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-dark-bg-card rounded-2xl border border-[#e1e3e4] dark:border-dark-border overflow-hidden">
-      <div className="px-6 py-4 border-b border-[#e1e3e4] dark:border-dark-border">
+    <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl border border-[var(--border-color)] dark:border-dark-border overflow-hidden">
+      <div className="px-6 py-4 border-b border-[var(--border-color)] dark:border-dark-border">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Icon name="filter_alt_off" className="text-2xl text-slate-600 dark:text-gray-300" />
           {t('settings.skillFilter.title')}
@@ -57,14 +57,14 @@ export const SkillFilterSection: React.FC = () => {
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={t('settings.skillFilter.placeholder')}
-              className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-xl py-2.5 pl-12 pr-4 text-sm font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all shadow-sm"
+              className="w-full bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border rounded-xl py-2.5 pl-12 pr-4 text-sm font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[var(--accent-primary-border)] focus:border-[var(--accent-primary)] transition-all shadow-sm"
             />
           </div>
           <button
             type="button"
             onClick={commit}
             disabled={!draft.trim()}
-            className="px-4 py-2 rounded-xl text-sm font-bold bg-[#b71422] text-white hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl text-sm font-bold bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-primary-strong)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {t('settings.skillFilter.add')}
           </button>
@@ -80,7 +80,7 @@ export const SkillFilterSection: React.FC = () => {
             {prefixes.map((prefix) => (
               <span
                 key={prefix}
-                className="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-mono font-semibold"
+                className="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1 rounded-full bg-[var(--accent-primary-soft)] text-[var(--accent-primary)] text-xs font-mono font-semibold"
               >
                 {prefix}
                 <button
@@ -88,7 +88,7 @@ export const SkillFilterSection: React.FC = () => {
                   onClick={() => removePrefix(prefix)}
                   aria-label={t('settings.skillFilter.remove', { prefix })}
                   title={t('settings.skillFilter.remove', { prefix })}
-                  className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors"
+                  className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-[var(--accent-primary-border)] transition-colors"
                 >
                   <Icon name="close" className="text-[12px]" />
                 </button>

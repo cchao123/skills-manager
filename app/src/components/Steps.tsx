@@ -30,13 +30,13 @@ const StepIndex: React.FC<StepIndexProps> = ({ num, isLast }) => (
   // 线用 absolute 精确定位：top-6 紧贴圆圈底边、-bottom-px 向下溢出 1px 进入下一行，
   // 避免 flex 布局的 subpixel 取整在圆圈顶部留下一道"瑕疵"。
   <div className="relative flex-shrink-0 w-6 self-stretch flex flex-col items-center">
-    <div className="w-6 h-6 rounded-full bg-[#b71422] text-white flex items-center justify-center font-bold text-xs relative z-10">
+    <div className="w-6 h-6 rounded-full bg-[var(--accent-primary)] text-white flex items-center justify-center font-bold text-xs relative z-10">
       {num}
     </div>
     {!isLast && (
       <div
         aria-hidden="true"
-        className="absolute left-1/2 -translate-x-1/2 top-6 -bottom-px w-0.5 bg-[#b71422]/25 dark:bg-[#b71422]/40"
+        className="absolute left-1/2 -translate-x-1/2 top-6 -bottom-px w-0.5 bg-[rgba(255,68,88,0.24)] dark:bg-[rgba(255,68,88,0.4)]"
       />
     )}
   </div>

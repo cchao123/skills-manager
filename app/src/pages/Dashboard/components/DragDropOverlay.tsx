@@ -17,8 +17,8 @@ export const DragDropOverlay: React.FC<DragDropOverlayProps> = ({ selectedSource
 
   return (
     <div className="absolute inset-0 flex items-center justify-center z-[99999] pointer-events-none">
-      <div className="flex flex-col items-center gap-3 bg-white/95 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 px-4 py-6 rounded-xl shadow-2xl">
-        <Icon name="drive_folder_upload" className="text-[#b71422] text-6xl" />
+      <div className="flex flex-col items-center gap-3 bg-white/95 dark:bg-gray-700 border border-[var(--border-color)] dark:border-gray-600 px-4 py-6 rounded-xl shadow-2xl">
+        <Icon name="drive_folder_upload" className="text-[var(--accent-primary)] text-6xl" />
         <div className="flex items-center gap-2">
           <p className="text-2xl font-black text-gray-800 dark:text-white tracking-wide">{t('dashboard.dragDrop.release')}到</p>
           {icon ? (
@@ -26,9 +26,9 @@ export const DragDropOverlay: React.FC<DragDropOverlayProps> = ({ selectedSource
           ) : (
             <img src={OCTOPUS_LOGO_URL} alt="Root" className="w-5 h-5" />
           )}
-          <p className="text-2xl font-black text-[#b71422] tracking-wide">{label}</p>
+          <p className="text-2xl font-black text-[var(--accent-primary)] tracking-wide">{label}</p>
         </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400">{t('dashboard.dragDrop.hint')}</p>
+        <p className="text-xs text-[var(--text-tertiary)] dark:text-gray-400">{t('dashboard.dragDrop.hint')}</p>
       </div>
     </div>
   );

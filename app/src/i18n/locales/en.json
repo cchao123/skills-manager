@@ -245,7 +245,7 @@
     "config": {
       "title": "GitHub Repository Configuration",
       "owner": "Repository Owner",
-      "ownerPlaceholder": "e.g.: cchao123",
+      "ownerPlaceholder": "e.g.: my-github-name",
       "ownerHelper": "GitHub username or organization name",
       "repo": "Repository Name",
       "repoPlaceholder": "e.g.: my-skills-repo",

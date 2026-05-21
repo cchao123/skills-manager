@@ -107,7 +107,7 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
       width="90vw"
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-dark-border flex-shrink-0" data-tauri-drag-region>
+      <div className="flex items-center justify-between p-4 border-b border-[var(--border-color)] dark:border-dark-border flex-shrink-0 bg-white/90 dark:bg-dark-bg-card" data-tauri-drag-region>
         <div>
           <div className="flex items-center gap-2">
             {selectedSourceAgent ? (
@@ -122,7 +122,7 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
                     从 {getAgentDisplayName(selectedSourceAgent)} 导入
                   </span>
                 </div>
-                <Icon name="arrow_forward" className="text-base text-[#b71422] flex-shrink-0" />
+                <Icon name="arrow_forward" className="text-base text-[var(--accent-primary)] flex-shrink-0" />
                 <div className="flex items-center gap-1.5">
                   <img
                     src={getAgentIcon(currentAgent)}
@@ -134,28 +134,28 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
               </>
             ) : (
               <>
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t('dashboard.import.title')}</h2>
-                <Icon name="arrow_forward" className="text-base text-[#b71422] flex-shrink-0" />
+                <h2 className="text-lg font-bold text-[var(--text-primary)] dark:text-white">{t('dashboard.import.title')}</h2>
+                <Icon name="arrow_forward" className="text-base text-[var(--accent-primary)] flex-shrink-0" />
                 <span className="text-lg font-bold text-slate-900 dark:text-white">{getAgentDisplayName(currentAgent)}</span>
               </>
             )}
           </div>
-          <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">{t('dashboard.import.hint')}</p>
+          <p className="text-xs text-[var(--text-tertiary)] dark:text-gray-400 mt-0.5">{t('dashboard.import.hint')}</p>
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors"
+          className="p-1.5 hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors"
         >
-          <Icon name="close" className="text-gray-600 dark:text-gray-300" />
+          <Icon name="close" className="text-[var(--text-secondary)] dark:text-gray-300" />
         </button>
       </div>
 
       {/* Three Column Layout */}
       <div className="flex-1 flex overflow-hidden">
           {/* Column 1: Agent List */}
-          <div className="w-48 flex-shrink-0 border-r border-gray-200 dark:border-dark-border flex flex-col bg-slate-50 dark:bg-dark-bg-tertiary">
-            <div className="p-4 border-b border-gray-200 dark:border-dark-border">
-              <h3 className="text-sm font-bold text-slate-700 dark:text-gray-300">{t('dashboard.import.selectSource')}</h3>
+          <div className="w-48 flex-shrink-0 border-r border-[var(--border-color)] dark:border-dark-border flex flex-col bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary">
+            <div className="p-4 border-b border-[var(--border-color)] dark:border-dark-border">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] dark:text-gray-300">{t('dashboard.import.selectSource')}</h3>
             </div>
             <div className="flex-1 overflow-y-auto p-2 space-y-1">
               {availableAgents.map(agent => {
@@ -167,9 +167,9 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
                     disabled={!isInstalled}
                     className={`w-full flex items-center gap-2 p-2 rounded-lg border transition-colors text-left ${
                       selectedSourceAgent === agent.name
-                        ? 'border-[#b71422] bg-white dark:bg-dark-bg-card shadow-sm'
+                        ? 'border-[var(--accent-primary-border)] bg-white dark:bg-dark-bg-card shadow-sm'
                         : isInstalled
-                          ? 'border-transparent hover:bg-white dark:hover:bg-dark-bg-card hover:border-gray-300 dark:hover:border-gray-600'
+                          ? 'border-transparent hover:bg-white dark:hover:bg-dark-bg-card hover:border-[var(--border-color)] dark:hover:border-gray-600'
                           : 'border-transparent bg-gray-50 dark:bg-gray-800 opacity-50 cursor-not-allowed'
                     }`}
                   >
@@ -199,9 +199,9 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
           </div>
 
           {/* Column 2: Skills of Selected Agent (Progressive Disclosure) */}
-          <div className="flex-1 flex flex-col border-r border-gray-200 dark:border-dark-border">
-            <div className="p-4 border-b border-gray-200 dark:border-dark-border flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-700 dark:text-gray-300">
+          <div className="flex-1 flex flex-col border-r border-[var(--border-color)] dark:border-dark-border">
+            <div className="p-4 border-b border-[var(--border-color)] dark:border-dark-border flex items-center justify-between">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] dark:text-gray-300">
                 {selectedSourceAgent ? getAgentDisplayName(selectedSourceAgent) : t('dashboard.import.available')}
                 {selectedSourceAgent && (
                   <span className="text-xs text-slate-500 dark:text-gray-400">({sourceAgentSkills.length})</span>
@@ -223,7 +223,7 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
                       setImportList(availableSkills);
                     }
                   }}
-                  className="text-xs text-[#b71422] hover:text-[#a01220] dark:text-[#ff4d5a] dark:hover:text-[#ff6b73]"
+                  className="text-xs text-[var(--accent-primary)] hover:text-[var(--accent-primary-strong)]"
                 >
                   {(() => {
                     const availableSkills = sourceAgentSkills.filter(s => !existingSkillIds.has(s.id));
@@ -257,8 +257,8 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
                           isExisting
                             ? 'border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 opacity-60 cursor-not-allowed'
                             : isInImportList
-                              ? 'border-[#b71422] dark:border-rose-600 bg-rose-50 dark:bg-rose-900/30 cursor-pointer hover:shadow-sm'
-                              : 'border-gray-200 dark:border-dark-border hover:border-slate-300 dark:hover:border-gray-600 hover:bg-white dark:hover:bg-dark-bg-card cursor-pointer'
+                              ? 'border-[var(--accent-primary-border)] bg-[var(--accent-primary-soft)] cursor-pointer hover:shadow-sm'
+                              : 'border-[var(--border-color)] dark:border-dark-border hover:border-[var(--accent-primary-border)] dark:hover:border-gray-600 hover:bg-white dark:hover:bg-dark-bg-card cursor-pointer'
                         }`}
                         onClick={() => {
                           if (isExisting) return; // 已存在的技能不允许点击
@@ -269,7 +269,7 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
                           {isExisting ? (
                             <div className="w-2.5 h-2.5 rounded-sm bg-gray-500 dark:bg-gray-600" />
                           ) : isInImportList ? (
-                            <Icon name="check" className="text-[#b71422] text-xs" />
+                            <Icon name="check" className="text-[var(--accent-primary)] text-xs" />
                           ) : (
                             <div className="w-2.5 h-2.5 rounded-sm border-2 border-slate-300 dark:border-gray-500" />
                           )}
@@ -304,8 +304,8 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
 
           {/* Column 3: Import List */}
           <div className="flex-1 flex flex-col">
-            <div className="p-4 border-b border-gray-200 dark:border-dark-border flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-700 dark:text-gray-300">
+            <div className="p-4 border-b border-[var(--border-color)] dark:border-dark-border flex items-center justify-between">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] dark:text-gray-300">
                 {t('dashboard.import.current')} ({importList.length})
               </h3>
               {importList.length > 0 && (
@@ -350,17 +350,17 @@ export const SkillImportModal: React.FC<SkillImportModalProps> = ({
         </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-end p-4 border-t border-gray-200 dark:border-dark-border gap-3 flex-shrink-0" data-tauri-drag-region>
+      <div className="flex items-center justify-end p-4 border-t border-[var(--border-color)] dark:border-dark-border gap-3 flex-shrink-0 bg-white/88 dark:bg-dark-bg-card" data-tauri-drag-region>
         <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-dark-bg-tertiary transition-colors"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--text-secondary)] dark:text-gray-300 hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary transition-colors"
           >
             {t('common.cancel')}
           </button>
           <button
             onClick={handleImport}
             disabled={importList.length === 0}
-            className="px-4 py-2 rounded-lg text-sm font-bold bg-[#b71422] text-white hover:bg-[#a01220] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 rounded-lg text-sm font-bold bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-primary-strong)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {t('dashboard.import.import')} ({importList.length})
         </button>

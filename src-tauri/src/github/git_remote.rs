@@ -7,7 +7,10 @@ use git2::Repository;
 /// 构建带认证的 Git URL。
 pub(super) fn build_auth_url(owner: &str, repo: &str, token: Option<&str>) -> String {
     match token {
-        Some(t) => format!("https://x-access-token:{}@github.com/{}/{}.git", t, owner, repo),
+        Some(t) => format!(
+            "https://x-access-token:{}@github.com/{}/{}.git",
+            t, owner, repo
+        ),
         None => format!("https://github.com/{}/{}.git", owner, repo),
     }
 }

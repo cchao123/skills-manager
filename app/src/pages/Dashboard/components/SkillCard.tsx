@@ -83,10 +83,12 @@ export const SkillCard: React.FC<SkillCardProps> = memo(({
       data-skill-id={skill.id}
       className={`relative rounded-xl border overflow-hidden flex flex-col transition-all duration-300 ${
         isSelected
-          ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700 shadow-md'
+          ? pinned
+            ? 'bg-[var(--accent-primary-soft)] border-[var(--accent-primary)] dark:border-[var(--accent-primary)] shadow-md'
+            : 'bg-[var(--accent-primary-soft)] border-[var(--accent-primary-border)] dark:border-[var(--accent-primary-border)] shadow-md'
           : pinned
-            ? 'bg-white dark:bg-dark-bg-card border-[#b71422]/40 dark:border-[#b71422]/50 shadow-[0_0_0_1px_rgba(183,20,34,0.08)]'
-            : 'bg-white dark:bg-dark-bg-card border-[#e1e3e4] dark:border-dark-border hover:shadow-lg hover:border-[#b71422]/20'
+            ? 'bg-white dark:bg-dark-bg-card border-[var(--accent-primary)] dark:border-[var(--accent-primary)] shadow-[0_12px_28px_-24px_rgba(255,68,88,0.42)]'
+            : 'bg-white dark:bg-dark-bg-card border-[var(--border-color)] dark:border-dark-border hover:shadow-lg hover:border-[var(--accent-primary)]/20'
       }`}
       onContextMenu={onContextMenu ? (e) => onContextMenu(skill.id, e) : undefined}
     >
@@ -109,9 +111,9 @@ export const SkillCard: React.FC<SkillCardProps> = memo(({
             */}
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 flex-wrap">
-                <h4 className="text-base font-bold truncate text-slate-900 dark:text-white">{skill.name}</h4>
+                <h4 className="text-base font-bold truncate text-[var(--text-primary)] dark:text-white">{skill.name}</h4>
               </div>
-              <p className="text-xs text-[#5e5e5e] dark:text-gray-300 mb-4 line-clamp-2 leading-relaxed">{skill.description}</p>
+              <p className="text-xs text-[var(--text-secondary)] dark:text-gray-300 mb-4 line-clamp-2 leading-relaxed">{skill.description}</p>
             </div>
           </div>
 
@@ -125,8 +127,8 @@ export const SkillCard: React.FC<SkillCardProps> = memo(({
               />
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={(e) => { e.stopPropagation(); onShowDetail(skill); }} className="p-1 hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary rounded transition-colors" title={t('dashboard.viewDetail')}>
-                <Icon name="info" className="text-base text-slate-400 dark:text-gray-500" />
+              <button onClick={(e) => { e.stopPropagation(); onShowDetail(skill); }} className="p-1 hover:bg-[var(--accent-primary-soft)] dark:hover:bg-dark-bg-tertiary rounded transition-colors" title={t('dashboard.viewDetail')}>
+                <Icon name="info" className="text-base text-[var(--text-tertiary)] dark:text-gray-500" />
               </button>
             </div>
           </div>
@@ -134,10 +136,10 @@ export const SkillCard: React.FC<SkillCardProps> = memo(({
       </div>
 
       {/* Bottom bar: agent summary + expand button (always visible) */}
-      <div className="relative z-[100] px-4 py-2.5 flex items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-dark-hover transition-colors" onClick={(e) => { e.stopPropagation(); onToggleExpand(skill.id); }} >
+      <div className="relative z-[100] px-4 py-2.5 flex items-center cursor-pointer hover:bg-[#fff7f8] dark:hover:bg-dark-hover transition-colors" onClick={(e) => { e.stopPropagation(); onToggleExpand(skill.id); }} >
         {/* 短分割线：避开右下角的来源水印（水印 size=110，露出约 90px，留 ~20px 缓冲） */}
         <span
-          className="absolute left-4 right-[110px] top-0 h-px bg-[#f0f0f0] dark:bg-dark-border pointer-events-none"
+          className="absolute left-4 right-[110px] top-0 h-px bg-[var(--border-color)] dark:bg-dark-border pointer-events-none"
           aria-hidden="true"
         />
         <div className="flex items-center gap-1.5">
@@ -151,17 +153,17 @@ export const SkillCard: React.FC<SkillCardProps> = memo(({
               <img src={getAgentIcon(agent.name)} alt={agent.display_name} className={`w-full h-full object-contain ${needsInvertInDark(agent.name) ? 'dark:invert' : ''}`} />
             </div>
           ))}
-          <span className="text-[11px] text-slate-500 dark:text-black0 ml-1">
+          <span className="text-[11px] text-[var(--text-secondary)] dark:text-black0 ml-1">
             {enabledCount}/{detectedAgents.length} {t('dashboard.agentsEnabled')}
           </span>
-          <Icon name={expanded ? 'expand_less' : 'expand_more'} className="text-base text-slate-400 dark:text-gray-500 ml-0.5" />
+          <Icon name={expanded ? 'expand_less' : 'expand_more'} className="text-base text-[var(--text-tertiary)] dark:text-gray-500 ml-0.5" />
         </div>
       </div>
       </div>
 
       {/* Expandable: Agent toggles (accordion style) */}
       {expanded && (
-        <div className="border-t border-[#f0f0f0] dark:border-dark-border bg-[#fafafa] dark:bg-dark-bg-secondary px-3 py-3 pb-1">
+        <div className="border-t border-[var(--border-color)] dark:border-dark-border bg-[var(--shell-surface-soft)] dark:bg-dark-bg-secondary px-3 py-3 pb-1">
           {detectedAgents.map((agent, index) => {
             const isLast = index === detectedAgents.length - 1;
             const isNativeAgent = nativeAgents.has(agent.name);
@@ -184,7 +186,7 @@ export const SkillCard: React.FC<SkillCardProps> = memo(({
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold text-slate-700 dark:text-gray-200">{agent.display_name}</span>
+                      <span className="text-xs font-bold text-[var(--text-primary)] dark:text-gray-200">{agent.display_name}</span>
                       {isNativeAgent && (
                         <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
                           <Icon name="terminal" style={{ fontSize: '11px' }} />
@@ -195,7 +197,7 @@ export const SkillCard: React.FC<SkillCardProps> = memo(({
                     <span className={`text-[10px] leading-tight ${
                       isNativeAgent
                         ? 'font-bold text-amber-600 dark:text-amber-400'
-                        : skill.agent_enabled[agent.name] ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-gray-500'
+                        : skill.agent_enabled[agent.name] ? 'text-green-600 dark:text-green-400' : 'text-[var(--text-tertiary)] dark:text-gray-500'
                     }`}>
                       {isNativeAgent
                         ? t('dashboard.alwaysEnabled')
@@ -221,7 +223,7 @@ export const SkillCard: React.FC<SkillCardProps> = memo(({
                   <button
                     onClick={(e) => { e.stopPropagation(); handleAgentToggle(agent.name, e); }}
                     className={`relative w-8 h-[18px] rounded-full transition-colors flex-shrink-0 cursor-pointer ${
-                      skill.agent_enabled[agent.name] ? 'bg-[#b71422]' : 'bg-gray-300 dark:bg-gray-600'
+                      skill.agent_enabled[agent.name] ? 'bg-[var(--accent-primary)]' : 'bg-gray-300 dark:bg-gray-600'
                     }`}
                   >
                     <span className={`absolute top-[1px] left-[1px] w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${

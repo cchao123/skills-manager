@@ -1,5 +1,5 @@
-// Prevents additional console window on Windows in both debug and release
-#![cfg_attr(windows, windows_subsystem = "windows")]
+// Keep the console in debug builds so startup crashes are easier to diagnose on Windows.
+#![cfg_attr(all(windows, not(debug_assertions)), windows_subsystem = "windows")]
 
 mod commands;
 mod github;
@@ -10,13 +10,46 @@ mod settings;
 mod state;
 mod tray;
 
+use chrono::Local;
 use settings::AppSettingsManager;
 use state::AppState;
+use std::fs::{self, OpenOptions};
+use std::io::{self, Write};
+use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::{tray::TrayIconBuilder, Manager};
 
+struct TeeWriter {
+    file: std::fs::File,
+    mirror_stderr: bool,
+}
+
+impl Write for TeeWriter {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        self.file.write_all(buf)?;
+        self.file.flush()?;
+
+        if self.mirror_stderr {
+            let mut stderr = io::stderr();
+            stderr.write_all(buf)?;
+            stderr.flush()?;
+        }
+
+        Ok(buf.len())
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        self.file.flush()?;
+
+        if self.mirror_stderr {
+            io::stderr().flush()?;
+        }
+
+        Ok(())
+    }
+}
+
 fn load_env_for_runtime() {
-    // Load common .env files for local development. CI env vars still take precedence.
     let candidates = [
         ".env",
         ".env.local",
@@ -51,14 +84,73 @@ fn init_sentry() -> Option<sentry::ClientInitGuard> {
     Some(guard)
 }
 
+fn resolve_log_path() -> Option<PathBuf> {
+    dirs::home_dir().map(|home| {
+        home.join(".skills-manager")
+            .join("logs")
+            .join("skills-manager.log")
+    })
+}
+
+fn init_logging() -> Option<PathBuf> {
+    let log_path = resolve_log_path()?;
+    let parent = log_path.parent()?;
+    fs::create_dir_all(parent).ok()?;
+
+    let file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&log_path)
+        .ok()?;
+
+    let mut builder = env_logger::Builder::from_default_env();
+    if std::env::var_os("RUST_LOG").is_none() {
+        builder.filter_level(log::LevelFilter::Info);
+    }
+    builder.format_timestamp_secs();
+    builder.target(env_logger::Target::Pipe(Box::new(TeeWriter {
+        file,
+        mirror_stderr: cfg!(debug_assertions),
+    })));
+    let _ = builder.try_init();
+
+    Some(log_path)
+}
+
+fn install_panic_hook(log_path: Option<PathBuf>) {
+    let default_hook = std::panic::take_hook();
+
+    std::panic::set_hook(Box::new(move |panic_info| {
+        if let Some(path) = &log_path {
+            if let Some(parent) = path.parent() {
+                let _ = fs::create_dir_all(parent);
+            }
+
+            if let Ok(mut file) = OpenOptions::new().create(true).append(true).open(path) {
+                let _ = writeln!(
+                    file,
+                    "[{}] panic: {}",
+                    Local::now().format("%Y-%m-%d %H:%M:%S"),
+                    panic_info
+                );
+                let backtrace = std::backtrace::Backtrace::force_capture();
+                let _ = writeln!(file, "{backtrace}");
+                let _ = file.flush();
+            }
+        }
+
+        default_hook(panic_info);
+    }));
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            if let Some(w) = app.get_webview_window("main") {
-                let _ = w.show();
-                let _ = w.unminimize();
-                let _ = w.set_focus();
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.unminimize();
+                let _ = window.set_focus();
             }
         }))
         .plugin(tauri_plugin_fs::init())
@@ -66,70 +158,78 @@ pub fn run() {
 
     let app = builder
         .setup(move |app| {
-            // 初始化 AppSettingsManager
             let config_path = AppSettingsManager::get_config_path();
+            log::info!("Loading app settings from {:?}", config_path);
             let settings_manager = AppSettingsManager::load_or_create(&config_path)
                 .expect("Failed to initialize AppSettingsManager");
 
-            // 检测 agents 并获取配置
             let config = settings_manager.get_config().clone();
             let skill_states = config.skill_states.clone();
             let agents = config.agents.clone();
 
-            // 预热一次扫描，捕获潜在 IO 异常。
-            let _skills = scanner::scan_all_skill_sources(&skill_states, &agents)
-                .unwrap_or_default();
+            log::info!("Prewarming skill scan during startup");
+            let _skills =
+                scanner::scan_all_skill_sources(&skill_states, &agents).unwrap_or_default();
 
             app.manage(AppState {
                 settings_manager: Mutex::new(settings_manager),
             });
 
-            // 先构建托盘图标（不设菜单）
-            let _tray = TrayIconBuilder::with_id("main-tray")
-                .icon(app.default_window_icon().unwrap().clone())
-                .icon_as_template(true)
-                .tooltip("Skills Manager")
-                .show_menu_on_left_click(cfg!(not(target_os = "windows")))
-                .on_tray_icon_event(|_tray, _event| {
-                    // Only handle click on Windows to show window
-                    #[cfg(target_os = "windows")]
-                    if let tauri::tray::TrayIconEvent::Click {
-                        button: tauri::tray::MouseButton::Left,
-                        button_state: tauri::tray::MouseButtonState::Up,
-                        ..
-                    } = _event
-                    {
-                        let app = _tray.app_handle();
-                        if let Some(w) = app.get_webview_window("main") {
-                            let _ = w.show();
-                            let _ = w.unminimize();
-                            let _ = w.set_focus();
-                        }
-                    }
-                    // On macOS, let the menu show naturally
-                })
-                .on_menu_event(|app, event| match event.id.as_ref() {
-                    "show" => {
-                        if let Some(w) = app.get_webview_window("main") {
-                            let _ = w.show();
-                            let _ = w.set_focus();
-                        }
-                        #[cfg(target_os = "macos")]
-                        let _ = app.set_activation_policy(tauri::ActivationPolicy::Regular);
-                    }
-                    "quit" => {
-                        if let Some(w) = app.get_webview_window("main") {
-                            w.destroy().ok();
-                        }
-                        app.exit(0);
-                    }
-                    _ => {}
-                })
-                .build(app)?;
-
-            // 构建并设置托盘菜单（使用用户保存的语言偏好）
             let lang = config.language.clone();
-            tray::rebuild_tray_menu(app, &lang)?;
+            if let Some(icon) = app.default_window_icon().cloned() {
+                log::info!("Initializing tray icon");
+                match TrayIconBuilder::with_id("main-tray")
+                    .icon(icon)
+                    .icon_as_template(true)
+                    .tooltip("Skills Manager")
+                    .show_menu_on_left_click(cfg!(not(target_os = "windows")))
+                    .on_tray_icon_event(|tray, event| {
+                        #[cfg(target_os = "windows")]
+                        if let tauri::tray::TrayIconEvent::Click {
+                            button: tauri::tray::MouseButton::Left,
+                            button_state: tauri::tray::MouseButtonState::Up,
+                            ..
+                        } = event
+                        {
+                            let app = tray.app_handle();
+                            if let Some(window) = app.get_webview_window("main") {
+                                let _ = window.show();
+                                let _ = window.unminimize();
+                                let _ = window.set_focus();
+                            }
+                        }
+                    })
+                    .on_menu_event(|app, event| match event.id.as_ref() {
+                        "show" => {
+                            if let Some(window) = app.get_webview_window("main") {
+                                let _ = window.show();
+                                let _ = window.set_focus();
+                            }
+                            #[cfg(target_os = "macos")]
+                            let _ = app.set_activation_policy(tauri::ActivationPolicy::Regular);
+                        }
+                        "quit" => {
+                            if let Some(window) = app.get_webview_window("main") {
+                                window.destroy().ok();
+                            }
+                            app.exit(0);
+                        }
+                        _ => {}
+                    })
+                    .build(app)
+                {
+                    Ok(_tray) => {
+                        if let Err(error) = tray::rebuild_tray_menu(app, &lang) {
+                            log::warn!("Failed to build tray menu during startup: {}", error);
+                        }
+                    }
+                    Err(error) => {
+                        log::warn!("Failed to initialize tray icon during startup: {}", error);
+                    }
+                }
+            } else {
+                log::warn!("No default window icon available; skipping tray initialization");
+            }
 
             Ok(())
         })
@@ -144,7 +244,6 @@ pub fn run() {
             }
         })
         .invoke_handler(tauri::generate_handler![
-            // Skills commands
             commands::skills::list_skills,
             commands::skills::enable_skill,
             commands::skills::disable_skill,
@@ -156,12 +255,10 @@ pub fn run() {
             commands::skills::delete_skill,
             commands::skills::import_skill_folder,
             commands::skills::copy_skill_to_agent,
-            // Marketplace commands
             commands::marketplace::fetch_marketplace_skills,
             commands::marketplace::fetch_skill_detail,
             commands::marketplace::fetch_marketplace_skill_content,
             commands::marketplace::download_skill_from_marketplace,
-            // Settings commands
             commands::settings::get_agents,
             commands::settings::add_agent,
             commands::settings::remove_agent,
@@ -170,7 +267,6 @@ pub fn run() {
             commands::settings::open_skills_manager_folder,
             commands::settings::detect_agents,
             commands::settings::open_folder,
-            // GitHub backup commands
             commands::github::test_github_connection,
             commands::github::save_github_config,
             commands::github::get_github_config,
@@ -178,28 +274,28 @@ pub fn run() {
             commands::github::restore_from_github,
             commands::github::star_github_repo,
             commands::github::check_github_star,
-            // Theme commands
             commands::theme::set_window_theme,
-            // Pin commands（命令文件名沿用 window.rs，实际是 skill 置顶）
             commands::window::set_skill_pinned,
             commands::window::get_pinned_skills,
-            // Tray commands
             tray::update_tray_language,
             tray::set_skill_hide_prefixes,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application");
 
-    app.run(move |_app_handle, _event| {
-        // 事件处理
-    });
+    app.run(move |_app_handle, _event| {});
 }
 
 #[cfg(not(mobile))]
 fn main() {
-    env_logger::init();
+    let log_path = init_logging();
+    install_panic_hook(log_path.clone());
+
     load_env_for_runtime();
 
+    if let Some(path) = &log_path {
+        log::info!("Logging startup diagnostics to {:?}", path);
+    }
     log::info!("Skills Manager starting...");
     let _sentry_guard = init_sentry();
 

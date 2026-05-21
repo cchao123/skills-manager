@@ -230,10 +230,7 @@ pub async fn disable_skill(
         entry.open.retain(|n| n != &agent_config.name);
         match linker.unlink_skill_from_agent(&skill, agent_config) {
             Ok(_) => unlinked += 1,
-            Err(e) => warn!(
-                "Failed to unlink from agent {}: {}",
-                agent_config.name, e
-            ),
+            Err(e) => warn!("Failed to unlink from agent {}: {}", agent_config.name, e),
         }
     }
 
@@ -351,7 +348,10 @@ pub async fn get_skill_files(
     source: Option<String>,
     state: State<'_, AppState>,
 ) -> Result<Vec<SkillFileEntry>, String> {
-    info!("Getting files for skill: {} (source: {:?})", skill_id, source);
+    info!(
+        "Getting files for skill: {} (source: {:?})",
+        skill_id, source
+    );
 
     let guard = state
         .settings_manager
@@ -380,7 +380,8 @@ pub async fn get_skill_files(
             .and_then(|n| n.to_str())
             .unwrap_or("unknown")
             .to_string();
-        let metadata = std::fs::metadata(path).map_err(|e| format!("Failed to read metadata: {}", e))?;
+        let metadata =
+            std::fs::metadata(path).map_err(|e| format!("Failed to read metadata: {}", e))?;
 
         if path.is_dir() {
             let mut children = Vec::new();
@@ -405,7 +406,10 @@ pub async fn get_skill_files(
                 let entry_path = entry.path();
                 if let Some(file_name) = entry_path.file_name() {
                     let name_str = file_name.to_string_lossy();
-                    if name_str.starts_with('.') || name_str == "DS_Store" || name_str == "node_modules" {
+                    if name_str.starts_with('.')
+                        || name_str == "DS_Store"
+                        || name_str == "node_modules"
+                    {
                         continue;
                     }
                 }
@@ -532,8 +536,8 @@ pub async fn delete_skill(
 
         // 删除完成后还会剩哪些源？用来决定能不能清中央缓存。
         let will_have_global = match source.as_deref() {
-            Some(SOURCE_GLOBAL) => false,          // 就是删 global
-            None => false,                          // 整体删除
+            Some(SOURCE_GLOBAL) => false, // 就是删 global
+            None => false,                // 整体删除
             Some(_) => skill.sources.iter().any(|s| s == SOURCE_GLOBAL), // 删别的源但 global 还在
         };
 
@@ -611,7 +615,9 @@ pub async fn delete_skill(
             settings.get_config_mut().skill_states.remove(&skill_id);
         }
 
-        settings.save().map_err(|e| format!("保存配置失败: {}", e))?;
+        settings
+            .save()
+            .map_err(|e| format!("保存配置失败: {}", e))?;
     }
 
     info!("Skill '{}' deleted successfully", skill_id);
@@ -720,10 +726,12 @@ pub async fn copy_skill_to_agent(
         .ok_or_else(|| format!("Skill '{}' not found", skill_id))?;
 
     // 获取源路径
-    let source_path = skill
-        .source_paths
-        .get(&source_agent)
-        .ok_or_else(|| format!("Skill '{}' has no path for agent '{}'", skill_id, source_agent))?;
+    let source_path = skill.source_paths.get(&source_agent).ok_or_else(|| {
+        format!(
+            "Skill '{}' has no path for agent '{}'",
+            skill_id, source_agent
+        )
+    })?;
 
     let source_path_buf = PathBuf::from(source_path);
     if !source_path_buf.exists() {

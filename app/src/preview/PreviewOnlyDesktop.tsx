@@ -46,7 +46,7 @@ export default function PreviewOnlyDesktop({ feature }: PreviewOnlyDesktopProps)
   return (
     <div className="h-full w-full flex items-center justify-center px-8">
       <div className="max-w-xl w-full text-center">
-        <div className="mx-auto mb-6 w-16 h-16 rounded-2xl bg-[#b71422]/10 text-[#b71422] flex items-center justify-center">
+        <div className="mx-auto mb-6 w-16 h-16 rounded-2xl bg-[var(--accent-primary-soft)] text-[var(--accent-primary)] flex items-center justify-center">
           <Icon name="download_for_offline" style={{ fontSize: '32px' }} />
         </div>
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white font-['Manrope'] mb-3">
@@ -58,7 +58,7 @@ export default function PreviewOnlyDesktop({ feature }: PreviewOnlyDesktopProps)
             href="https://github.com/cchao123/skills-managers/releases"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#b71422] hover:bg-[#d81a2c] text-white font-bold text-sm transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-strong)] text-white font-bold text-sm transition-colors shadow-sm"
           >
             <Icon name="download" style={{ fontSize: '18px' }} />
             {isZh ? '下载桌面版' : 'Download desktop app'}
@@ -66,7 +66,7 @@ export default function PreviewOnlyDesktop({ feature }: PreviewOnlyDesktopProps)
           <button
             type="button"
             onClick={() => navigate(pageToPath(PAGE.Dashboard))}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border text-slate-700 dark:text-gray-200 font-bold text-sm hover:bg-slate-50 dark:hover:bg-dark-bg-tertiary transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border text-[var(--text-primary)] dark:text-gray-200 font-bold text-sm hover:bg-[var(--hover-bg)] dark:hover:bg-dark-bg-tertiary transition-colors"
           >
             <Icon name="arrow_back" style={{ fontSize: '18px' }} />
             {isZh ? '返回 Dashboard' : 'Back to Dashboard'}
