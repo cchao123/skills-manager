@@ -29,9 +29,9 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ connected, repoConfig 
             e.stopPropagation();
             openUrl(`https://github.com/${path}`);
           }}
-          className="ml-1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--accent-primary-soft)] text-[var(--accent-primary)] hover:bg-[var(--accent-primary-soft)] transition-colors"
+          className="ml-1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-sky-50 text-sky-600 hover:bg-sky-100 dark:bg-sky-950/30 dark:text-sky-300 dark:hover:bg-sky-950/45 transition-colors"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" />
+          <span className="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400" />
           {path}
           <Icon name="open_in_new" className="text-[14px]" />
         </button>

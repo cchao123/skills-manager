@@ -26,7 +26,7 @@ export const ConfigGuide: React.FC = () => {
         <Step title={t('githubBackup.guide.step1.title')}>
           <p className="text-sm text-slate-600 dark:text-gray-300">
             {t('githubBackup.guide.step1.description')}{' '}
-            <a href={GITHUB_NEW_REPO_URL} target="_blank" rel="noopener noreferrer" className="text-[var(--accent-primary)] hover:underline font-medium">
+            <a href={GITHUB_NEW_REPO_URL} target="_blank" rel="noopener noreferrer" className="text-sky-600 hover:text-sky-700 dark:text-sky-300 dark:hover:text-sky-200 hover:underline font-medium">
               ➜ {t('githubBackup.guide.step1.link')} 
             </a>
           </p>
@@ -35,7 +35,7 @@ export const ConfigGuide: React.FC = () => {
         <Step title={t('githubBackup.guide.step2.title')}>
           <p className="text-sm text-slate-600 dark:text-gray-300">
             {t('githubBackup.guide.step2.description')}{' '}
-            <a href={GITHUB_TOKENS_URL} target="_blank" rel="noopener noreferrer" className="text-[var(--accent-primary)] hover:underline font-medium">
+            <a href={GITHUB_TOKENS_URL} target="_blank" rel="noopener noreferrer" className="text-sky-600 hover:text-sky-700 dark:text-sky-300 dark:hover:text-sky-200 hover:underline font-medium">
               ➜ {t('githubBackup.guide.step2.link')} 
             </a>
           </p>
@@ -51,7 +51,7 @@ export const ConfigGuide: React.FC = () => {
                   href={GITHUB_TOKENS_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[var(--accent-primary)] hover:text-[var(--accent-primary-strong)] underline"
+                  className="text-sky-600 hover:text-sky-700 dark:text-sky-300 dark:hover:text-sky-200 underline"
                 >
                   {t('githubBackup.guide.step2.detail2Link')}
                 </a>
