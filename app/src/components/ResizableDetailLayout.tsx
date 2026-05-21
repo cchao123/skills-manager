@@ -131,7 +131,7 @@ export function ResizableDetailLayout({
 
       {/* 可拖拽详情面板 */}
       <div
-        className={`overflow-hidden flex-shrink-0 bg-white dark:bg-dark-bg-card flex flex-row min-h-0 drawer-panel ${
+        className={`overflow-hidden flex-shrink-0 bg-[var(--bg-card)] dark:bg-dark-bg-card flex flex-row min-h-0 drawer-panel ${
           !isDragging ? 'drawer-width-transition' : ''
         }`}
         style={{ width: isPanelOpen ? panelWidth : 0 }}
@@ -143,16 +143,16 @@ export function ResizableDetailLayout({
           <>
             {/* 拖拽线 */}
             <div
-              className={`flex-shrink-0 w-1.5 cursor-col-resize resizable-divider flex flex-col items-center justify-center group border-r border-[#e1e3e4] dark:border-dark-border ${
+              className={`flex-shrink-0 w-1.5 cursor-col-resize resizable-divider flex flex-col items-center justify-center group border-r border-[var(--border-color)] dark:border-dark-border ${
                 isDragging
-                  ? 'bg-[#b71422]'
-                  : 'bg-gray-100 dark:bg-dark-bg-secondary hover:bg-[#b71422] dark:hover:bg-[#b71422]'
+                  ? 'bg-[var(--accent-primary)]'
+                  : 'bg-[var(--shell-surface-muted)] dark:bg-dark-bg-secondary hover:bg-[var(--accent-primary)] dark:hover:bg-[var(--accent-primary)]'
               }`}
               onMouseDown={handleResizeStart}
             >
               <div className="flex flex-col gap-0.5">
-                <div className={`w-0.5 h-1.5 rounded-full transition-colors ${isDragging ? 'bg-white' : 'bg-gray-400 dark:bg-gray-500 group-hover:bg-white'}`} />
-                <div className={`w-0.5 h-1.5 rounded-full transition-colors ${isDragging ? 'bg-white' : 'bg-gray-400 dark:bg-gray-500 group-hover:bg-white'}`} />
+                <div className={`w-0.5 h-1.5 rounded-full transition-colors ${isDragging ? 'bg-white' : 'bg-[var(--text-tertiary)] dark:bg-gray-500 group-hover:bg-white'}`} />
+                <div className={`w-0.5 h-1.5 rounded-full transition-colors ${isDragging ? 'bg-white' : 'bg-[var(--text-tertiary)] dark:bg-gray-500 group-hover:bg-white'}`} />
               </div>
             </div>
 

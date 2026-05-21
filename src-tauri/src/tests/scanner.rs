@@ -22,7 +22,10 @@ mod tests {
             SOURCE_GLOBAL.to_string(),
             "claude".to_string(),
         ];
-        assert_eq!(pick_default_primary(&sources), Some(SOURCE_GLOBAL.to_string()));
+        assert_eq!(
+            pick_default_primary(&sources),
+            Some(SOURCE_GLOBAL.to_string())
+        );
     }
 
     #[test]
@@ -31,7 +34,10 @@ mod tests {
         e.insert_source(SOURCE_GLOBAL);
         e.insert_source(SOURCE_GLOBAL);
         e.insert_source("claude");
-        assert_eq!(e.sources, vec![SOURCE_GLOBAL.to_string(), "claude".to_string()]);
+        assert_eq!(
+            e.sources,
+            vec![SOURCE_GLOBAL.to_string(), "claude".to_string()]
+        );
     }
 
     #[test]
@@ -41,7 +47,11 @@ mod tests {
             primary: SOURCE_GLOBAL.to_string(),
             open: vec!["cursor".to_string()],
         };
-        let agents = vec!["cursor".to_string(), "openclaw".to_string(), "claude".to_string()];
+        let agents = vec![
+            "cursor".to_string(),
+            "openclaw".to_string(),
+            "claude".to_string(),
+        ];
         let m = e.derive_agent_enabled(&agents);
         assert_eq!(m.get("cursor"), Some(&true)); // open
         assert_eq!(m.get("openclaw"), Some(&true)); // native

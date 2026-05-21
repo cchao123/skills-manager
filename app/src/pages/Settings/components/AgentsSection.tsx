@@ -70,7 +70,7 @@ const SortableAgentRow: React.FC<SortableAgentRowProps> = ({
   return (
     <div ref={setNodeRef} style={style}>
       <div
-        className="w-full flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-dark-bg-tertiary transition-colors"
+        className="w-full flex items-center gap-2 hover:bg-[var(--hover-bg)] dark:hover:bg-dark-bg-tertiary transition-colors"
         onContextMenu={detected ? onContextMenu(agent.rootPath) : undefined}
       >
         {/* 拖拽把手 */}
@@ -93,7 +93,7 @@ const SortableAgentRow: React.FC<SortableAgentRowProps> = ({
           aria-expanded={canExpand ? isExpanded : undefined}
           className="flex-1 min-w-0 pl-2 pr-2 py-4 flex items-center gap-4 text-left disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-dark-bg-tertiary flex items-center justify-center shrink-0 overflow-hidden">
+          <div className="w-9 h-9 rounded-lg bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary flex items-center justify-center shrink-0 overflow-hidden">
             <img
               src={getAgentIcon(agent.name)}
               alt={agent.displayName}
@@ -110,7 +110,7 @@ const SortableAgentRow: React.FC<SortableAgentRowProps> = ({
                   {t('settings.agents.installed')}
                 </span>
               ) : (
-                <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-dark-bg-tertiary text-slate-500 dark:text-gray-500 text-[10px] font-semibold rounded-full">
+                <span className="px-1.5 py-0.5 bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary text-slate-500 dark:text-gray-500 text-[10px] font-semibold rounded-full">
                   {t('settings.agents.notInstalled')}
                 </span>
               )}
@@ -128,7 +128,7 @@ const SortableAgentRow: React.FC<SortableAgentRowProps> = ({
             aria-expanded={isExpanded}
             aria-label={isExpanded ? t('settings.agents.collapse') : t('settings.agents.expand')}
             title={isExpanded ? t('settings.agents.collapse') : t('settings.agents.expand')}
-            className="shrink-0 w-8 h-8 rounded-md flex items-center justify-center text-slate-400 dark:text-gray-500 hover:bg-white dark:hover:bg-dark-bg-card hover:text-[#b71422] transition-colors"
+            className="shrink-0 w-8 h-8 rounded-md flex items-center justify-center text-slate-400 dark:text-gray-500 hover:bg-[var(--bg-card)] dark:hover:bg-dark-bg-card hover:text-[var(--accent-primary)] transition-colors"
           >
             <Icon name={isExpanded ? 'expand_less' : 'expand_more'} className="text-lg" />
           </button>
@@ -140,7 +140,7 @@ const SortableAgentRow: React.FC<SortableAgentRowProps> = ({
             onClick={() => onOpenPath(agent.rootPath)}
             aria-label={agent.rootPath}
             title={agent.rootPath}
-            className="shrink-0 w-8 h-8 mr-4 rounded-md flex items-center justify-center text-slate-300 dark:text-gray-600 hover:bg-white dark:hover:bg-dark-bg-card hover:text-[#b71422] transition-colors"
+            className="shrink-0 w-8 h-8 mr-4 rounded-md flex items-center justify-center text-slate-300 dark:text-gray-600 hover:bg-[var(--bg-card)] dark:hover:bg-dark-bg-card hover:text-[var(--accent-primary)] transition-colors"
           >
             <Icon name="open_in_new" className="text-lg" />
           </button>
@@ -163,10 +163,10 @@ const SortableAgentRow: React.FC<SortableAgentRowProps> = ({
                   className="group w-full flex items-center gap-2 py-1 px-2 -ml-2 rounded-md hover:bg-white dark:hover:bg-dark-bg-card transition-colors text-left"
                 >
                   <Icon name="subdirectory_arrow_right" className="text-sm text-slate-400 dark:text-gray-500 shrink-0" />
-                  <span className="flex-1 min-w-0 text-xs font-mono text-slate-600 dark:text-gray-300 truncate group-hover:text-[#b71422]">
+                  <span className="flex-1 min-w-0 text-xs font-mono text-slate-600 dark:text-gray-300 truncate group-hover:text-[var(--accent-primary)]">
                     {p}
                   </span>
-                  <Icon name="open_in_new" className="text-sm text-slate-300 dark:text-gray-600 group-hover:text-[#b71422] shrink-0" />
+                  <Icon name="open_in_new" className="text-sm text-slate-300 dark:text-gray-600 group-hover:text-[var(--accent-primary)] shrink-0" />
                 </button>
               </li>
             ))}
@@ -275,9 +275,9 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
         type="button"
         onClick={() => agentsApi.openFolder().catch(() => { })}
         onContextMenu={openCtxMenu('~/.skills-manager')}
-        className="w-full bg-white dark:bg-dark-bg-card rounded-2xl border border-[#e1e3e4] dark:border-dark-border px-6 py-2.5 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-dark-bg-tertiary transition-colors text-left"
+        className="w-full bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl border border-[var(--border-color)] dark:border-dark-border px-6 py-2.5 flex items-center gap-3 hover:bg-[var(--hover-bg)] dark:hover:bg-dark-bg-tertiary transition-colors text-left"
       >
-        <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-dark-bg-tertiary flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="w-7 h-7 rounded-lg bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary flex items-center justify-center shrink-0 overflow-hidden">
           <img src={OCTOPUS_LOGO_URL} alt="Skills Manager" className="w-5 h-5 object-contain" />
         </div>
         <div className="flex-1 min-w-0 flex items-center gap-2">
@@ -295,8 +295,8 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
       </button>
 
       {/* Agents card */}
-      <div className="bg-white dark:bg-dark-bg-card rounded-2xl border border-[#e1e3e4] dark:border-dark-border overflow-hidden">
-        <div className="px-6 py-4 border-b border-[#e1e3e4] dark:border-dark-border flex items-center justify-between">
+      <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl border border-[var(--border-color)] dark:border-dark-border overflow-hidden">
+        <div className="px-6 py-4 border-b border-[var(--border-color)] dark:border-dark-border flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Icon name="smart_toy" className="text-2xl text-slate-600 dark:text-gray-300" />
@@ -309,11 +309,11 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
           <button
             type="button"
             onClick={openManage}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e1e3e4] dark:border-dark-border bg-white dark:bg-dark-bg-card hover:border-[#b71422]/40 hover:text-[#b71422] text-slate-500 dark:text-gray-400 text-sm font-medium transition-colors shrink-0"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--border-color)] dark:border-dark-border bg-[var(--bg-card)] dark:bg-dark-bg-card hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] text-slate-500 dark:text-gray-400 text-sm font-medium transition-colors shrink-0"
           >
             <Icon name="tune" className="text-base" />
             {hiddenAgentNames.size > 0 && (
-              <span className="w-4 h-4 rounded-full bg-[#b71422] text-white text-[10px] font-bold flex items-center justify-center">
+              <span className="w-4 h-4 rounded-full bg-[var(--accent-primary)] text-white text-[10px] font-bold flex items-center justify-center">
                 {hiddenAgentNames.size}
               </span>
             )}
@@ -322,7 +322,7 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
 
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={visibleOrderedAgents.map(a => a.name)} strategy={verticalListSortingStrategy}>
-            <div className="divide-y divide-[#e1e3e4] dark:divide-dark-border">
+            <div className="divide-y divide-[var(--border-color)] dark:divide-dark-border">
               {visibleOrderedAgents.map(agent => {
                 const detected = detectedSet.has(agent.name);
                 const scanPaths = getAgentScanPaths(agent.name);
@@ -361,11 +361,11 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
           onClick={() => setManageOpen(false)}
         >
           <div
-            className="bg-white dark:bg-dark-bg-card rounded-2xl border border-[#e1e3e4] dark:border-dark-border shadow-2xl w-full max-w-sm overflow-hidden"
+            className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl border border-[var(--border-color)] dark:border-dark-border shadow-2xl w-full max-w-sm overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b border-[#e1e3e4] dark:border-dark-border flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-[var(--border-color)] dark:border-dark-border flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   {t('settings.agents.manageTitle')}
@@ -394,16 +394,16 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
                     onClick={() => toggleDraft(agent.name)}
                     className={`relative flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all cursor-pointer ${
                       isVisible
-                        ? 'border-[#b71422] bg-rose-50 dark:bg-rose-900/10'
-                        : 'border-[#e1e3e4] dark:border-dark-border bg-white dark:bg-dark-bg-card hover:border-slate-300 dark:hover:border-gray-500'
+                        ? 'border-[var(--accent-primary)] bg-[var(--accent-primary-soft)]'
+                        : 'border-[var(--border-color)] dark:border-dark-border bg-[var(--bg-card)] dark:bg-dark-bg-card hover:border-[var(--shell-line-strong)] dark:hover:border-gray-500'
                     }`}
                   >
                     {isVisible && (
-                      <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#b71422] flex items-center justify-center">
+                      <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--accent-primary)] flex items-center justify-center">
                         <Icon name="check" className="text-white text-[11px]" />
                       </span>
                     )}
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-dark-bg-tertiary flex items-center justify-center overflow-hidden">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary flex items-center justify-center overflow-hidden">
                       <img
                         src={agent.icon}
                         alt={agent.displayName}
@@ -411,7 +411,7 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
                       />
                     </div>
                     <span className={`text-xs font-semibold text-center leading-tight ${
-                      isVisible ? 'text-[#b71422] dark:text-rose-400' : 'text-slate-700 dark:text-gray-200'
+                      isVisible ? 'text-[var(--accent-primary)]' : 'text-slate-700 dark:text-gray-200'
                     }`}>
                       {agent.displayName}
                     </span>
@@ -421,7 +421,7 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-[#e1e3e4] dark:border-dark-border flex justify-end gap-2">
+            <div className="px-6 py-4 border-t border-[var(--border-color)] dark:border-dark-border flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setManageOpen(false)}
@@ -432,7 +432,7 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
               <button
                 type="button"
                 onClick={confirmManage}
-                className="px-4 py-2 rounded-lg text-sm font-bold bg-[#b71422] text-white hover:opacity-90 transition-opacity"
+                className="px-4 py-2 rounded-lg text-sm font-bold bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-primary-strong)] transition-colors"
               >
                 {t('settings.agents.manageConfirm')}
               </button>

@@ -79,43 +79,43 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
     <div className="flex items-center gap-3 pl-5" data-tauri-drag-region>
       {searchBarPrefs.showSearch && (
         <div className="relative flex-1 min-w-0">
-          <div className={`flex items-center h-9 rounded-lg border transition-colors focus-within:border-[#b71422] bg-white dark:bg-dark-bg-card overflow-hidden ${
-            searchTerm ? 'border-[#b71422]/40 dark:border-[#fca5a5]/40' : 'border-[#e1e3e4] dark:border-dark-border'
+          <div className={`flex items-center h-9 rounded-lg border transition-colors focus-within:border-[var(--accent-primary)] bg-white dark:bg-dark-bg-card overflow-hidden ${
+            searchTerm ? 'border-[var(--accent-primary)]/40' : 'border-[var(--border-color)] dark:border-dark-border'
           }`}>
             {searchBarPrefs.showFilter && (
               <button
                 ref={filterButtonRef}
                 onClick={() => setIsFilterDropdownOpen((v) => !v)}
-                className={`relative flex-shrink-0 self-stretch px-2 flex items-center border-r border-[#e1e3e4] dark:border-dark-border transition-colors ${
+                className={`relative flex-shrink-0 self-stretch px-2 flex items-center border-r border-[var(--border-color)] dark:border-dark-border transition-colors ${
                   isFilterDropdownOpen
-                    ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-500 dark:text-rose-400'
-                    : 'bg-slate-50 dark:bg-dark-bg-tertiary hover:bg-slate-100 dark:hover:bg-dark-bg-secondary text-slate-400 hover:text-slate-600 dark:hover:text-gray-200'
+                    ? 'bg-[var(--accent-primary-soft)] text-[var(--accent-primary)]'
+                    : 'bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary hover:bg-white dark:hover:bg-dark-bg-secondary text-[var(--text-tertiary)] hover:text-[var(--text-primary)] dark:hover:text-gray-200'
                 }`}
                 title={t('settings.skillFilter.title')}
               >
                 <Icon name="filter_alt_off" className="text-xl" />
                 {prefixes.length > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-rose-500 rounded-full text-[7px] text-white flex items-center justify-center font-semibold leading-none">
+                  <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-[var(--accent-primary)] rounded-full text-[7px] text-white flex items-center justify-center font-semibold leading-none">
                     {prefixes.length}
                   </span>
                 )}
               </button>
             )}
-            <Icon name="search" className={`flex-shrink-0 text-slate-400 dark:text-gray-400 ${searchBarPrefs.showFilter ? 'ml-2.5' : 'ml-3'}`} />
+            <Icon name="search" className={`flex-shrink-0 text-[var(--text-tertiary)] dark:text-gray-400 ${searchBarPrefs.showFilter ? 'ml-2.5' : 'ml-3'}`} />
             <input
               type="text"
               placeholder={t('dashboard.search.placeholder')}
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              className={`flex-1 h-full bg-transparent border-0 outline-none ring-0 focus:ring-0 pl-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 ${searchTerm ? 'pr-7' : 'pr-3'}`}
+              className={`flex-1 h-full bg-transparent border-0 outline-none ring-0 focus:ring-0 pl-2 text-sm text-[var(--text-primary)] dark:text-white placeholder:text-[var(--text-tertiary)] dark:placeholder:text-gray-500 ${searchTerm ? 'pr-7' : 'pr-3'}`}
             />
             {searchTerm && (
               <button
                 onClick={() => onSearchChange('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-dark-bg-tertiary transition-colors flex-shrink-0"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-lg hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary transition-colors flex-shrink-0"
                 title={t('dashboard.search.clear')}
               >
-                <Icon name="close" className="text-slate-400 dark:text-gray-500 text-sm" />
+                <Icon name="close" className="text-[var(--text-tertiary)] dark:text-gray-500 text-sm" />
               </button>
             )}
           </div>
@@ -125,16 +125,16 @@ export const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
             <div
               ref={filterDropdownRef}
               style={{ position: 'fixed', top: dropdownPos.top, left: dropdownPos.left, zIndex: 9999 }}
-              className="w-96 bg-white dark:bg-dark-bg-card rounded-xl border border-[#e1e3e4] dark:border-dark-border shadow-xl overflow-hidden animate-toast-in"
+              className="w-96 bg-white dark:bg-dark-bg-card rounded-xl border border-[var(--border-color)] dark:border-dark-border shadow-xl overflow-hidden animate-toast-in"
             >
-              <div className="px-4 py-3 border-b border-[#e1e3e4] dark:border-dark-border flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <Icon name="filter_alt_off" className="text-base text-slate-500 dark:text-gray-300" />
+              <div className="px-4 py-3 border-b border-[var(--border-color)] dark:border-dark-border flex items-center justify-between">
+                <h3 className="text-sm font-bold text-[var(--text-primary)] dark:text-white flex items-center gap-1.5">
+                  <Icon name="filter_alt_off" className="text-base text-[var(--accent-primary)] dark:text-gray-300" />
                   {t('settings.skillFilter.title')}
                 </h3>
                 <button
                   onClick={() => setIsFilterDropdownOpen(false)}
-                  className="text-slate-400 hover:text-slate-600 dark:hover:text-gray-200 transition-colors"
+                  className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] dark:hover:text-gray-200 transition-colors"
                 >
                   <Icon name="close" className="text-base" />
                 </button>
@@ -209,14 +209,14 @@ const FilterDropdownContent: React.FC<FilterDropdownContentProps> = ({
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t('settings.skillFilter.placeholder')}
-            className="w-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-lg py-2 pl-9 pr-3 text-sm font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#b71422]/20 focus:border-[#b71422] transition-all"
+            className="w-full bg-white dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border rounded-lg py-2 pl-9 pr-3 text-sm font-mono text-[var(--text-primary)] dark:text-white placeholder:text-[var(--text-tertiary)] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[var(--accent-primary-border)] focus:border-[var(--accent-primary)] transition-all"
           />
         </div>
         <button
           type="button"
           onClick={commit}
           disabled={!draft.trim()}
-          className="px-3 py-2 rounded-lg text-sm font-bold bg-[#b71422] text-white hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-3 py-2 rounded-lg text-sm font-bold bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-primary-strong)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {t('settings.skillFilter.add')}
         </button>
@@ -224,7 +224,7 @@ const FilterDropdownContent: React.FC<FilterDropdownContentProps> = ({
 
       {/* Chip list */}
       {prefixes.length === 0 ? (
-        <p className="text-xs text-slate-400 dark:text-gray-500 italic">
+        <p className="text-xs text-[var(--text-tertiary)] dark:text-gray-500 italic">
           {t('settings.skillFilter.empty')}
         </p>
       ) : (
@@ -232,7 +232,7 @@ const FilterDropdownContent: React.FC<FilterDropdownContentProps> = ({
           {prefixes.map((prefix) => (
             <span
               key={prefix}
-              className="inline-flex items-center gap-1 pl-2.5 pr-1 py-0.5 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-mono font-semibold"
+              className="inline-flex items-center gap-1 pl-2.5 pr-1 py-0.5 rounded-full bg-[var(--accent-primary-soft)] text-[var(--accent-primary)] text-xs font-mono font-semibold"
             >
               {prefix}
               <button
@@ -240,7 +240,7 @@ const FilterDropdownContent: React.FC<FilterDropdownContentProps> = ({
                 onClick={() => removePrefix(prefix)}
                 aria-label={t('settings.skillFilter.remove', { prefix })}
                 title={t('settings.skillFilter.remove', { prefix })}
-                className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors"
+                className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-[var(--accent-primary-border)] transition-colors"
               >
                 <Icon name="close" className="text-[11px]" />
               </button>
@@ -249,7 +249,7 @@ const FilterDropdownContent: React.FC<FilterDropdownContentProps> = ({
         </div>
       )}
       <div className="flex items-center justify-between">
-        <p className="text-[11px] text-slate-400 dark:text-gray-500 leading-relaxed">
+        <p className="text-[11px] text-[var(--text-tertiary)] dark:text-gray-500 leading-relaxed">
           {t('settings.skillFilter.hint')}
         </p>
       </div>

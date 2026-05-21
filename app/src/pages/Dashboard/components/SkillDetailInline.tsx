@@ -47,7 +47,7 @@ const MarkdownPreview = memo(({ content }: { content: string }) => (
 ));
 
 const RawPreview = memo(({ content }: { content: string }) => (
-  <pre className="text-xs text-slate-700 dark:text-gray-300 whitespace-pre-wrap break-words font-mono leading-relaxed">
+  <pre className="text-xs text-[var(--text-secondary)] dark:text-gray-300 whitespace-pre-wrap break-words font-mono leading-relaxed">
     {content}
   </pre>
 ));
@@ -180,23 +180,23 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
     onToggleAgent(skill, agentName, e), [onToggleAgent, skill]);
   return (
     <>
-    <div className="h-full bg-white dark:bg-dark-bg-card dark:border-dark-border flex flex-col" data-skill-detail-inline="true">
+    <div className="h-full bg-[var(--bg-primary)] dark:bg-dark-bg-card dark:border-dark-border flex flex-col" data-skill-detail-inline="true">
       {/* Header */}
-      <div className="flex-shrink-0 p-6 pb-3 border-b border-gray-200 dark:border-dark-border relative" data-tauri-drag-region>
+      <div className="flex-shrink-0 p-6 pb-3 border-b border-[var(--border-color)] dark:border-dark-border relative bg-white/88 dark:bg-dark-bg-card" data-tauri-drag-region>
         {/* Action buttons */}
         <div className="absolute top-4 right-4 flex items-center gap-2">
           <button
             onClick={handleDeleteClick}
-            className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+            className="p-2 hover:bg-[var(--accent-primary-soft)] dark:hover:bg-red-900/20 rounded-lg transition-colors"
             title={t('dashboard.detail.deleteSkill')}
           >
-            <Icon name="delete" className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400" />
+            <Icon name="delete" className="text-[var(--text-secondary)] dark:text-gray-300 hover:text-[var(--accent-primary)] dark:hover:text-red-400" />
           </button>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors"
+            className="p-2 hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors"
           >
-            <Icon name="close" className="text-gray-600 dark:text-gray-300" />
+            <Icon name="close" className="text-[var(--text-secondary)] dark:text-gray-300" />
           </button>
         </div>
 
@@ -205,7 +205,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
           <div className="flex-1">
             <div className="flex items-center gap-1.5 flex-wrap">
               <h2
-                className="text-xl font-bold text-black dark:text-white cursor-pointer hover:text-[#b71422] dark:hover:text-rose-400 transition-colors select-none"
+                className="text-xl font-bold text-[var(--text-primary)] dark:text-white cursor-pointer hover:text-[var(--accent-primary)] transition-colors select-none"
                 onClick={handleCopyName}
                 title="点击复制"
               >{skill.name}</h2>
@@ -225,7 +225,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
         <div className="space-y-4">
           {/* Description */}
           {skill.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{skill.description}</p>
+            <p className="text-sm text-[var(--text-secondary)] dark:text-gray-400 leading-relaxed">{skill.description}</p>
           )}
           {/* File Tree with Content Preview - Split View */}
           {skillFiles.length > 0 ? (
@@ -233,13 +233,13 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
               <div className="mb-2 space-y-1">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex-shrink-0">{t('dashboard.detail.fileDirectory')}</h3>
-                  <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-dark-bg-secondary rounded-lg p-1">
+                  <div className="flex items-center gap-1.5 bg-[var(--shell-surface-soft)] dark:bg-dark-bg-secondary rounded-lg p-1">
                     <button
                       onClick={() => setMarkdownView('raw')}
                       className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${
                         markdownView === 'raw'
-                          ? 'bg-white dark:bg-dark-bg-tertiary shadow-sm text-gray-900 dark:text-white'
-                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                          ? 'bg-white dark:bg-dark-bg-tertiary shadow-sm text-[var(--text-primary)] dark:text-white'
+                          : 'text-[var(--text-tertiary)] dark:text-gray-400 hover:text-[var(--text-primary)] dark:hover:text-gray-300'
                       }`}
                       title="显示原始文本"
                     >
@@ -250,8 +250,8 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                       onClick={() => setMarkdownView('preview')}
                       className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${
                         markdownView === 'preview'
-                          ? 'bg-white dark:bg-dark-bg-tertiary shadow-sm text-gray-900 dark:text-white'
-                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                          ? 'bg-white dark:bg-dark-bg-tertiary shadow-sm text-[var(--text-primary)] dark:text-white'
+                          : 'text-[var(--text-tertiary)] dark:text-gray-400 hover:text-[var(--text-primary)] dark:hover:text-gray-300'
                       }`}
                       title="显示渲染预览"
                     >
@@ -279,7 +279,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                         {sourceLabel(source)}
                       </span>
                       <p
-                        className="text-xs text-blue-500 dark:text-blue-400 font-mono truncate flex-1 min-w-0 cursor-pointer hover:underline"
+                        className="text-xs text-[var(--text-secondary)] dark:text-gray-300 font-mono truncate flex-1 min-w-0 cursor-pointer hover:text-[var(--accent-primary)] hover:underline transition-colors"
                         title={display}
                         onClick={() => agentsApi.openFolderPath(display)}
                       >
@@ -289,12 +289,12 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                   );
                 })}
               </div>
-              <div className="bg-[#fafafa] dark:bg-dark-bg-secondary rounded-lg flex overflow-hidden relative" style={{ height: FILE_TREE_HEIGHT }}>
+              <div className="bg-[var(--shell-surface-soft)] dark:bg-dark-bg-secondary border border-[var(--border-color)] dark:border-dark-border rounded-lg flex overflow-hidden relative" style={{ height: FILE_TREE_HEIGHT }}>
                 {/* Left: File Tree */}
                 <div className="overflow-y-auto show-scrollbar p-2" style={{ width: `${leftPanelWidth}%` }}>
                   {loadingFiles ? (
                     <div className="flex items-center justify-center py-4">
-                      <div className="inline-block animate-spin rounded-full h-6 w-6 border-4 border-gray-200 dark:border-dark-bg-secondary border-t-[#b71422]"></div>
+                      <div className="inline-block animate-spin rounded-full h-6 w-6 border-4 border-gray-200 dark:border-dark-bg-secondary border-t-[var(--accent-primary)]"></div>
                     </div>
                   ) : (
                     <CardFileTree
@@ -309,8 +309,8 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
 
                 {/* Resizable Divider */}
                 <div
-                  className={`resizable-divider w-1.5 bg-gray-200 dark:bg-dark-border hover:bg-[#b71422] dark:hover:bg-[#b71422] cursor-col-resize relative z-10 flex items-center justify-center group ${
-                    isResizing ? 'bg-[#b71422]' : ''
+                  className={`resizable-divider w-1.5 bg-[var(--shell-surface-muted)] dark:bg-dark-border hover:bg-[var(--accent-primary)] dark:hover:bg-[var(--accent-primary)] cursor-col-resize relative z-10 flex items-center justify-center group ${
+                    isResizing ? 'bg-[var(--accent-primary)]' : ''
                   }`}
                   onMouseDown={onResizeStart}
                   title={t('dashboard.detail.dragResize')}
@@ -327,7 +327,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                     <div className="h-full p-3">
                       {loadingFile ? (
                         <div className="flex items-center justify-center py-4">
-                          <div className="inline-block animate-spin rounded-full h-5 w-5 border-4 border-gray-200 dark:border-dark-bg-secondary border-t-[#b71422]"></div>
+                          <div className="inline-block animate-spin rounded-full h-5 w-5 border-4 border-gray-200 dark:border-dark-bg-secondary border-t-[var(--accent-primary)]"></div>
                         </div>
                       ) : markdownView === 'raw' ? (
                         <RawPreview content={deferredContent} />
@@ -336,7 +336,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                       )}
                     </div>
                   ) : (
-                    <div className="h-full flex items-center justify-center text-slate-400 dark:text-gray-500">
+                    <div className="h-full flex items-center justify-center text-[var(--text-tertiary)] dark:text-gray-500">
                       <div className="text-center">
                         <Icon name="description" className="text-3xl mb-2" />
                         <p className="text-xs">{t('dashboard.detail.clickToView')}</p>
@@ -369,7 +369,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                         {sourceLabel(source)}
                       </span>
                       <p
-                        className="text-xs text-blue-500 dark:text-blue-400 font-mono truncate flex-1 min-w-0 cursor-pointer hover:underline"
+                        className="text-xs text-[var(--text-secondary)] dark:text-gray-300 font-mono truncate flex-1 min-w-0 cursor-pointer hover:text-[var(--accent-primary)] hover:underline transition-colors"
                         title={display}
                         onClick={() => agentsApi.openFolderPath(display)}
                       >
@@ -379,20 +379,20 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                   );
                 })}
               </div>
-              <div className="bg-[#fafafa] dark:bg-dark-bg-secondary rounded-lg p-6" style={{ height: FILE_TREE_HEIGHT }}>
+              <div className="bg-[var(--shell-surface-soft)] dark:bg-dark-bg-secondary border border-[var(--border-color)] dark:border-dark-border rounded-lg p-6" style={{ height: FILE_TREE_HEIGHT }}>
                 {loadingFiles ? (
                   <div className="h-full flex items-center justify-center">
                     <div className="text-center">
-                      <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-200 dark:border-dark-bg-secondary border-t-[#b71422] mb-3"></div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{t('dashboard.detail.loadingFiles')}</p>
+                      <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-200 dark:border-dark-bg-secondary border-t-[var(--accent-primary)] mb-3"></div>
+                      <p className="text-xs text-[var(--text-tertiary)] dark:text-gray-400">{t('dashboard.detail.loadingFiles')}</p>
                     </div>
                   </div>
                 ) : (
                   <div className="h-full flex items-center justify-center">
                     <div className="text-center">
-                      <Icon name="folder_open" className="text-4xl text-gray-400 dark:text-gray-500 mb-2" />
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.detail.noFiles')}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{t('dashboard.detail.noFilesHint')}</p>
+                      <Icon name="folder_open" className="text-4xl text-[var(--text-tertiary)] dark:text-gray-500 mb-2" />
+                      <p className="text-sm text-[var(--text-secondary)] dark:text-gray-400">{t('dashboard.detail.noFiles')}</p>
+                      <p className="text-xs text-[var(--text-tertiary)] dark:text-gray-500 mt-1">{t('dashboard.detail.noFilesHint')}</p>
                     </div>
                   </div>
                 )}
@@ -403,7 +403,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
           {/* Agent Status */}
           <div>
             <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">{t('dashboard.detail.agentStatus')}</h3>
-            <div className="bg-[#fafafa] dark:bg-dark-bg-secondary rounded-lg px-3 py-3 relative pb-1">
+            <div className="bg-[var(--shell-surface-soft)] dark:bg-dark-bg-secondary border border-[var(--border-color)] dark:border-dark-border rounded-lg px-3 py-3 relative pb-1">
               {detectedAgents.map((agent, index) => {
                 const isLast = index === detectedAgents.length - 1;
                 const isNativeAgent = nativeAgents.has(agent.name);
@@ -426,7 +426,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-bold text-slate-700 dark:text-gray-200">{agent.display_name}</span>
+                          <span className="text-xs font-bold text-[var(--text-primary)] dark:text-gray-200">{agent.display_name}</span>
                           {isNativeAgent && (
                             <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
                               <Icon name="home" style={{ fontSize: '11px' }} />
@@ -437,7 +437,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                         <span className={`text-[10px] leading-tight ${
                           isNativeAgent
                             ? 'font-bold text-amber-600 dark:text-amber-400'
-                            : skill.agent_enabled[agent.name] ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-gray-500'
+                            : skill.agent_enabled[agent.name] ? 'text-green-600 dark:text-green-400' : 'text-[var(--text-tertiary)] dark:text-gray-500'
                         }`}>
                           {isNativeAgent
                             ? t('dashboard.alwaysEnabled')
@@ -455,7 +455,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                             <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-500/20">
                               <Icon name="warning" className="text-sm text-amber-600 dark:text-amber-400" />
                             </div>
-                            <p className="text-[11px] leading-relaxed text-slate-600 dark:text-gray-300">{t('dashboard.nativeSourceTip')}</p>
+                            <p className="text-[11px] leading-relaxed text-[var(--text-secondary)] dark:text-gray-300">{t('dashboard.nativeSourceTip')}</p>
                           </div>
                         </div>
                       </div>
@@ -463,7 +463,7 @@ export const SkillDetailInline: React.FC<SkillDetailInlineProps> = memo(({
                       <button
                         onClick={(e) => handleAgentToggle(agent.name, e)}
                         className={`relative w-8 h-[18px] rounded-full transition-colors flex-shrink-0 cursor-pointer ${
-                          skill.agent_enabled[agent.name] ? 'bg-[#b71422]' : 'bg-gray-300 dark:bg-gray-600'
+                          skill.agent_enabled[agent.name] ? 'bg-[var(--accent-primary)]' : 'bg-gray-300 dark:bg-gray-600'
                         }`}
                       >
                         <span className={`absolute top-[1px] left-[1px] w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${

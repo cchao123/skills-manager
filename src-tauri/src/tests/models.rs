@@ -29,6 +29,7 @@ mod tests {
             primary: SOURCE_GLOBAL.to_string(),
             open: vec!["claude".to_string()],
             source_paths: HashMap::new(),
+            source_repository: None,
         };
 
         let json = serde_json::to_string(&skill).unwrap();
@@ -49,6 +50,7 @@ mod tests {
             skills_path: "skills".to_string(),
             enabled: true,
             detected: false,
+            extra_paths: vec![],
         };
 
         let json = serde_json::to_string(&agent).unwrap();
@@ -56,6 +58,7 @@ mod tests {
 
         assert_eq!(deserialized.name, "claude-code");
         assert_eq!(deserialized.path, "~/.claude");
+        assert!(deserialized.extra_paths.is_empty());
     }
 
     #[test]
@@ -82,8 +85,8 @@ mod tests {
         ];
         let map = entry.derive_agent_enabled(&agents);
 
-        assert_eq!(map.get("claude"), Some(&true)); // in open
-        assert_eq!(map.get("cursor"), Some(&true)); // native (in sources, !=global)
+        assert_eq!(map.get("claude"), Some(&true));
+        assert_eq!(map.get("cursor"), Some(&true));
         assert_eq!(map.get("codex"), Some(&false));
     }
 
@@ -95,7 +98,6 @@ mod tests {
             open: vec![],
         };
         entry.ensure_valid_primary();
-        // global 优先级最高
         assert_eq!(entry.primary, SOURCE_GLOBAL);
     }
 
@@ -103,7 +105,7 @@ mod tests {
     fn test_skill_entry_ensure_valid_primary_repairs_stale() {
         let mut entry = SkillEntry {
             sources: vec!["cursor".to_string()],
-            primary: "claude".to_string(), // 不在 sources 里
+            primary: "claude".to_string(),
             open: vec![],
         };
         entry.ensure_valid_primary();
@@ -112,8 +114,15 @@ mod tests {
 
     #[test]
     fn test_pick_default_primary_priority() {
-        let sources = vec!["codex".to_string(), SOURCE_GLOBAL.to_string(), "claude".to_string()];
-        assert_eq!(pick_default_primary(&sources), Some(SOURCE_GLOBAL.to_string()));
+        let sources = vec![
+            "codex".to_string(),
+            SOURCE_GLOBAL.to_string(),
+            "claude".to_string(),
+        ];
+        assert_eq!(
+            pick_default_primary(&sources),
+            Some(SOURCE_GLOBAL.to_string())
+        );
 
         let sources = vec!["codex".to_string(), "claude".to_string()];
         assert_eq!(pick_default_primary(&sources), Some("claude".to_string()));

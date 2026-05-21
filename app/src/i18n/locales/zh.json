@@ -263,7 +263,7 @@
     "config": {
       "title": "GitHub 仓库配置",
       "owner": "仓库所有者",
-      "ownerPlaceholder": "例如: cchao123",
+      "ownerPlaceholder": "例如: my-github-name",
       "ownerHelper": "GitHub 用户名或组织名",
       "repo": "仓库名",
       "repoPlaceholder": "例如: my-skills-repo",

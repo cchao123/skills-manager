@@ -14,7 +14,7 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[#e1e3e4] dark:border-dark-border">
+    <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[var(--border-color)] dark:border-dark-border">
       <div className="mb-5">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Icon name="language" className="text-2xl text-slate-600 dark:text-gray-300" />
@@ -32,14 +32,14 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
             onClick={() => onLanguageChange(lang.code)}
             className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${
               currentLanguage === lang.code
-                ? 'border-[#b71422] bg-[#b71422]/5 dark:bg-[#b71422]/10'
-                : 'border-[#e1e3e4] dark:border-dark-border hover:border-[#b71422]/30 bg-white dark:bg-dark-bg-card'
+                ? 'border-[var(--accent-primary)] bg-[var(--accent-primary-soft)]'
+                : 'border-[var(--border-color)] dark:border-dark-border hover:border-[var(--accent-primary)]/30 bg-[var(--bg-card)] dark:bg-dark-bg-card'
             }`}
           >
             <span className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm font-medium ${
               currentLanguage === lang.code
-                ? 'bg-[#b71422] text-white'
-                : 'bg-slate-100 dark:bg-dark-bg-tertiary text-slate-600 dark:text-gray-300'
+                ? 'bg-[var(--accent-primary)] text-white'
+                : 'bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary text-[var(--text-secondary)] dark:text-gray-300'
             }`}>
               {lang.abbr}
             </span>
@@ -47,7 +47,7 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
               {lang.name}
             </span>
             {currentLanguage === lang.code && (
-              <Icon name="check_circle" className="text-[#b71422] ml-auto" />
+              <Icon name="check_circle" className="text-[var(--accent-primary)] ml-auto" />
             )}
           </button>
         ))}

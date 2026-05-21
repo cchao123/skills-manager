@@ -40,17 +40,17 @@ export const Drawer: React.FC<DrawerProps> = ({
       onClick={onClose}
     >
       <div
-        className={`bg-white dark:bg-dark-bg-card shadow-2xl h-screen overflow-hidden flex flex-col animate-slide-in-right`}
+        className={`bg-[var(--bg-card)] dark:bg-dark-bg-card shadow-2xl h-screen overflow-hidden flex flex-col animate-slide-in-right`}
         style={{ width: width === '100vw' ? '100vw' : width, maxWidth: width === '100vw' ? undefined : '1400px' }}
         onClick={(e) => e.stopPropagation()}
       >
         {title && (
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-dark-border flex-shrink-0">
+          <div className="flex items-center justify-between p-4 border-b border-[var(--border-color)] dark:border-dark-border flex-shrink-0">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">{title}</h2>
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="p-1.5 hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors"
+                className="p-1.5 hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors"
               >
                 <Icon name="close" className="text-gray-600 dark:text-gray-300" />
               </button>

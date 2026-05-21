@@ -12,7 +12,7 @@ export const SearchBarSection: React.FC = () => {
   const { prefs, setPref, resetPrefs } = useSearchBarPrefs();
 
   return (
-    <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[#e1e3e4] dark:border-dark-border">
+    <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[var(--border-color)] dark:border-dark-border">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -26,7 +26,7 @@ export const SearchBarSection: React.FC = () => {
         <button
           type="button"
           onClick={() => resetPrefs()}
-          className="shrink-0 text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-dark-bg-tertiary"
+          className="shrink-0 text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors px-2 py-1 rounded-md hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary"
         >
           {t('settings.searchBar.reset')}
         </button>
@@ -38,10 +38,10 @@ export const SearchBarSection: React.FC = () => {
             key={item.key}
             type="button"
             onClick={() => setPref(item.key, !prefs[item.key])}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all text-left border-[#e1e3e4] dark:border-dark-border hover:border-[#b71422]/30 bg-white dark:bg-dark-bg-card"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all text-left border-[var(--border-color)] dark:border-dark-border hover:border-[var(--accent-primary)]/30 bg-[var(--bg-card)] dark:bg-dark-bg-card"
           >
             <span className={`w-9 h-9 flex-shrink-0 rounded-lg flex items-center justify-center ${
-              prefs[item.key] ? 'bg-[#b71422] text-white' : 'bg-slate-100 text-slate-500 dark:bg-dark-bg-tertiary dark:text-gray-400'
+              prefs[item.key] ? 'bg-[var(--accent-primary)] text-white' : 'bg-[var(--shell-surface-soft)] text-[var(--text-secondary)] dark:bg-dark-bg-tertiary dark:text-gray-400'
             }`}>
               <Icon name={item.icon} className="text-xl" />
             </span>
@@ -53,7 +53,7 @@ export const SearchBarSection: React.FC = () => {
               role="switch"
               aria-checked={prefs[item.key]}
               className={`shrink-0 relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                prefs[item.key] ? 'bg-[#b71422]' : 'bg-slate-300 dark:bg-dark-bg-tertiary'
+                prefs[item.key] ? 'bg-[var(--accent-primary)]' : 'bg-[var(--shell-line-strong)] dark:bg-dark-bg-tertiary'
               }`}
             >
               <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform ${

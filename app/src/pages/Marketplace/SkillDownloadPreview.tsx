@@ -200,16 +200,16 @@ function SkillDetailDrawer({ skill, onClose }: { skill: MarketplaceSkill; onClos
   };
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-dark-bg-card">
+    <div className="h-full flex flex-col bg-[var(--bg-card)] dark:bg-dark-bg-card">
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors z-10"
+        className="absolute top-4 right-4 p-2 hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors z-10"
       >
         <Icon name="close" className="text-gray-600 dark:text-gray-300" />
       </button>
 
       {/* Header */}
-      <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-200 dark:border-dark-border">
+      <div className="flex-shrink-0 p-6 pb-4 border-b border-[var(--border-color)] dark:border-dark-border">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white truncate pr-8">{skill.name}</h2>
         <div className="flex items-center gap-1 mt-1 text-xs text-slate-500 dark:text-gray-400">
           <Icon name="person" className="text-xs flex-shrink-0" />
@@ -226,8 +226,8 @@ function SkillDetailDrawer({ skill, onClose }: { skill: MarketplaceSkill; onClos
 
       {/* 主体：下载引导 */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 gap-6 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-[#b71422]/10 flex items-center justify-center">
-          <Icon name="download_for_offline" style={{ fontSize: '32px' }} className="text-[#b71422]" />
+        <div className="w-16 h-16 rounded-2xl bg-[var(--accent-primary-soft)] flex items-center justify-center">
+          <Icon name="download_for_offline" style={{ fontSize: '32px' }} className="text-[var(--accent-primary)]" />
         </div>
         <div>
           <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">安装技能需要桌面版</h3>
@@ -239,14 +239,14 @@ function SkillDetailDrawer({ skill, onClose }: { skill: MarketplaceSkill; onClos
           href="https://github.com/cchao123/skills-managers/releases"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#b71422] hover:bg-[#8f0f1a] text-white font-bold text-sm transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-strong)] text-white font-bold text-sm transition-colors shadow-sm"
         >
           <Icon name="download" className="text-lg" />
           下载桌面版
         </a>
         <button
           onClick={() => window.open(`https://skills.sh/${skill.author}/${skill.id}`, '_blank', 'noopener,noreferrer')}
-          className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-gray-400 hover:text-[#b71422] dark:hover:text-[#fca5a5] transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-gray-400 hover:text-[var(--accent-primary)] transition-colors"
         >
           <Icon name="open_in_new" className="text-sm" />
           在 skills.sh 查看
@@ -254,13 +254,13 @@ function SkillDetailDrawer({ skill, onClose }: { skill: MarketplaceSkill; onClos
       </div>
 
       {/* Footer：安装命令 */}
-      <div className="flex-shrink-0 p-4 border-t border-gray-200 dark:border-dark-border">
+      <div className="flex-shrink-0 p-4 border-t border-[var(--border-color)] dark:border-dark-border">
         <p className="text-[11px] text-slate-400 dark:text-gray-500 mb-2">或通过命令行安装：</p>
-        <div className="flex items-center gap-2 bg-[#f3f4f5] dark:bg-dark-bg-tertiary rounded-lg pl-3 pr-2 py-2">
+        <div className="flex items-center gap-2 bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary rounded-lg pl-3 pr-2 py-2">
           <span className="font-mono text-xs text-slate-700 dark:text-gray-300 break-all flex-1 select-all">{installCmd}</span>
           <button
             onClick={handleCopy}
-            className="flex-shrink-0 p-1.5 rounded hover:bg-[#e1e3e4] dark:hover:bg-dark-hover transition-colors"
+            className="flex-shrink-0 p-1.5 rounded hover:bg-[var(--shell-surface-muted)] dark:hover:bg-dark-hover transition-colors"
             title="复制"
           >
             <Icon name={copied ? 'check' : 'content_copy'} className={`text-sm ${copied ? 'text-green-500' : 'text-slate-500 dark:text-gray-400'}`} />
@@ -290,6 +290,9 @@ export default function SkillDownloadPreview() {
   const isHot = sourceType === 'hot';
   const isPanelOpen = !!detailSkill;
   const showActionText = !isPanelOpen;
+  const stickyActionShadowClass = isTableScrolled
+    ? "shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.3)] before:content-[''] before:absolute before:top-0 before:bottom-0 before:-left-4 before:w-4 before:pointer-events-none before:bg-gradient-to-r before:from-transparent before:to-black/5 dark:before:to-black/15"
+    : '';
 
   return (
     <ResizableDetailLayout
@@ -298,14 +301,14 @@ export default function SkillDownloadPreview() {
         <SkillDetailDrawer skill={detailSkill} onClose={() => setDetailSkill(null)} />
       ) : null}
     >
-      <div className="flex flex-col flex-1 min-h-0 bg-[#f8f9fa] dark:bg-dark-bg-secondary">
+      <div className="flex flex-col flex-1 min-h-0 bg-[var(--bg-secondary)] dark:bg-dark-bg-secondary">
         {/* 顶部栏 */}
         <div className="flex-shrink-0 px-5 pt-5 pb-4" data-tauri-drag-region>
           <div className="flex items-center gap-3 h-11">
             {/* Tab */}
-            <div className="relative grid grid-cols-3 items-center rounded-lg border border-[#e1e3e4] dark:border-dark-border bg-slate-100 dark:bg-dark-bg-tertiary p-0.5 h-9 shrink-0">
+            <div className="relative grid grid-cols-3 items-center rounded-lg border border-[var(--border-color)] dark:border-dark-border bg-[var(--shell-surface-muted)] dark:bg-dark-bg-tertiary p-0.5 h-9 shrink-0">
               <div
-                className="absolute top-0.5 bottom-0.5 rounded-md bg-white dark:bg-dark-bg-card shadow-sm transition-all duration-200 ease-in-out"
+                className="absolute top-0.5 bottom-0.5 rounded-md bg-[var(--bg-card)] dark:bg-dark-bg-card shadow-sm transition-all duration-200 ease-in-out"
                 style={{
                   left: `calc(${TABS.findIndex((t) => t.id === sourceType)} * (100% - 4px) / 3 + 2px)`,
                   width: 'calc((100% - 4px) / 3)',
@@ -331,7 +334,7 @@ export default function SkillDownloadPreview() {
 
             {/* 搜索框 */}
             <div className="flex-1 relative">
-              <div className={`flex items-center h-9 rounded-lg border bg-white dark:bg-dark-bg-card overflow-hidden transition-all ${searchTerm ? 'border-[#b71422]/40' : 'border-[#e1e3e4] dark:border-dark-border focus-within:border-[#b71422]'}`}>
+              <div className={`flex items-center h-9 rounded-lg border bg-[var(--bg-card)] dark:bg-dark-bg-card overflow-hidden transition-all ${searchTerm ? 'border-[var(--accent-primary)]/40' : 'border-[var(--border-color)] dark:border-dark-border focus-within:border-[var(--accent-primary)]'}`}>
                 <Icon name="search" className="flex-shrink-0 text-slate-400 dark:text-gray-400 ml-3" />
                 <input
                   type="text"
@@ -343,7 +346,7 @@ export default function SkillDownloadPreview() {
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-dark-bg-tertiary"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary"
                   >
                     <Icon name="close" className="text-sm text-slate-400 dark:text-gray-500" />
                   </button>
@@ -362,9 +365,9 @@ export default function SkillDownloadPreview() {
                 <p className="text-slate-600 dark:text-gray-400">{t('skillDownload.notFound')}</p>
               </div>
             ) : (
-              <div className="bg-white dark:bg-dark-bg-card rounded-xl border border-[#e1e3e4] dark:border-dark-border flex flex-col flex-1 min-h-0 overflow-hidden">
+              <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-xl border border-[var(--border-color)] dark:border-dark-border flex flex-col flex-1 min-h-0 overflow-hidden">
                 <div
-                  className="overflow-x-auto overflow-y-auto flex-1 min-h-0"
+                  className="overflow-x-auto overflow-y-auto flex-1 min-h-0 show-scrollbar-x-only"
                   onScroll={(e) => {
                     const el = e.currentTarget;
                     setIsTableScrolled(el.scrollWidth > el.clientWidth && el.scrollLeft < el.scrollWidth - el.clientWidth);
@@ -378,28 +381,30 @@ export default function SkillDownloadPreview() {
                       <col className="w-32" />
                       <col className={showActionText ? 'w-32' : 'w-14'} />
                     </colgroup>
-                    <thead className="sticky top-0 z-10 bg-[#f9fafb] dark:bg-dark-bg-tertiary shadow-sm">
+                    <thead className="sticky top-0 z-10 bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary shadow-sm">
                       <tr>
-                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border">#</th>
-                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border">{t('skillDownload.column.skill')}</th>
-                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border">{t('skillDownload.column.author')}</th>
-                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border">
+                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border">#</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border">{t('skillDownload.column.skill')}</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border">{t('skillDownload.column.author')}</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border">
                           {isHot ? t('skillDownload.column.installs1hChange') : t('skillDownload.column.installs')}
                         </th>
-                        <th className={`sticky right-0 ${showActionText ? 'px-4' : 'px-2'} py-3 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border bg-[#f9fafb] dark:bg-dark-bg-tertiary ${isTableScrolled ? 'shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.3)]' : ''} transition-shadow duration-200`}>
+                        <th
+                          className={`sticky right-0 z-[2] ${showActionText ? 'px-4' : 'px-2'} py-3 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary ${stickyActionShadowClass} transition-shadow duration-200`}
+                        >
                           {t('skillDownload.column.action')}
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#e1e3e4] dark:divide-dark-border">
+                    <tbody className="divide-y divide-[var(--border-color)] dark:divide-dark-border">
                       {filteredSkills.map((skill, index) => {
                         const isSelected = detailSkill?.id === skill.id;
                         const cellBg = isSelected ? 'bg-red-50 dark:bg-red-900/20' : '';
-                        const actionBg = isSelected ? 'bg-red-50 dark:bg-red-900/20' : 'bg-white dark:bg-dark-bg-card';
+                        const actionBg = isSelected ? 'bg-red-50 dark:bg-red-900/20' : 'bg-[var(--bg-card)] dark:bg-dark-bg-card';
                         return (
                           <tr
                             key={`${skill.id}-${skill.author}`}
-                            className="hover:bg-[#fafbfb] dark:hover:bg-dark-hover transition-colors cursor-pointer"
+                            className="hover:bg-[var(--hover-bg)] dark:hover:bg-dark-hover transition-colors cursor-pointer"
                             onClick={() => setDetailSkill(isSelected ? null : skill)}
                           >
                             <td className={`px-4 py-3 align-middle text-sm font-bold text-slate-500 dark:text-gray-400 ${cellBg}`}>#{index + 1}</td>
@@ -422,11 +427,13 @@ export default function SkillDownloadPreview() {
                                 </div>
                               ) : <span className="text-xs text-slate-400 dark:text-gray-500">—</span>}
                             </td>
-                            <td className={`sticky right-0 ${showActionText ? 'px-4' : 'px-2'} py-3 align-middle ${actionBg} ${isTableScrolled ? 'shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.3)]' : ''} transition-shadow duration-200`}>
+                            <td
+                              className={`sticky right-0 z-[1] ${showActionText ? 'px-4' : 'px-2'} py-3 align-middle ${actionBg} ${stickyActionShadowClass} transition-shadow duration-200`}
+                            >
                               <div className="flex items-center justify-center">
                                 <button
                                   onClick={(e) => { e.stopPropagation(); setDetailSkill(isSelected ? null : skill); }}
-                                  className={`h-8 rounded-md font-bold text-xs bg-[#b71422] text-white hover:bg-[#8f0f1a] transition-all duration-300 flex items-center justify-center gap-1 ${showActionText ? 'w-28 px-2' : 'w-8'}`}
+                                  className={`h-8 rounded-md font-bold text-xs bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-primary-strong)] transition-all duration-300 flex items-center justify-center gap-1 ${showActionText ? 'w-28 px-2' : 'w-8'}`}
                                 >
                                   <Icon name="download" className="text-sm" />
                                   {showActionText && <span className="truncate">{t('skillDownload.download')}</span>}
@@ -440,9 +447,9 @@ export default function SkillDownloadPreview() {
                   </table>
                 </div>
                 {/* 数据来源 */}
-                <div className="flex-shrink-0 px-4 py-2 border-t border-[#e1e3e4] dark:border-dark-border flex items-center gap-1.5 text-[11px] text-slate-400 dark:text-gray-500">
+                <div className="flex-shrink-0 px-4 py-2 border-t border-[var(--border-color)] dark:border-dark-border flex items-center gap-1.5 text-[11px] text-slate-400 dark:text-gray-500">
                   <span>由于跨域限制，当前展示 mock 数据，来源</span>
-                  <a href="https://skills.sh" target="_blank" rel="noopener noreferrer" className="hover:text-[#b71422] dark:hover:text-[#fca5a5] transition-colors">skills.sh</a>
+                  <a href="https://skills.sh" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--accent-primary)] transition-colors">skills.sh</a>
                 </div>
               </div>
             )}

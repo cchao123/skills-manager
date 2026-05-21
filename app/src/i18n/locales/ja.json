@@ -244,7 +244,7 @@
     "config": {
       "title": "GitHubリポジトリ設定",
       "owner": "リポジトリ所有者",
-      "ownerPlaceholder": "例: cchao123",
+      "ownerPlaceholder": "例: my-github-name",
       "ownerHelper": "GitHubユーザー名または組織名",
       "repo": "リポジトリ名",
       "repoPlaceholder": "例: my-skills-repo",

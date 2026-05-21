@@ -1,5 +1,3 @@
-//! 系统托盘菜单：语言文案、菜单构建、前端调用的托盘命令。
-
 use crate::scanner;
 use crate::state::AppState;
 use tauri::{
@@ -28,7 +26,6 @@ fn get_tray_texts(lang: &str) -> TrayTexts {
     }
 }
 
-/// 根据当前配置与技能状态，重建托盘菜单。
 pub fn rebuild_tray_menu<R: Runtime, M: Manager<R>>(
     manager: &M,
     lang: &str,
@@ -42,22 +39,21 @@ pub fn rebuild_tray_menu<R: Runtime, M: Manager<R>>(
     let agents = config.agents.clone();
     let all_skills = scanner::scan_all_skill_sources(&skill_states, &agents).unwrap_or_default();
 
-    // 与前端 matchesAnyPrefix 一致：大小写不敏感的 id 前缀匹配
     let hide_prefixes: Vec<String> = config
         .skill_hide_prefixes
         .iter()
-        .map(|p| p.trim().to_lowercase())
-        .filter(|p| !p.is_empty())
+        .map(|prefix| prefix.trim().to_lowercase())
+        .filter(|prefix| !prefix.is_empty())
         .collect();
-    // Schema v2: scanner 已经按 id 合并，这里只做前缀过滤即可
+
     let skills: Vec<_> = if hide_prefixes.is_empty() {
         all_skills
     } else {
         all_skills
             .into_iter()
-            .filter(|s| {
-                let lower = s.id.to_lowercase();
-                !hide_prefixes.iter().any(|p| lower.starts_with(p))
+            .filter(|skill| {
+                let lower = skill.id.to_lowercase();
+                !hide_prefixes.iter().any(|prefix| lower.starts_with(prefix))
             })
             .collect()
     };
@@ -68,9 +64,10 @@ pub fn rebuild_tray_menu<R: Runtime, M: Manager<R>>(
         if !agent.detected {
             continue;
         }
+
         let enabled_count = skills
             .iter()
-            .filter(|s| s.agent_enabled.get(&agent.name) == Some(&true))
+            .filter(|skill| skill.agent_enabled.get(&agent.name) == Some(&true))
             .count();
 
         let submenu = SubmenuBuilder::new(
@@ -82,21 +79,20 @@ pub fn rebuild_tray_menu<R: Runtime, M: Manager<R>>(
                 skills.len()
             ),
         );
+
         let submenu = if enabled_count == 0 {
-            submenu.text("empty", texts.no_skills)
+            submenu.text(format!("empty-{}", agent.name), texts.no_skills)
         } else {
-            let mut sb = submenu;
+            let mut builder = submenu;
             for skill in &skills {
                 if skill.agent_enabled.get(&agent.name) != Some(&true) {
                     continue;
                 }
-                sb = sb.text(
-                    format!("skill-{}-{}", agent.name, skill.id),
-                    &skill.name,
-                );
+                builder = builder.text(format!("skill-{}-{}", agent.name, skill.id), &skill.name);
             }
-            sb
+            builder
         };
+
         menu_builder = menu_builder.item(&submenu.build()?);
     }
 
@@ -108,36 +104,34 @@ pub fn rebuild_tray_menu<R: Runtime, M: Manager<R>>(
     if let Some(tray) = app.tray_by_id("main-tray") {
         tray.set_menu(Some(menu))?;
     }
+
     Ok(())
 }
 
-/// 前端调用：更新托盘语言并持久化。
 #[tauri::command]
 pub fn update_tray_language(app: tauri::AppHandle, lang: String) -> Result<(), String> {
-    rebuild_tray_menu(&app, &lang).map_err(|e| e.to_string())?;
+    rebuild_tray_menu(&app, &lang).map_err(|error| error.to_string())?;
     let state = app.state::<AppState>();
-    if let Ok(mut mgr) = state.settings_manager.lock() {
-        let _ = mgr.update_language(&lang);
+    if let Ok(mut manager) = state.settings_manager.lock() {
+        let _ = manager.update_language(&lang);
     }
     Ok(())
 }
 
-/// 前端调用：更新 skill 隐藏前缀并重建托盘菜单。
 #[tauri::command]
-pub fn set_skill_hide_prefixes(
-    app: tauri::AppHandle,
-    prefixes: Vec<String>,
-) -> Result<(), String> {
+pub fn set_skill_hide_prefixes(app: tauri::AppHandle, prefixes: Vec<String>) -> Result<(), String> {
     let state = app.state::<AppState>();
     let lang = {
-        let mut mgr = state
+        let mut manager = state
             .settings_manager
             .lock()
-            .map_err(|e| format!("Failed to acquire lock: {}", e))?;
-        mgr.set_skill_hide_prefixes(prefixes)
-            .map_err(|e| format!("Failed to save skill hide prefixes: {}", e))?;
-        mgr.get_config().language.clone()
+            .map_err(|error| format!("Failed to acquire lock: {}", error))?;
+        manager
+            .set_skill_hide_prefixes(prefixes)
+            .map_err(|error| format!("Failed to save skill hide prefixes: {}", error))?;
+        manager.get_config().language.clone()
     };
-    rebuild_tray_menu(&app, &lang).map_err(|e| e.to_string())?;
+
+    rebuild_tray_menu(&app, &lang).map_err(|error| error.to_string())?;
     Ok(())
 }
