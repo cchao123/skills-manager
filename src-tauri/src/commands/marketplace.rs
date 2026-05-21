@@ -89,7 +89,10 @@ fn parse_security_audits(rsc: &str) -> Vec<SecurityAudit> {
 
 /// 获取技能详情（Weekly Installs、GitHub Stars、首次出现时间、安全审计）
 #[tauri::command]
-pub async fn fetch_skill_detail(source: String, skill_id: String) -> Result<MarketplaceSkillDetail, String> {
+pub async fn fetch_skill_detail(
+    source: String,
+    skill_id: String,
+) -> Result<MarketplaceSkillDetail, String> {
     let url = format!("https://skills.sh/{}/{}", source, skill_id);
     info!("Fetching skill detail from: {}", url);
 
@@ -126,7 +129,10 @@ fn extract_prose_html(html: &str) -> Option<String> {
         if html[i..].starts_with("<div") {
             // 排除形如 <divider 这种以 div 开头的非 div 标签
             let next = bytes.get(i + 4).copied();
-            if matches!(next, Some(b' ') | Some(b'>') | Some(b'\t') | Some(b'\n') | Some(b'/')) {
+            if matches!(
+                next,
+                Some(b' ') | Some(b'>') | Some(b'\t') | Some(b'\n') | Some(b'/')
+            ) {
                 depth += 1;
                 i += 4;
                 continue;
@@ -194,7 +200,7 @@ fn parse_rsc_initial_skills(rsc_text: &str) -> Result<Vec<RscSkill>, String> {
         .ok_or_else(|| "未在 RSC payload 中找到 initialSkills".to_string())?;
 
     let array_start = start + start_marker.len() - 1; // 指向 '['
-    // 以字节扫描匹配括号（JSON 结构字符均为 ASCII 单字节）
+                                                      // 以字节扫描匹配括号（JSON 结构字符均为 ASCII 单字节）
     let slice = &rsc_text[array_start..];
     let bytes = slice.as_bytes();
     let mut depth = 0usize;
@@ -296,7 +302,11 @@ pub async fn fetch_marketplace_skills(
         .collect();
 
     let skills = dedupe_by_id(skills);
-    info!("Fetched {} skills from skills.sh ({})", skills.len(), page_url);
+    info!(
+        "Fetched {} skills from skills.sh ({})",
+        skills.len(),
+        page_url
+    );
     Ok(skills)
 }
 
@@ -420,12 +430,11 @@ pub async fn download_skill_from_marketplace(
     let owner = parts[0];
     let repo_name = parts[1];
 
-    let temp_dir = std::env::temp_dir()
-        .join(format!("skill-dl-{}-{}-{}", owner, repo_name, skill_id));
+    let temp_dir =
+        std::env::temp_dir().join(format!("skill-dl-{}-{}-{}", owner, repo_name, skill_id));
 
     if temp_dir.exists() {
-        std::fs::remove_dir_all(&temp_dir)
-            .map_err(|e| format!("清理临时目录失败: {}", e))?;
+        std::fs::remove_dir_all(&temp_dir).map_err(|e| format!("清理临时目录失败: {}", e))?;
     }
 
     let temp_dir_str = temp_dir
@@ -434,10 +443,15 @@ pub async fn download_skill_from_marketplace(
         .to_string();
 
     // 发送初始进度
-    app_handle.emit("download-progress", DownloadProgressPayload {
-        skill_id: skill_id.clone(),
-        percent: 0,
-    }).ok();
+    app_handle
+        .emit(
+            "download-progress",
+            DownloadProgressPayload {
+                skill_id: skill_id.clone(),
+                percent: 0,
+            },
+        )
+        .ok();
 
     // 在 spawn_blocking 中执行 git clone（防止 Windows 弹窗）
     let _clone_result = tokio::task::spawn_blocking({
@@ -453,7 +467,8 @@ pub async fn download_skill_from_marketplace(
             let mut cmd = std::process::Command::new("git");
             cmd.args([
                 "clone",
-                "--depth", "1",
+                "--depth",
+                "1",
                 "--single-branch",
                 "--progress",
                 &repository,
@@ -465,7 +480,8 @@ pub async fn download_skill_from_marketplace(
             #[cfg(windows)]
             cmd.creation_flags(0x08000000); // CREATE_NO_WINDOW
 
-            let mut child = cmd.spawn()
+            let mut child = cmd
+                .spawn()
                 .map_err(|e| format!("无法运行 git 命令: {}（请确认已安装 Git）", e))?;
 
             // 读取 stderr 解析进度
@@ -485,10 +501,15 @@ pub async fn download_skill_from_marketplace(
                         let line = current_line.trim().to_string();
                         if !line.is_empty() {
                             if let Some(pct) = parse_git_progress(&line) {
-                                app_handle.emit("download-progress", DownloadProgressPayload {
-                                    skill_id: skill_id.clone(),
-                                    percent: pct,
-                                }).ok();
+                                app_handle
+                                    .emit(
+                                        "download-progress",
+                                        DownloadProgressPayload {
+                                            skill_id: skill_id.clone(),
+                                            percent: pct,
+                                        },
+                                    )
+                                    .ok();
                             }
                         }
                         current_line.clear();
@@ -498,7 +519,8 @@ pub async fn download_skill_from_marketplace(
                 }
             }
 
-            let status = child.wait()
+            let status = child
+                .wait()
                 .map_err(|e| format!("等待 git 完成失败: {}", e))?;
 
             if !status.success() {
@@ -540,17 +562,18 @@ pub async fn download_skill_from_marketplace(
 
     if target_path.exists() {
         let _ = std::fs::remove_dir_all(&temp_dir);
-        return Err(format!("目标位置已存在技能 '{}',请先删除后再下载", skill_id));
+        return Err(format!(
+            "目标位置已存在技能 '{}',请先删除后再下载",
+            skill_id
+        ));
     }
 
-    std::fs::create_dir_all(&target_path)
-        .map_err(|e| format!("创建目标目录失败: {}", e))?;
+    std::fs::create_dir_all(&target_path).map_err(|e| format!("创建目标目录失败: {}", e))?;
 
-    copy_dir_recursive(&skill_source_path, &target_path)
-        .map_err(|e| {
-            let _ = std::fs::remove_dir_all(&target_path);
-            format!("复制技能文件失败: {}", e)
-        })?;
+    copy_dir_recursive(&skill_source_path, &target_path).map_err(|e| {
+        let _ = std::fs::remove_dir_all(&target_path);
+        format!("复制技能文件失败: {}", e)
+    })?;
 
     let _ = std::fs::remove_dir_all(&temp_dir);
 
@@ -558,12 +581,20 @@ pub async fn download_skill_from_marketplace(
     let _ = std::fs::write(target_path.join(".skill-source"), &repository);
 
     // 发送完成进度
-    app_handle.emit("download-progress", DownloadProgressPayload {
-        skill_id: skill_id.clone(),
-        percent: 100,
-    }).ok();
+    app_handle
+        .emit(
+            "download-progress",
+            DownloadProgressPayload {
+                skill_id: skill_id.clone(),
+                percent: 100,
+            },
+        )
+        .ok();
 
-    info!("Successfully downloaded skill '{}' to: {:?}", skill_id, target_path);
+    info!(
+        "Successfully downloaded skill '{}' to: {:?}",
+        skill_id, target_path
+    );
     Ok(skill_id)
 }
 

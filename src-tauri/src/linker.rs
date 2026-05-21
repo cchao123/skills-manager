@@ -35,7 +35,10 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, Linker
     // 检查源路径是否存在
     if !source.exists() {
         eprintln!("ERROR: Source path does not exist!");
-        return Err(LinkerError::LinkFailed(format!("Source path does not exist: {:?}", source)));
+        return Err(LinkerError::LinkFailed(format!(
+            "Source path does not exist: {:?}",
+            source
+        )));
     }
 
     // 确保父目录存在
@@ -135,16 +138,23 @@ fn create_junction(link: &Path, point_to: &Path) -> std::io::Result<()> {
     use std::os::windows::process::CommandExt;
 
     let output = std::process::Command::new("cmd")
-        .args(["/C", "mklink", "/J",
+        .args([
+            "/C",
+            "mklink",
+            "/J",
             &link.to_string_lossy(),
-            &point_to.to_string_lossy()])
+            &point_to.to_string_lossy(),
+        ])
         .creation_flags(0x08000000) // CREATE_NO_WINDOW
         .output()?;
     if output.status.success() {
         Ok(())
     } else {
         let stderr = String::from_utf8_lossy(&output.stderr);
-        Err(std::io::Error::new(std::io::ErrorKind::Other, format!("mklink /J failed: {}", stderr.trim())))
+        Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            format!("mklink /J failed: {}", stderr.trim()),
+        ))
     }
 }
 
@@ -161,7 +171,10 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, Linker
 
     if !source.exists() {
         eprintln!("ERROR: Source path does not exist!");
-        return Err(LinkerError::LinkFailed(format!("Source path does not exist: {:?}", source)));
+        return Err(LinkerError::LinkFailed(format!(
+            "Source path does not exist: {:?}",
+            source
+        )));
     }
 
     if let Some(parent) = target.parent() {
@@ -181,9 +194,7 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, Linker
         eprintln!("Old target removed");
     }
 
-    let source_abs = strip_extended_prefix(
-        &fs::canonicalize(source).map_err(LinkerError::Io)?
-    );
+    let source_abs = strip_extended_prefix(&fs::canonicalize(source).map_err(LinkerError::Io)?);
     eprintln!("Source absolute (cleaned): {:?}", source_abs);
 
     if source.is_dir() {
@@ -208,7 +219,11 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, Linker
                 eprintln!("✅ Symlink created via CreateSymbolicLinkW");
             }
             Err(e) => {
-                eprintln!("❌ CreateSymbolicLinkW failed: {} (os error {:?})", e, e.raw_os_error());
+                eprintln!(
+                    "❌ CreateSymbolicLinkW failed: {} (os error {:?})",
+                    e,
+                    e.raw_os_error()
+                );
                 eprintln!("Trying std::os::windows::fs::symlink_dir ...");
                 std::os::windows::fs::symlink_dir(&source_abs, target).map_err(LinkerError::Io)?;
                 eprintln!("✅ std::symlink_dir succeeded");
@@ -217,7 +232,10 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<LinkResult, Linker
     } else {
         // 文件级 symlink
         let flags_file = SYMLINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
-        eprintln!("Trying CreateSymbolicLinkW for file (flags=0x{:x}) ...", flags_file);
+        eprintln!(
+            "Trying CreateSymbolicLinkW for file (flags=0x{:x}) ...",
+            flags_file
+        );
         if let Err(e) = create_symlink_windows_api(target, &source_abs, flags_file) {
             eprintln!("❌ file symlink failed: {} — trying std::symlink_file", e);
             std::os::windows::fs::symlink_file(&source_abs, target).map_err(LinkerError::Io)?;
@@ -344,7 +362,10 @@ pub fn remove_link(target: &Path) -> Result<(), LinkerError> {
                     return Ok(());
                 }
                 Err(e) => {
-                    eprintln!("⚠️  Warning: Failed to remove {:?}: {}, but continuing", target, e);
+                    eprintln!(
+                        "⚠️  Warning: Failed to remove {:?}: {}, but continuing",
+                        target, e
+                    );
                     eprintln!("=== REMOVE_LINK DONE (WITH WARNING) ===");
                     return Ok(());
                 }
@@ -359,7 +380,8 @@ pub fn remove_link(target: &Path) -> Result<(), LinkerError> {
             // 获取文件类型信息
             let file_type = fs::symlink_metadata(target)
                 .map(|m| {
-                    eprintln!("Metadata: is_dir={}, is_file={}, is_symlink={}",
+                    eprintln!(
+                        "Metadata: is_dir={}, is_file={}, is_symlink={}",
                         m.file_type().is_dir(),
                         m.file_type().is_file(),
                         m.file_type().is_symlink()
@@ -386,7 +408,10 @@ pub fn remove_link(target: &Path) -> Result<(), LinkerError> {
                     Ok(())
                 }
                 Err(e) => {
-                    eprintln!("⚠️  Warning: Failed to remove {:?}: {}, but continuing", target, e);
+                    eprintln!(
+                        "⚠️  Warning: Failed to remove {:?}: {}, but continuing",
+                        target, e
+                    );
                     eprintln!("=== REMOVE_LINK DONE (WITH WARNING) ===");
                     Ok(())
                 }
@@ -394,12 +419,18 @@ pub fn remove_link(target: &Path) -> Result<(), LinkerError> {
         }
     } else if target.exists() {
         // 存在但不是 symlink/junction，拒绝删除以防误删真实数据
-        eprintln!("⚠️  Warning: Target exists but is not a symlink/junction, refusing to delete: {:?}", target);
+        eprintln!(
+            "⚠️  Warning: Target exists but is not a symlink/junction, refusing to delete: {:?}",
+            target
+        );
         eprintln!("=== REMOVE_LINK ABORTED (NOT A SYMLINK) ===");
         Ok(())
     } else {
         // 不存在且不是 symlink/junction，可能已经被删除了
-        eprintln!("ℹ️  Target does not exist (may already be removed): {:?}", target);
+        eprintln!(
+            "ℹ️  Target does not exist (may already be removed): {:?}",
+            target
+        );
         eprintln!("=== REMOVE_LINK DONE (ALREADY GONE) ===");
         Ok(())
     }
@@ -492,10 +523,9 @@ impl LinkManager {
         eprintln!("Agent name: {}", agent.name);
         eprintln!("Skill primary: {}", skill.primary);
 
-        let skill_path = skill
-            .source_paths
-            .get(&skill.primary)
-            .ok_or_else(|| LinkerError::LinkFailed(format!("Skill {} has no primary path", skill.id)))?;
+        let skill_path = skill.source_paths.get(&skill.primary).ok_or_else(|| {
+            LinkerError::LinkFailed(format!("Skill {} has no primary path", skill.id))
+        })?;
         let skill_source = Path::new(skill_path);
 
         eprintln!("Skill source path: {:?}", skill_source);
@@ -503,7 +533,10 @@ impl LinkManager {
 
         if !skill_source.exists() {
             eprintln!("ERROR: Skill source path does not exist!");
-            return Err(LinkerError::LinkFailed(format!("Skill path does not exist: {:?}", skill_source)));
+            return Err(LinkerError::LinkFailed(format!(
+                "Skill path does not exist: {:?}",
+                skill_source
+            )));
         }
 
         // 检查技能是否已经在中央存储
@@ -562,15 +595,20 @@ impl LinkManager {
                     Ok(result) => {
                         eprintln!("=== LINK_SKILL_TO_AGENT SUCCESS ===");
                         Ok(result)
-                    },
+                    }
                     Err(e) => {
                         eprintln!("Symlink failed with error: {}", e);
                         // 符号链接失败，降级到复制
                         eprintln!("Falling back to copy strategy for {}", skill.id);
                         let copy_result = create_copy(&link_source, &skill_target);
                         match &copy_result {
-                            Ok(_) => eprintln!("=== LINK_SKILL_TO_AGENT SUCCESS (COPY FALLBACK) ==="),
-                            Err(e2) => eprintln!("=== LINK_SKILL_TO_AGENT FAILED (COPY ALSO FAILED): {} ===", e2),
+                            Ok(_) => {
+                                eprintln!("=== LINK_SKILL_TO_AGENT SUCCESS (COPY FALLBACK) ===")
+                            }
+                            Err(e2) => eprintln!(
+                                "=== LINK_SKILL_TO_AGENT FAILED (COPY ALSO FAILED): {} ===",
+                                e2
+                            ),
                         }
                         copy_result
                     }
@@ -634,7 +672,11 @@ impl LinkManager {
                 continue;
             }
 
-            let should_link = skill.agent_enabled.get(&agent.name).copied().unwrap_or(false);
+            let should_link = skill
+                .agent_enabled
+                .get(&agent.name)
+                .copied()
+                .unwrap_or(false);
 
             if should_link {
                 match self.link_skill_to_agent(skill, agent, skills_base) {
@@ -652,4 +694,3 @@ impl LinkManager {
         Ok(results)
     }
 }
-
