@@ -262,7 +262,7 @@
     "config": {
       "title": "GitHub 儲存庫設定",
       "owner": "儲存庫擁有者",
-      "ownerPlaceholder": "例如: cchao123",
+      "ownerPlaceholder": "例如: my-github-name",
       "ownerHelper": "GitHub 用戶名或組織名",
       "repo": "儲存庫名稱",
       "repoPlaceholder": "例如: my-skills-repo",
