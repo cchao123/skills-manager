@@ -27,7 +27,7 @@ const SOURCE_BADGE_STYLES: Record<Source, string> = {
   [SOURCE.Global]: 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400',
   [SOURCE.Cursor]: 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400',
   [SOURCE.Claude]: 'bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400',
-  [SOURCE.OpenClaw]: 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400',
+  [SOURCE.OpenClaw]: 'bg-[var(--accent-primary-soft)] text-[var(--accent-primary)]',
   [SOURCE.Codex]: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
 };
 

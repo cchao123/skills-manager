@@ -62,9 +62,9 @@ function MarketplaceSkillCard({
     <article
       className={`relative bg-white dark:bg-dark-bg-card rounded-xl border ${
         pinned
-          ? 'border-[#b71422]/40 dark:border-[#b71422]/50 shadow-[0_0_0_1px_rgba(183,20,34,0.08)]'
+          ? 'border-[var(--accent-primary)] dark:border-[var(--accent-primary)] shadow-[0_12px_28px_-24px_rgba(183,20,34,0.42)]'
           : 'border-[#e1e3e4] dark:border-dark-border'
-      } hover:shadow-lg hover:border-[#b71422]/20 transition-all duration-300 flex flex-col group overflow-hidden`}
+      } hover:shadow-lg hover:border-[var(--accent-primary)]/20 transition-all duration-300 flex flex-col group overflow-hidden`}
       onMouseLeave={() => setExpanded(false)}
       onContextMenu={onContextMenu}
     >
@@ -130,7 +130,7 @@ function MarketplaceSkillCard({
           {onDelete && (
             <button
               onClick={() => onDelete(skill.id)}
-              className="flex-1 bg-[#b71422] hover:bg-red-700 text-white py-2 rounded-lg font-bold text-xs transition-colors"
+              className="flex-1 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-strong)] text-white py-2 rounded-lg font-bold text-xs transition-colors"
             >
               {t('dashboard.source.removeFromRoot')}
             </button>
@@ -146,7 +146,7 @@ function MarketplaceSkillCard({
               ) : (
                 <button
                   onClick={() => onAddToRoot(skill.id)}
-                  className="flex-1 bg-[#b71422] text-white py-2 rounded-lg font-bold text-xs hover:opacity-90 transition-opacity"
+                  className="flex-1 bg-[var(--accent-primary)] text-white py-2 rounded-lg font-bold text-xs hover:bg-[var(--accent-primary-strong)] transition-colors"
                 >
                   {t('dashboard.source.copyToRoot')}
                 </button>
@@ -236,7 +236,7 @@ function MarketplaceSkillCard({
                   {isNative || !onToggleAgent ? (
                     <div
                       className={`relative w-8 h-[18px] rounded-full flex-shrink-0 ${
-                        isNative ? 'bg-amber-500 cursor-not-allowed' : isOn ? 'bg-[#b71422]' : 'bg-gray-300 dark:bg-gray-600'
+                        isNative ? 'bg-amber-500 cursor-not-allowed' : isOn ? 'bg-[var(--accent-primary)]' : 'bg-gray-300 dark:bg-gray-600'
                       }`}
                       title={statusText}
                     >
@@ -252,7 +252,7 @@ function MarketplaceSkillCard({
                         onToggleAgent(agent.name);
                       }}
                       className={`relative w-8 h-[18px] rounded-full flex-shrink-0 cursor-pointer transition-colors ${
-                        isOn ? 'bg-[#b71422]' : 'bg-gray-300 dark:bg-gray-600'
+                        isOn ? 'bg-[var(--accent-primary)]' : 'bg-gray-300 dark:bg-gray-600'
                       }`}
                       title={statusText}
                       aria-label={`Toggle ${agent.display_name}`}

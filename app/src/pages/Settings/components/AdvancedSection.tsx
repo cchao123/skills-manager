@@ -13,7 +13,7 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[#e1e3e4] dark:border-dark-border">
+    <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[var(--border-color)] dark:border-dark-border">
       <div className="mb-4">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Icon name="build" className="text-2xl text-slate-600 dark:text-gray-300" />
@@ -24,7 +24,7 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({
         </p>
       </div>
 
-      <div className="flex items-start justify-between gap-4 p-4 rounded-xl border border-[#e1e3e4] dark:border-dark-border bg-[#fafafa] dark:bg-dark-bg-secondary">
+      <div className="flex items-start justify-between gap-4 p-4 rounded-xl border border-[var(--border-color)] dark:border-dark-border bg-[var(--shell-surface-soft)] dark:bg-dark-bg-secondary">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-slate-700 dark:text-gray-200">

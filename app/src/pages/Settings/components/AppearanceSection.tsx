@@ -14,7 +14,7 @@ export const AppearanceSection: React.FC<AppearanceSectionProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[#e1e3e4] dark:border-dark-border">
+    <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl p-5 shadow-sm border border-[var(--border-color)] dark:border-dark-border">
       <div className="mb-5">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Icon name="palette" className="text-2xl text-slate-600 dark:text-gray-300" />
@@ -36,8 +36,8 @@ export const AppearanceSection: React.FC<AppearanceSectionProps> = ({
               onClick={() => onThemeChange(themeOption.value)}
               className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
                 currentTheme === themeOption.value
-                  ? 'border-[#b71422] bg-[#b71422]/5 dark:bg-[#b71422]/10'
-                  : 'border-[#e1e3e4] dark:border-dark-border hover:border-[#b71422]/30 bg-white dark:bg-dark-bg-card'
+                  ? 'border-[var(--accent-primary)] bg-[var(--accent-primary-soft)]'
+                  : 'border-[var(--border-color)] dark:border-dark-border hover:border-[var(--accent-primary)]/30 bg-[var(--bg-card)] dark:bg-dark-bg-card'
               }`}
             >
               <Icon name={themeOption.icon} className="text-3xl text-slate-600 dark:text-gray-300" />

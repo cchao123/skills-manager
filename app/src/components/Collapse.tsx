@@ -17,7 +17,7 @@ export const Collapse: React.FC<CollapseProps> = ({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-white dark:bg-dark-bg-card rounded-2xl shadow-sm border border-[#e1e3e4] dark:border-dark-border overflow-hidden">
+    <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl shadow-sm border border-[var(--border-color)] dark:border-dark-border overflow-hidden">
       <button
         onClick={(e) => {
           // 检查点击的是否是链接或链接的子元素
@@ -27,7 +27,7 @@ export const Collapse: React.FC<CollapseProps> = ({
           }
           setOpen(!open);
         }}
-        className="w-full flex items-center justify-between p-5 cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary"
+        className="w-full flex items-center justify-between p-5 cursor-pointer hover:bg-[var(--hover-bg)] dark:hover:bg-dark-bg-tertiary"
       >
         {title}
         <Icon

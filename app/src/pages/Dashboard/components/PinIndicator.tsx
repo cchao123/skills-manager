@@ -24,15 +24,15 @@ export function PinIndicator({ pinned }: PinIndicatorProps) {
     >
       <polygon
         points="0,0 30,0 0,30"
-        className="fill-[#fee2e2] dark:fill-[#7f1d1d]"
+        className="fill-[var(--accent-primary-soft)]"
       />
       <polygon
         points="0,0 20,0 0,20"
-        className="fill-[#f87171] dark:fill-[#dc2626]"
+        className="fill-[#ff8b99] dark:fill-[#dc2626]"
       />
       <polygon
         points="0,0 10,0 0,10"
-        className="fill-[#b71422] dark:fill-[#fca5a5]"
+        className="fill-[var(--accent-primary)]"
       />
     </svg>
   );

@@ -13,7 +13,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({ skills, filterType, onFilter
   const { t } = useTranslation();
 
   return (
-    <div className="flex shrink-0 items-center justify-center gap-2 px-1 py-1 bg-[#f5f5f5] dark:bg-dark-bg rounded-lg">
+    <div className="flex shrink-0 items-center justify-center gap-2 px-1 py-1 bg-[var(--shell-surface-soft)] dark:bg-dark-bg rounded-lg">
       <button
         type="button"
         onClick={() => onFilterChange(FILTER_TYPE.All)}
@@ -34,7 +34,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({ skills, filterType, onFilter
           <span className="text-xs">{skills.length}</span> {t('dashboard.stats.total')}
         </div>
       </button>
-      <div className="w-px h-3 bg-slate-300 dark:bg-dark-bg-tertiary"></div>
+      <div className="w-px h-3 bg-[var(--border-color)] dark:bg-dark-bg-tertiary"></div>
       <button
         type="button"
         onClick={() => onFilterChange(FILTER_TYPE.Enabled)}
@@ -55,7 +55,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({ skills, filterType, onFilter
           <span className="text-xs">{skills.filter((s) => s.enabled).length}</span> {t('dashboard.stats.enabled')}
         </div>
       </button>
-      <div className="w-px h-3 bg-slate-300 dark:bg-dark-bg-tertiary"></div>
+      <div className="w-px h-3 bg-[var(--border-color)] dark:bg-dark-bg-tertiary"></div>
       <button
         type="button"
         onClick={() => onFilterChange(FILTER_TYPE.Disabled)}

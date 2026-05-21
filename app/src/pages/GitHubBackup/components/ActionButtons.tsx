@@ -91,7 +91,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
         <button
           onClick={onTest}
           disabled={testing}
-          className="px-5 py-2 rounded-xl text-sm font-medium bg-[#adb5bd] hover:bg-[#999] text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-5 py-2 rounded-xl text-sm font-medium bg-[var(--text-tertiary)] hover:bg-[var(--text-secondary)] text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           <Icon name={testing ? 'hourglass_top' : 'link'} className="text-lg" />
           {testing ? t('githubBackup.buttons.testing') : t('githubBackup.buttons.testConnection')}
@@ -99,7 +99,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       ) : (
         <button
           onClick={onEdit}
-          className="px-5 py-2 rounded-xl text-sm font-medium bg-[#adb5bd] hover:bg-[#999] text-white transition-all flex items-center gap-2"
+          className="px-5 py-2 rounded-xl text-sm font-medium bg-[var(--text-tertiary)] hover:bg-[var(--text-secondary)] text-white transition-all flex items-center gap-2"
         >
           <Icon name="edit" className="text-lg" />
           {t('githubBackup.buttons.editConfig')}
@@ -107,7 +107,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       )}
       {/* Restore split button */}
       <div className="relative inline-flex" ref={restoreSplitRef}>
-        <div className="inline-flex rounded-xl overflow-hidden shadow-sm border border-[#e1e3e4] dark:border-dark-border">
+        <div className="inline-flex rounded-xl overflow-hidden shadow-sm border border-[var(--border-color)] dark:border-dark-border">
           <button
             type="button"
             onClick={() => {
@@ -119,7 +119,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
               }
             }}
             disabled={restoring || syncing}
-            className="pl-4 pr-3 py-2 text-sm font-medium bg-white dark:bg-dark-bg-secondary hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary text-slate-700 dark:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border-r border-[#e1e3e4] dark:border-dark-border"
+            className="pl-4 pr-3 py-2 text-sm font-medium bg-[var(--bg-card)] dark:bg-dark-bg-secondary hover:bg-[var(--hover-bg)] dark:hover:bg-dark-bg-tertiary text-[var(--text-primary)] dark:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border-r border-[var(--border-color)] dark:border-dark-border"
           >
             <Icon name="cloud_download" className={`text-lg ${restoring ? 'animate-spin' : ''}`} />
             {restoring ? t('githubBackup.buttons.restoring') : t('githubBackup.buttons.restoreNow')}
@@ -130,7 +130,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             aria-haspopup="menu"
             onClick={() => { setRestoreMenuOpen(o => !o); setSyncMenuOpen(false); }}
             disabled={restoring || syncing}
-            className="w-7 shrink-0 px-0 py-2 text-sm font-medium bg-white dark:bg-dark-bg-secondary hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary text-slate-700 dark:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-7 shrink-0 px-0 py-2 text-sm font-medium bg-[var(--bg-card)] dark:bg-dark-bg-secondary hover:bg-[var(--hover-bg)] dark:hover:bg-dark-bg-tertiary text-[var(--text-primary)] dark:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             title={t('githubBackup.buttons.restoreNow')}
           >
             <Icon
@@ -152,18 +152,18 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
                 width: restoreMenuFixed.width,
                 zIndex: 10050,
               }}
-              className="box-border rounded-lg border border-[#e1e3e4] dark:border-dark-border bg-white dark:bg-dark-bg-card py-2 px-2 shadow-lg"
+              className="box-border rounded-lg border border-[var(--border-color)] dark:border-dark-border bg-[var(--bg-card)] dark:bg-dark-bg-card py-2 px-2 shadow-lg"
             >
               <label
                 title={t('githubBackup.restoreMenu.overwriteLocalHint')}
-                className="flex cursor-pointer items-start gap-2 rounded-md px-1.5 py-1.5 text-left text-xs text-slate-700 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-dark-bg-tertiary"
+                className="flex cursor-pointer items-start gap-2 rounded-md px-1.5 py-1.5 text-left text-xs text-slate-700 dark:text-gray-200 hover:bg-[var(--hover-bg)] dark:hover:bg-dark-bg-tertiary"
               >
                 <input
                   type="checkbox"
                   role="menuitemcheckbox"
                   checked={overwriteLocal}
                   onChange={(e) => setOverwriteLocal(e.target.checked)}
-                  className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-slate-300 accent-[#b71422] focus:ring-2 focus:ring-[#b71422]/40 focus:ring-offset-0"
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-slate-300 accent-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary-border)] focus:ring-offset-0"
                 />
                 <span className="min-w-0 flex-1 leading-snug break-words">{t('githubBackup.restoreMenu.overwriteLocal')}</span>
               </label>
@@ -185,7 +185,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
               }
             }}
             disabled={syncing || restoring}
-            className="pl-4 pr-3 py-2 text-sm font-medium bg-[#b71422] hover:bg-[#a01220] text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border-r border-white/25"
+            className="pl-4 pr-3 py-2 text-sm font-medium bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-strong)] text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border-r border-white/25"
           >
             <Icon name="cloud_upload" className={`text-lg ${syncing ? 'animate-spin' : ''}`} />
             {syncing ? t('githubBackup.buttons.syncing') : t('githubBackup.buttons.syncNow')}
@@ -196,7 +196,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             aria-haspopup="menu"
             onClick={() => { setSyncMenuOpen((o) => !o); setRestoreMenuOpen(false); }}
             disabled={syncing || restoring}
-            className="w-7 shrink-0 px-0 py-2 text-sm font-medium bg-[#b71422] hover:bg-[#a01220] text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-7 shrink-0 px-0 py-2 text-sm font-medium bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-strong)] text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             title={t('githubBackup.syncMenu.openTitle')}
           >
             <Icon
@@ -218,18 +218,18 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
                 width: syncMenuFixed.width,
                 zIndex: 10050,
               }}
-              className="box-border rounded-lg border border-[#e1e3e4] dark:border-dark-border bg-white dark:bg-dark-bg-card py-2 px-2 shadow-lg"
+              className="box-border rounded-lg border border-[var(--border-color)] dark:border-dark-border bg-[var(--bg-card)] dark:bg-dark-bg-card py-2 px-2 shadow-lg"
             >
               <label
                 title={t('githubBackup.syncMenu.overwriteRemoteHint')}
-                className="flex cursor-pointer items-start gap-2 rounded-md px-1.5 py-1.5 text-left text-xs text-slate-700 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-dark-bg-tertiary"
+                className="flex cursor-pointer items-start gap-2 rounded-md px-1.5 py-1.5 text-left text-xs text-slate-700 dark:text-gray-200 hover:bg-[var(--hover-bg)] dark:hover:bg-dark-bg-tertiary"
               >
                 <input
                   type="checkbox"
                   role="menuitemcheckbox"
                   checked={overwriteRemote}
                   onChange={(e) => setOverwriteRemote(e.target.checked)}
-                  className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-slate-300 accent-[#b71422] focus:ring-2 focus:ring-[#b71422]/40 focus:ring-offset-0"
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-slate-300 accent-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary-border)] focus:ring-offset-0"
                 />
                 <span className="min-w-0 flex-1 leading-snug break-words">{t('githubBackup.syncMenu.overwriteRemote')}</span>
               </label>
@@ -256,13 +256,13 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
                   setShowForceConfirm(false);
                   void onSync(true);
                 }}
-                className="w-full py-3.5 bg-[#b71422] hover:bg-[#a01220] text-white font-bold rounded-2xl shadow-lg shadow-[#b71422]/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                className="w-full py-3.5 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-strong)] text-white font-bold rounded-2xl shadow-lg shadow-[rgba(255,68,88,0.2)] hover:brightness-110 active:scale-[0.98] transition-all"
               >
                 {t('githubBackup.confirm.confirmSync')}
               </button>
               <button
                 onClick={() => setShowForceConfirm(false)}
-                className="w-full py-3.5 bg-slate-100 dark:bg-dark-bg-tertiary text-slate-700 dark:text-gray-300 font-semibold rounded-2xl hover:bg-slate-200 dark:hover:bg-dark-bg-secondary transition-colors"
+                className="w-full py-3.5 bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary text-[var(--text-primary)] dark:text-gray-300 font-semibold rounded-2xl hover:bg-[var(--shell-surface-muted)] dark:hover:bg-dark-bg-secondary transition-colors"
               >
                 {t('common.cancel')}
               </button>
@@ -289,13 +289,13 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
                   setShowRestoreConfirm(false);
                   void onRestore(true);
                 }}
-                className="w-full py-3.5 bg-[#b71422] hover:bg-[#a01220] text-white font-bold rounded-2xl shadow-lg shadow-[#b71422]/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                className="w-full py-3.5 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-strong)] text-white font-bold rounded-2xl shadow-lg shadow-[rgba(255,68,88,0.2)] hover:brightness-110 active:scale-[0.98] transition-all"
               >
                 {t('githubBackup.confirm.confirmRestore')}
               </button>
               <button
                 onClick={() => setShowRestoreConfirm(false)}
-                className="w-full py-3.5 bg-slate-100 dark:bg-dark-bg-tertiary text-slate-700 dark:text-gray-300 font-semibold rounded-2xl hover:bg-slate-200 dark:hover:bg-dark-bg-secondary transition-colors"
+                className="w-full py-3.5 bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary text-[var(--text-primary)] dark:text-gray-300 font-semibold rounded-2xl hover:bg-[var(--shell-surface-muted)] dark:hover:bg-dark-bg-secondary transition-colors"
               >
                 {t('common.cancel')}
               </button>

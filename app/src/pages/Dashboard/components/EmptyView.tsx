@@ -57,11 +57,11 @@ export const EmptyView: React.FC<EmptyViewProps> = ({ message, filterType, selec
 
   return (
     <div className="max-w-6xl mx-auto flex flex-col items-center justify-center py-20">
-      <Icon name="search_off" className="text-6xl text-gray-300 dark:text-gray-600 mb-4" />
+      <Icon name="search_off" className="text-6xl text-[#ffd0d7] dark:text-gray-600 mb-4" />
       {chips.length > 0 && (
         <div className="flex items-center gap-1.5 flex-wrap justify-center mb-3">
           {chips.map((chip, i) => (
-            <span key={i} className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 bg-white dark:bg-dark-bg-card shadow-sm border border-slate-100 dark:border-dark-border">
+            <span key={i} className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 bg-white dark:bg-dark-bg-card shadow-sm border border-[var(--border-color)] dark:border-dark-border">
               {chip.icon ? (
                 <img
                   src={chip.icon}
@@ -76,7 +76,7 @@ export const EmptyView: React.FC<EmptyViewProps> = ({ message, filterType, selec
           ))}
         </div>
       )}
-      <p className="text-slate-500 dark:text-gray-400 font-medium">
+      <p className="text-[var(--text-secondary)] dark:text-gray-400 font-medium">
         {message}
       </p>
     </div>
