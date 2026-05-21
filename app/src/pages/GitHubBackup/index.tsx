@@ -44,18 +44,18 @@ function GitHubBackup() {
 
   if (loading) {
     return (
-      <div className="h-full flex flex-col">
-        <div className="flex-shrink-0 overflow-visible bg-[#f8f9fa] dark:bg-dark-bg-secondary px-4 pt-5 pb-4" data-tauri-drag-region></div>
+      <div className="h-full flex flex-col bg-[var(--bg-primary)] dark:bg-dark-bg-secondary">
+        <div className="flex-shrink-0 overflow-visible bg-[var(--bg-primary)] dark:bg-dark-bg-secondary px-4 pt-5 pb-4" data-tauri-drag-region></div>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-200 dark:border-dark-bg-tertiary border-t-[#b71422] mb-4"></div>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-200 dark:border-dark-bg-tertiary border-t-[var(--accent-primary)] mb-4"></div>
             <p className="text-slate-500 dark:text-gray-300 font-medium">{t('common.loading')}</p>
           </div>
         </div>
         {/* 右下角悬浮按钮（FAB） */}
         <button
           onClick={() => agentsApi.openFolder().catch(() => {})}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-white dark:bg-dark-bg-card shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110"
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[var(--bg-card)] dark:bg-dark-bg-card shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110"
           title={t('githubBackup.buttons.openLocal')}
         >
           <Icon name="folder_open" className="text-xl text-slate-600 dark:text-gray-300" />
@@ -65,11 +65,11 @@ function GitHubBackup() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-[var(--bg-primary)] dark:bg-dark-bg-secondary">
       {/* 顶部操作栏 */}
-      <div className="flex-shrink-0 overflow-visible bg-[#f8f9fa] dark:bg-dark-bg-secondary px-5 pt-4 pb-2" data-tauri-drag-region></div>
+      <div className="flex-shrink-0 overflow-visible bg-[var(--bg-primary)] dark:bg-dark-bg-secondary px-5 pt-4 pb-2" data-tauri-drag-region></div>
 
-      <div className="flex-1 overflow-y-auto bg-[#f8f9fa] dark:bg-dark-bg-secondary">
+      <div className="flex-1 overflow-y-auto bg-[var(--bg-primary)] dark:bg-dark-bg-secondary">
         <div className="px-5 pb-6 space-y-4" data-tauri-drag-region>
           {/* GitHub Repository Configuration Form */}
           <Collapse
@@ -77,8 +77,8 @@ function GitHubBackup() {
             defaultOpen={true}
             title={
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" fill="currentColor">
+                <div className="w-10 h-10 rounded-lg bg-[var(--shell-surface-soft)] dark:bg-gray-800 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-[var(--text-primary)] dark:text-white" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.38 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.905 1.235 3.22 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                   </svg>
                 </div>
@@ -138,7 +138,7 @@ function GitHubBackup() {
       {/* 右下角悬浮按钮（FAB） */}
       <button
         onClick={() => agentsApi.openFolder().catch(() => {})}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-white dark:bg-dark-bg-card shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110"
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[var(--bg-card)] dark:bg-dark-bg-card shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110"
         title={t('githubBackup.buttons.openLocal')}
       >
         <Icon name="folder_open" className="text-xl text-slate-600 dark:text-gray-300" />

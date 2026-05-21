@@ -132,7 +132,7 @@ export const DashboardMain: React.FC<DashboardMainProps> = memo(({
     <div className="flex flex-col flex-1 min-w-0 min-h-0">
       {/* 搜索栏 - 固定；overflow-visible 供统计条 hover 气泡向上伸出 */}
       <div
-        className="overflow-visible bg-[#f8f9fa] dark:bg-dark-bg-secondary pr-5 pt-5 pb-4"
+        className="overflow-visible bg-transparent dark:bg-dark-bg-secondary pr-5 pt-5 pb-4"
         data-tauri-drag-region
       >
         <SearchAndFilterBar
@@ -146,9 +146,9 @@ export const DashboardMain: React.FC<DashboardMainProps> = memo(({
       </div>
 
       {/* 内容区域 - 可滚动 */}
-      <div className="relative flex-1 flex overflow-hidden bg-[#f8f9fa] dark:bg-dark-bg-secondary px-5 pl-0">
+      <div className="relative flex-1 flex overflow-hidden bg-[var(--bg-primary)] dark:bg-dark-bg-secondary px-5 pl-0">
         {sidebar}
-        <div ref={scrollContainerRef} onScroll={onMainScroll} className={`relative flex-1 overflow-y-auto pb-20 ${isDragOver ? 'border-4 border-[#b71422] bg-white/90 dark:bg-dark-bg/90 rounded-xl' : ''}`}>
+        <div ref={scrollContainerRef} onScroll={onMainScroll} className={`relative flex-1 overflow-y-auto pb-20 ${isDragOver ? 'border-4 border-[var(--accent-primary)] bg-white/90 dark:bg-dark-bg/90 rounded-xl' : ''}`}>
           {/* 当前扫描路径 */}
           {selectedSource && selectedSource !== SOURCE.All && (
             <div className="flex items-center justify-between gap-4 pb-2">
@@ -156,10 +156,10 @@ export const DashboardMain: React.FC<DashboardMainProps> = memo(({
                 {selectedSource === SOURCE.Global ? (
                   <>
                     <img src={OCTOPUS_LOGO_URL} alt="Skills Manager" className="w-4 h-4 flex-shrink-0" />
-                    <p className="text-xs text-[#5e5e5e] dark:text-gray-400">
+                    <p className="text-xs text-[var(--text-secondary)] dark:text-gray-400">
                       {t('dashboard.rootPathLabel')}
                       <span
-                        className="text-[#2563eb] dark:text-blue-400 cursor-pointer hover:underline font-mono"
+                        className="text-[var(--accent-primary)] dark:text-blue-400 cursor-pointer hover:underline font-mono"
                         onClick={() => agentsApi.openFolderPath('~/.skills-manager').catch(() => { })}
                       >~/.skills-manager</span>
                     </p>
@@ -173,13 +173,13 @@ export const DashboardMain: React.FC<DashboardMainProps> = memo(({
                         {icon ? (
                           <img src={icon} alt="" className={`w-4 h-4 flex-shrink-0 ${needsInvertInDark(selectedSource) ? 'dark:invert' : ''}`} />
                         ) : (
-                          <Icon name="folder_open" className="text-base text-gray-500 dark:text-gray-400" />
+                          <Icon name="folder_open" className="text-base text-[var(--text-secondary)] dark:text-gray-400" />
                         )}
-                        <p className="text-xs text-[#5e5e5e] dark:text-gray-400">
+                        <p className="text-xs text-[var(--text-secondary)] dark:text-gray-400">
                           {t('dashboard.agentSourcePath')}
                           {path ? (
                             <span
-                              className="text-[#2563eb] dark:text-blue-400 cursor-pointer hover:underline font-mono"
+                              className="text-[var(--accent-primary)] dark:text-blue-400 cursor-pointer hover:underline font-mono"
                               onClick={() => agentsApi.openFolderPath(path).catch(() => { })}
                             >{path}</span>
                           ) : (
@@ -195,7 +195,7 @@ export const DashboardMain: React.FC<DashboardMainProps> = memo(({
               {/* 从已有Agent导入 */}
               <button
                 onClick={onOpenImportModal}
-                className="text-[11px] text-slate-700 dark:text-slate-300 font-medium px-2 py-1 bg-gray-100 dark:bg-dark-bg-tertiary rounded hover:bg-gray-200 dark:hover:bg-dark-hover transition-all flex-shrink-0 flex items-center gap-1.5"
+                className="text-[11px] text-[var(--text-primary)] dark:text-slate-300 font-medium px-2 py-1 bg-[var(--shell-surface-muted)] dark:bg-dark-bg-tertiary rounded hover:bg-[var(--hover-bg)] dark:hover:bg-dark-hover transition-all flex-shrink-0 flex items-center gap-1.5"
               >
                 <Icon name="download" className="text-xs" />
                 从已有Agent导入

@@ -64,7 +64,7 @@ function RootLayoutContent() {
   }, [navigate]);
 
   return (
-    <div className="h-screen bg-[#f8f9fa] dark:bg-dark-bg-secondary flex">
+    <div className="h-screen bg-[var(--bg-primary)] dark:bg-dark-bg-secondary flex">
       <SideNavBar />
       <main className="flex-1 h-screen overflow-hidden">
         {/* Dashboard 是最重的页面（扫描所有 SKILL.md），始终挂载避免每次切页都重新扫描。

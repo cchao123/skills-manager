@@ -14,13 +14,13 @@ const defaultSlots = (
 export default function PageHeader({ icon, title, leftAccessory, center = defaultSlots, actions = defaultSlots }: PageHeaderProps) {
   return (
     <header
-      className="relative z-30 h-16 flex-shrink-0 overflow-visible bg-white/80 dark:bg-dark-bg-card/80 backdrop-blur-md flex justify-between items-center px-5 border-b border-[#edeeef] dark:border-dark-border"
+      className="relative z-30 h-16 flex-shrink-0 overflow-visible bg-[var(--bg-card)]/80 dark:bg-dark-bg-card/80 backdrop-blur-md flex justify-between items-center px-5 border-b border-[var(--border-color)] dark:border-dark-border"
       data-tauri-drag-region
     >
       <div className="flex items-center gap-4">
-        <Icon name={icon} className="text-2xl text-slate-900 dark:text-white" />
+        <Icon name={icon} className="text-2xl text-[var(--text-primary)] dark:text-white" />
         {title && (
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h2>
+          <h2 className="text-xl font-bold text-[var(--text-primary)] dark:text-white">{title}</h2>
         )}
         {leftAccessory}
       </div>

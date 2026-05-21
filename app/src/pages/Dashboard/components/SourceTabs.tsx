@@ -114,7 +114,7 @@ export const SourceTabs: React.FC<SourceTabsProps> = ({
       {/* 侧边栏背景 */}
       <div className="flex-1 w-11 flex flex-col items-center gap-2 overflow-visible mx-5 mb-5">
         {/* 滑块容器 */}
-        <div className="relative flex flex-col items-center w-full rounded-lg bg-gray-100 dark:bg-dark-bg-tertiary">
+        <div className="relative flex flex-col items-center w-full rounded-lg bg-[var(--shell-surface-muted)] dark:bg-dark-bg-tertiary">
           {/* 滑动高亮块 */}
           {selectedSource && (() => {
             const selectedIndex = tabs.findIndex((t) => t.id === selectedSource);
@@ -164,8 +164,8 @@ export const SourceTabs: React.FC<SourceTabsProps> = ({
                     {isAll ? (
                       <span className={`text-xs font-bold transition-colors whitespace-nowrap ${
                         isSelected
-                          ? 'text-slate-700 dark:text-white'
-                          : 'text-slate-400 dark:text-gray-500'
+                          ? 'text-[var(--accent-primary)] dark:text-white'
+                          : 'text-[var(--text-tertiary)] dark:text-gray-500'
                       }`}>
                         {item.label}
                       </span>
@@ -185,8 +185,8 @@ export const SourceTabs: React.FC<SourceTabsProps> = ({
                         {/* 技能数量 */}
                         <span className={`text-[10px] font-medium transition-colors ${
                           isSelected
-                            ? 'text-slate-700 dark:text-white'
-                            : 'text-slate-400 dark:text-gray-500'
+                            ? 'text-[var(--accent-primary)] dark:text-white'
+                            : 'text-[var(--text-tertiary)] dark:text-gray-500'
                         }`}>
                           {getSkillCount(item.id)}
                         </span>
@@ -207,7 +207,7 @@ export const SourceTabs: React.FC<SourceTabsProps> = ({
             >
               <div className="relative flex flex-col items-center justify-center h-full">
                 <div className="w-7 h-6 flex items-center justify-center transition-all duration-200 scale-100 group-hover:scale-105">
-                  <Icon name="settings" className="w-full h-full text-slate-400 dark:text-gray-500 group-hover:text-slate-600 dark:group-hover:text-gray-300 transition-colors" />
+                  <Icon name="settings" className="w-full h-full text-[var(--text-tertiary)] dark:text-gray-500 group-hover:text-[var(--text-primary)] dark:group-hover:text-gray-300 transition-colors" />
                 </div>
               </div>
             </button>

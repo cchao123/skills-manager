@@ -93,8 +93,8 @@ export const DashboardDetailPanel: React.FC<DashboardDetailPanelProps> = ({
         <div
           className={`flex-shrink-0 w-1.5 cursor-col-resize resizable-divider flex flex-col items-center justify-center group border-r border-[#e1e3e4] dark:border-dark-border ${
             isDragging
-              ? 'bg-[#b71422]'
-              : 'bg-gray-100 dark:bg-dark-bg-secondary hover:bg-[#b71422] dark:hover:bg-[#b71422]'
+              ? 'bg-[var(--accent-primary)]'
+              : 'bg-gray-100 dark:bg-dark-bg-secondary hover:bg-[var(--accent-primary)] dark:hover:bg-[var(--accent-primary)]'
           }`}
           onMouseDown={handleResizeStart}
         >

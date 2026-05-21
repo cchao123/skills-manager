@@ -74,18 +74,18 @@ function Settings() {
   ];
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-[var(--bg-primary)] dark:bg-dark-bg-secondary">
       {/* Tab bar - fixed outside scroll container */}
-      <div className="flex-shrink-0 px-5 pt-6 pb-3 bg-[#f8f9fa] dark:bg-dark-bg-secondary" data-tauri-drag-region>
-        <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-2 shadow-sm border border-[#e1e3e4] dark:border-dark-border flex gap-2">
+      <div className="flex-shrink-0 px-5 pt-6 pb-3 bg-[var(--bg-primary)] dark:bg-dark-bg-secondary" data-tauri-drag-region>
+        <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-2xl p-2 shadow-sm border border-[var(--border-color)] dark:border-dark-border flex gap-2">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold [&_*]:!transition-none ${
                 activeTab === tab.id
-                  ? 'bg-[#b71422] text-white shadow-md'
-                  : 'text-slate-600 dark:text-gray-300 hover:bg-[#f8f9fa] dark:hover:bg-dark-bg-tertiary'
+                  ? 'bg-[var(--accent-primary)] text-white shadow-md'
+                  : 'text-[var(--text-secondary)] dark:text-gray-300 hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary'
               }`}
             >
               <Icon name={tab.icon} className="text-lg" />
@@ -96,7 +96,7 @@ function Settings() {
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto bg-[#f8f9fa] dark:bg-dark-bg-secondary flex flex-col">
+      <div className="flex-1 overflow-y-auto bg-[var(--bg-primary)] dark:bg-dark-bg-secondary flex flex-col">
         {activeTab === TAB_TYPE.About ? (
           <div className="flex-1 px-5 py-1 flex flex-col">
             <AboutSection />

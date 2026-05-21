@@ -124,7 +124,7 @@ function AgentPicker({ agents, selected, onSelect, isDrawerOpen }: { agents: Age
           aria-haspopup="listbox"
           aria-expanded={open}
           onClick={() => { updateAnchor(); setOpen((v) => !v); }}
-          className={`relative h-9 rounded-lg flex items-center transition-all duration-300 border bg-white dark:bg-dark-bg-card border-[#e1e3e4] dark:border-dark-border hover:border-slate-300 dark:hover:border-gray-600 ${isDrawerOpen ? 'w-9 px-0 justify-center' : 'px-2 gap-1.5'}`}
+          className={`relative h-9 rounded-lg flex items-center transition-all duration-300 border bg-[var(--bg-card)] dark:bg-dark-bg-card border-[var(--border-color)] dark:border-dark-border hover:border-[var(--shell-line-strong)] dark:hover:border-gray-600 ${isDrawerOpen ? 'w-9 px-0 justify-center' : 'px-2 gap-1.5'}`}
         >
           <span className="w-5 h-5 flex items-center justify-center flex-shrink-0">
             <img src={current.icon} alt="" className={`w-full h-full object-contain ${current.invertInDark ? 'dark:invert' : ''}`} />
@@ -142,9 +142,9 @@ function AgentPicker({ agents, selected, onSelect, isDrawerOpen }: { agents: Age
         <div
           ref={popoverRef}
           style={popoverStyle}
-          className="bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border rounded-lg shadow-xl py-1 select-none animate-toast-in"
+          className="bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border rounded-lg shadow-xl py-1 select-none animate-toast-in"
         >
-          <div className="px-3 py-2 border-b border-[#e1e3e4] dark:border-dark-border">
+          <div className="px-3 py-2 border-b border-[var(--border-color)] dark:border-dark-border">
             <span className="text-[11px] uppercase tracking-widest text-slate-500 dark:text-gray-400 font-bold">{t('skillDownload.downloadByAgent')}</span>
           </div>
           <ul className="py-1 max-h-72 overflow-y-auto">
@@ -156,8 +156,8 @@ function AgentPicker({ agents, selected, onSelect, isDrawerOpen }: { agents: Age
                     type="button"
                     onClick={() => { onSelect(opt.id); setOpen(false); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${isSelected
-                      ? 'text-[#b71422] dark:text-[#fca5a5] font-semibold bg-[#fff5f6] dark:bg-[#7f1d1d]/20'
-                      : 'text-slate-700 dark:text-gray-200 hover:bg-[#f3f4f5] dark:hover:bg-dark-hover'
+                      ? 'text-[var(--accent-primary)] font-semibold bg-[var(--accent-primary-soft)]'
+                      : 'text-[var(--text-primary)] dark:text-gray-200 hover:bg-[var(--hover-bg)] dark:hover:bg-dark-hover'
                       }`}
                   >
                     <span className="w-5 h-5 flex items-center justify-center flex-shrink-0">
@@ -166,12 +166,12 @@ function AgentPicker({ agents, selected, onSelect, isDrawerOpen }: { agents: Age
                     <span className="flex-1 text-left truncate flex items-center gap-1.5">
                       <span className="truncate">{opt.label}</span>
                       {opt.id === 'global' && (
-                        <span className="flex-shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fff0f1] dark:bg-[#7f1d1d]/30 text-[#b71422] dark:text-[#fca5a5] uppercase tracking-wide">
+                        <span className="flex-shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-[var(--accent-primary-soft)] text-[var(--accent-primary)] uppercase tracking-wide">
                           {t('skillDownload.recommended')}
                         </span>
                       )}
                     </span>
-                    {isSelected && <Icon name="check" className="text-base text-[#b71422] dark:text-[#fca5a5] flex-shrink-0" />}
+                    {isSelected && <Icon name="check" className="text-base text-[var(--accent-primary)] flex-shrink-0" />}
                   </button>
                 </li>
               );
@@ -198,11 +198,11 @@ function CopyCommand({ text }: { text: string }) {
   };
 
   return (
-    <div className="flex items-center gap-2 bg-[#f3f4f5] dark:bg-dark-bg-tertiary rounded-lg pl-4 pr-2 py-2.5">
+    <div className="flex items-center gap-2 bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary rounded-lg pl-4 pr-2 py-2.5">
       <span className="font-mono text-xs text-slate-700 dark:text-gray-300 break-all flex-1 select-all">{text}</span>
       <button
         onClick={handleCopy}
-        className="flex-shrink-0 p-1.5 rounded hover:bg-[#e1e3e4] dark:hover:bg-dark-hover transition-colors"
+        className="flex-shrink-0 p-1.5 rounded hover:bg-[var(--shell-surface-muted)] dark:hover:bg-dark-hover transition-colors"
         title={t('skillDownload.copy')}
       >
         <Icon name={copied ? 'check' : 'content_copy'} className={`text-sm ${copied ? 'text-green-500' : 'text-slate-500 dark:text-gray-400'}`} />
@@ -368,9 +368,9 @@ function MarketplaceDetailDrawer({
   };
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-dark-bg-card">
+    <div className="h-full flex flex-col bg-[var(--bg-card)] dark:bg-dark-bg-card">
       {/* Header */}
-      <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-200 dark:border-dark-border">
+      <div className="flex-shrink-0 p-6 pb-4 border-b border-[var(--border-color)] dark:border-dark-border">
         <div className="flex items-center gap-4">
           <div className="min-w-0">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white truncate">{skill.name}</h2>
@@ -389,14 +389,14 @@ function MarketplaceDetailDrawer({
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-gray-500">{t('skillDownload.description')}</h3>
             {skillMd && !skillMdLoading && !skillMdError && (
-              <div className="inline-flex items-center rounded-md border border-[#e1e3e4] dark:border-dark-border overflow-hidden text-[11px] font-bold">
+              <div className="inline-flex items-center rounded-md border border-[var(--border-color)] dark:border-dark-border overflow-hidden text-[11px] font-bold">
                 <button
                   type="button"
                   onClick={() => setSkillMdView('md')}
                   aria-pressed={skillMdView === 'md'}
                   className={`px-2 py-1 transition-colors ${skillMdView === 'md'
-                    ? 'bg-slate-100 dark:bg-dark-bg-tertiary text-slate-700 dark:text-white'
-                    : 'bg-white dark:bg-dark-bg-card text-slate-500 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-dark-hover'
+                    ? 'bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary text-[var(--text-primary)] dark:text-white'
+                    : 'bg-[var(--bg-card)] dark:bg-dark-bg-card text-slate-500 dark:text-gray-400 hover:bg-[var(--hover-bg)] dark:hover:bg-dark-hover'
                     }`}
                 >
                   {t('skillDownload.previewMd')}
@@ -405,9 +405,9 @@ function MarketplaceDetailDrawer({
                   type="button"
                   onClick={() => setSkillMdView('text')}
                   aria-pressed={skillMdView === 'text'}
-                  className={`px-2 py-1 border-l border-[#e1e3e4] dark:border-dark-border transition-colors ${skillMdView === 'text'
-                    ? 'bg-slate-100 dark:bg-dark-bg-tertiary text-slate-700 dark:text-white'
-                    : 'bg-white dark:bg-dark-bg-card text-slate-500 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-dark-hover'
+                  className={`px-2 py-1 border-l border-[var(--border-color)] dark:border-dark-border transition-colors ${skillMdView === 'text'
+                    ? 'bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary text-[var(--text-primary)] dark:text-white'
+                    : 'bg-[var(--bg-card)] dark:bg-dark-bg-card text-slate-500 dark:text-gray-400 hover:bg-[var(--hover-bg)] dark:hover:bg-dark-hover'
                     }`}
                 >
                   {t('skillDownload.previewText')}
@@ -417,13 +417,13 @@ function MarketplaceDetailDrawer({
           </div>
           {skillMdLoading ? (
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-gray-400 py-3">
-              <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-200 dark:border-dark-bg-secondary border-t-[#b71422]"></div>
+              <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-200 dark:border-dark-bg-secondary border-t-[var(--accent-primary)]"></div>
               <span>{t('skillDownload.loadingSkillMd')}</span>
             </div>
           ) : skillMdError ? (
             <div className="text-xs text-slate-500 dark:text-gray-400 italic">{t('skillDownload.skillMdError', { error: skillMdError })}</div>
           ) : skillMd ? (
-            <div className="rounded-lg border border-[#e1e3e4] dark:border-dark-border bg-[#fafbfb] dark:bg-dark-bg-tertiary overflow-hidden">
+            <div className="rounded-lg border border-[var(--border-color)] dark:border-dark-border bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary overflow-hidden">
               <div className="p-3 max-h-[420px] overflow-y-auto">
                 {skillMdView === 'md' ? (
                   <div
@@ -446,7 +446,7 @@ function MarketplaceDetailDrawer({
           {detailLoading ? (
             <div className="flex gap-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-8 w-24 bg-slate-100 dark:bg-dark-bg-tertiary rounded animate-pulse" />
+                <div key={i} className="h-8 w-24 bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary rounded animate-pulse" />
               ))}
             </div>
           ) : (
@@ -491,7 +491,7 @@ function MarketplaceDetailDrawer({
               {detail.security_audits.map((audit) => (
                 <div key={audit.name} className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-dark-border last:border-0">
                   <span className="text-sm text-slate-700 dark:text-gray-300">{audit.name}</span>
-                  <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase ${auditStatusClass[audit.status] ?? 'bg-slate-100 text-slate-500'}`}>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase ${auditStatusClass[audit.status] ?? 'bg-[var(--shell-surface-soft)] text-[var(--text-secondary)]'}`}>
                     {audit.status}
                   </span>
                 </div>
@@ -506,9 +506,9 @@ function MarketplaceDetailDrawer({
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-gray-500 mb-2">{t('skillDownload.repository')}</h3>
             <button
               onClick={() => openUrl(skill.repository)}
-              className="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline break-all text-left"
+              className="inline-flex items-center gap-2 text-sm text-slate-900 dark:text-white hover:underline break-all text-left"
             >
-              <svg viewBox="0 0 24 24" className="w-4 h-4 flex-shrink-0 fill-current text-blue-600 dark:text-blue-400" aria-hidden="true">
+              <svg viewBox="0 0 24 24" className="w-4 h-4 flex-shrink-0 fill-current text-slate-900 dark:text-white" aria-hidden="true">
                 <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
               </svg>
               {skill.repository.replace('https://github.com/', '')}
@@ -524,7 +524,7 @@ function MarketplaceDetailDrawer({
       </div>
 
       {/* Footer：下载 / 删除按钮 */}
-      <div className="flex-shrink-0 p-4 border-t border-gray-200 dark:border-dark-border">
+      <div className="flex-shrink-0 p-4 border-t border-[var(--border-color)] dark:border-dark-border">
         {isInstalled && !isSucceeded ? (
           <button
             onClick={() => onDelete(skill)}
@@ -539,15 +539,15 @@ function MarketplaceDetailDrawer({
             {t('skillDownload.downloadSuccess')}
           </div>
         ) : isDownloading ? (
-          <div className="relative overflow-hidden w-full py-2.5 rounded-lg font-bold text-sm bg-[#f3f4f5] dark:bg-dark-bg-tertiary border border-[#e1e3e4] dark:border-dark-border cursor-not-allowed">
-            <div className="absolute inset-0 bg-[#b71422] transition-[width] duration-300 ease-out" style={{ width: `${pct}%` }} />
+          <div className="relative overflow-hidden w-full py-2.5 rounded-lg font-bold text-sm bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary border border-[var(--border-color)] dark:border-dark-border cursor-not-allowed">
+            <div className="absolute inset-0 bg-[var(--accent-primary)] transition-[width] duration-300 ease-out" style={{ width: `${pct}%` }} />
             <span className="absolute inset-0 flex items-center justify-center text-white pointer-events-none" style={{ clipPath: `inset(0 ${100 - pct}% 0 0)` }}>{pct}%</span>
-            <span className="absolute inset-0 flex items-center justify-center text-[#b71422] dark:text-white pointer-events-none" style={{ clipPath: `inset(0 0 0 ${pct}%)` }}>{pct}%</span>
+            <span className="absolute inset-0 flex items-center justify-center text-[var(--accent-primary)] dark:text-white pointer-events-none" style={{ clipPath: `inset(0 0 0 ${pct}%)` }}>{pct}%</span>
           </div>
         ) : (
           <button
             onClick={() => onDownload(skill)}
-            className="w-full py-2.5 rounded-lg font-bold text-sm bg-[#b71422] text-white hover:bg-[#8f0f1a] transition-colors"
+            className="w-full py-2.5 rounded-lg font-bold text-sm bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-primary-strong)] transition-colors"
           >
             {t('skillDownload.downloadTo', { target: selectedAgent === 'global' ? 'Root' : selectedAgent })}
           </button>
@@ -921,6 +921,10 @@ export default function SkillDownload() {
 
   // 操作按钮：面板展开时只显示小图标，面板关闭时显示文字
   const showActionText = !isAnyPanelOpen;
+  const stickyActionShadowClass = isTableScrolled
+    ? "shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.3)] before:content-[''] before:absolute before:top-0 before:bottom-0 before:-left-4 before:w-4 before:pointer-events-none before:bg-gradient-to-r before:from-transparent before:to-black/5 dark:before:to-black/15"
+    : '';
+  const closeMarketplaceDetail = () => setDetailSkill(null);
 
   return (
     <>
@@ -932,7 +936,7 @@ export default function SkillDownload() {
             <>
               {!isClosing && (
                 <button
-                  onClick={() => setDetailSkill(null)}
+                  onClick={closeMarketplaceDetail}
                   className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary rounded-lg transition-colors z-10"
                 >
                   <Icon name="close" className="text-gray-600 dark:text-gray-300" />
@@ -949,7 +953,7 @@ export default function SkillDownload() {
                   selectedAgent={selectedAgent}
                   onDownload={handleDownload}
                   onDelete={handleDelete}
-                  onClose={() => { }}
+                  onClose={closeMarketplaceDetail}
                 />
               </div>
             </>
@@ -979,15 +983,15 @@ export default function SkillDownload() {
         </>
       )}
     >
-      <div className='flex flex-col flex-1 min-h-0 bg-[#f8f9fa] dark:bg-dark-bg-secondary main-content-transition'>
+      <div className='flex flex-col flex-1 min-h-0 bg-[var(--bg-primary)] dark:bg-dark-bg-secondary main-content-transition'>
         {/* 顶部：Tab + 搜索（与 Dashboard 风格一致：无白底、无分割线） */}
         <div className="flex-shrink-0 px-5 pt-5 pb-4" data-tauri-drag-region>
           {/* 搜索和筛选栏：滑块 + 搜索框 + 下载目标，单行布局（与 Dashboard 一致） */}
           <div className="flex items-center gap-3 h-11">
-            <div className="relative grid grid-cols-3 items-center rounded-lg border border-[#e1e3e4] dark:border-dark-border bg-slate-100 dark:bg-dark-bg-tertiary p-0.5 h-9 shrink-0">
+            <div className="relative grid grid-cols-3 items-center rounded-lg border border-[var(--border-color)] dark:border-dark-border bg-[var(--shell-surface-muted)] dark:bg-dark-bg-tertiary p-0.5 h-9 shrink-0">
               {/* 滑动高亮块 */}
               <div
-                className="absolute top-0.5 bottom-0.5 rounded-md bg-white dark:bg-dark-bg-card shadow-sm transition-all duration-200 ease-in-out"
+                className="absolute top-0.5 bottom-0.5 rounded-md bg-[var(--bg-card)] dark:bg-dark-bg-card shadow-sm transition-all duration-200 ease-in-out"
                 style={{
                   left: `calc(${TABS.findIndex((t) => t.id === sourceType)} * (100% - 4px) / 3 + 2px)`,
                   width: 'calc((100% - 4px) / 3)',
@@ -1005,7 +1009,7 @@ export default function SkillDownload() {
                       <Icon
                         name={tab.icon}
                         className={`text-lg transition-colors ${isActive
-                          ? 'text-slate-700 dark:text-white'
+                          ? 'text-[var(--accent-primary)]'
                           : 'text-slate-400 dark:text-gray-500'
                           }`}
                       />
@@ -1025,7 +1029,7 @@ export default function SkillDownload() {
             </div>
 
             <div className="flex-1 relative">
-              <div className={`flex items-center h-9 rounded-lg border bg-white dark:bg-dark-bg-card overflow-hidden transition-all duration-300 ${searchTerm ? 'border-[#b71422]/40 dark:border-[#fca5a5]/40' : 'border-[#e1e3e4] dark:border-dark-border focus-within:border-[#b71422]'
+              <div className={`relative flex items-center h-9 rounded-lg border bg-[var(--bg-card)] dark:bg-dark-bg-card overflow-hidden transition-all duration-300 ${searchTerm ? 'border-[var(--accent-primary)]/40' : 'border-[var(--border-color)] dark:border-dark-border focus-within:border-[var(--accent-primary)]'
                 }`}>
                 <Icon name="search" className={`flex-shrink-0 text-slate-400 dark:text-gray-400 transition-all duration-300 ${detailSkill || (showLocalDetailModal && localDetailSkillLive) ? 'ml-2' : 'ml-3'}`} />
                 <input
@@ -1038,7 +1042,7 @@ export default function SkillDownload() {
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm('')}
-                    className={`absolute top-1/2 -translate-y-1/2 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-dark-bg-tertiary flex-shrink-0 transition-all duration-300 ${detailSkill || (showLocalDetailModal && localDetailSkillLive) ? 'w-4 h-4 mr-1' : 'w-5 h-5 right-2'}`}
+                    className={`absolute top-1/2 -translate-y-1/2 flex items-center justify-center rounded hover:bg-[var(--shell-surface-soft)] dark:hover:bg-dark-bg-tertiary flex-shrink-0 transition-all duration-300 ${detailSkill || (showLocalDetailModal && localDetailSkillLive) ? 'w-4 h-4 right-1.5' : 'w-5 h-5 right-2'}`}
                     title={t('skillDownload.clear')}
                   >
                     <Icon name="close" className={`text-slate-400 dark:text-gray-500 ${detailSkill || (showLocalDetailModal && localDetailSkillLive) ? 'text-xs' : 'text-sm'}`} />
@@ -1059,7 +1063,7 @@ export default function SkillDownload() {
             {loading ? (
               <div className="flex-1 flex items-center justify-center backdrop-blur-md bg-white/40 dark:bg-dark-bg-card/40 rounded-xl border border-white/40 dark:border-white/10 min-h-0">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-10 w-10 border-2 border-slate-200 dark:border-dark-bg-secondary border-t-[#b71422] mx-auto mb-3"></div>
+                  <div className="animate-spin rounded-full h-10 w-10 border-2 border-slate-200 dark:border-dark-bg-secondary border-t-[var(--accent-primary)] mx-auto mb-3"></div>
                   <p className="text-xs font-bold text-slate-600 dark:text-gray-300">{t('skillDownload.loading')}</p>
                 </div>
               </div>
@@ -1071,8 +1075,8 @@ export default function SkillDownload() {
                 </p>
               </div>
             ) : (
-              <div className="bg-white dark:bg-dark-bg-card rounded-xl border border-[#e1e3e4] dark:border-dark-border flex flex-col flex-1 min-h-0 overflow-hidden">
-                <div onScroll={handleListScroll} className="overflow-x-auto overflow-y-auto flex-1 min-h-0 overscroll-x-contain show-scrollbar" style={{ overscrollBehaviorX: 'none', width: 'calc(100% + 8px)' }}>
+              <div className="bg-[var(--bg-card)] dark:bg-dark-bg-card rounded-xl border border-[var(--border-color)] dark:border-dark-border flex flex-col flex-1 min-h-0 overflow-hidden">
+                <div onScroll={handleListScroll} className="overflow-x-auto overflow-y-auto flex-1 min-h-0 overscroll-x-contain show-scrollbar-x-only" style={{ overscrollBehaviorX: 'none' }}>
                   <table className="w-full min-w-[900px]">
                     <colgroup>
                       <col className="w-14" />
@@ -1081,27 +1085,31 @@ export default function SkillDownload() {
                       <col className="w-36" />
                       <col className={showActionText ? "w-36" : "w-16"} />
                     </colgroup>
-                    <thead className="sticky top-0 z-10 bg-[#f9fafb] dark:bg-dark-bg-tertiary shadow-sm">
+                    <thead className="sticky top-0 z-10 bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary shadow-sm">
                       <tr>
-                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border">#</th>
-                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border">{t('skillDownload.column.skill')}</th>
-                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border overflow-hidden whitespace-nowrap">{t('skillDownload.column.author')}</th>
-                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border overflow-hidden whitespace-nowrap">
+                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border">#</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border">{t('skillDownload.column.skill')}</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border overflow-hidden whitespace-nowrap">{t('skillDownload.column.author')}</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border overflow-hidden whitespace-nowrap">
                           {sourceType === 'hot' ? t('skillDownload.column.installs1hChange') : t('skillDownload.column.installs')}
                         </th>
-                        <th className={`sticky right-[8px] ${showActionText ? 'px-4' : 'px-2'} py-3 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[#e1e3e4] dark:border-dark-border bg-[#f9fafb] dark:bg-dark-bg-tertiary ${isTableScrolled ? 'shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.3)]' : ''} transition-shadow duration-200`}>{t('skillDownload.column.action')}</th>
+                        <th
+                          className={`sticky right-0 z-[2] ${showActionText ? 'px-4' : 'px-2'} py-3 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 border-b border-[var(--border-color)] dark:border-dark-border bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary ${stickyActionShadowClass} transition-shadow duration-200`}
+                        >
+                          {t('skillDownload.column.action')}
+                        </th>
 
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#e1e3e4] dark:divide-dark-border">
+                    <tbody className="divide-y divide-[var(--border-color)] dark:divide-dark-border">
                       {filteredSkills.slice(0, displayCount).map((skill, index) => {
                         const isSelected = detailSkill?.id === skill.id || localDetailSkillLive?.id === skill.id;
                         const cellBgClass = isSelected ? 'bg-red-50 dark:bg-red-900/20' : '';
-                        const actionCellBgClass = isSelected ? 'bg-red-50 dark:bg-[#321f1f]' : 'bg-white dark:bg-dark-bg-card';
+                        const actionCellBgClass = isSelected ? 'bg-red-50 dark:bg-[#321f1f]' : 'bg-[var(--bg-card)] dark:bg-dark-bg-card';
                         return (
                           <tr
                             key={skill.id}
-                            className="hover:bg-[#fafbfb] dark:hover:bg-dark-hover transition-colors group cursor-pointer"
+                            className="hover:bg-[var(--hover-bg)] dark:hover:bg-dark-hover transition-colors group cursor-pointer"
                             onClick={() => {
                               const localSkill = installedSkillsMap.get(skill.id);
                               if (localSkill) {
@@ -1122,7 +1130,7 @@ export default function SkillDownload() {
                             <td className={`px-4 py-3 align-middle ${cellBgClass}`}>
                               <div className="min-w-0">
                                 <div className="text-sm font-bold text-slate-900 dark:text-white truncate">{skill.name}</div>
-                                <div className="text-xs text-[#5e5e5e] dark:text-gray-400 truncate leading-relaxed">{skill.description}</div>
+                                <div className="text-xs text-[var(--text-secondary)] dark:text-gray-400 truncate leading-relaxed">{skill.description}</div>
                               </div>
                             </td>
 
@@ -1130,9 +1138,9 @@ export default function SkillDownload() {
                             <td className={`px-4 py-3 align-middle overflow-hidden whitespace-nowrap ${cellBgClass}`}>
                               <button
                                 onClick={(e) => { e.stopPropagation(); openUrl(skill.repository); }}
-                                className="inline-flex items-center gap-1 max-w-full hover:text-[#b71422] dark:hover:text-[#fca5a5] transition-colors"
+                                className="inline-flex items-center gap-1 max-w-full hover:text-[var(--accent-primary)] transition-colors"
                               >
-                                <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 flex-shrink-0 fill-current text-slate-400 dark:text-gray-500 group-hover:text-[#b71422] dark:group-hover:text-[#fca5a5]" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 flex-shrink-0 fill-current text-slate-400 dark:text-gray-500 group-hover:text-[var(--accent-primary)]" aria-hidden="true">
                                   <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
                                 </svg>
                                 <span className="text-xs font-bold text-slate-600 dark:text-gray-300 truncate">{skill.author}</span>
@@ -1166,11 +1174,13 @@ export default function SkillDownload() {
                             </td>
 
                             {/* 操作：下载 */}
-                            <td className={`sticky right-[8px] ${showActionText ? 'px-4' : 'px-2'} py-3 align-middle ${actionCellBgClass} ${isTableScrolled ? 'shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.3)]' : ''} transition-shadow duration-200`}>
+                            <td
+                              className={`sticky right-0 z-[1] ${showActionText ? 'px-4' : 'px-2'} py-3 align-middle ${actionCellBgClass} ${stickyActionShadowClass} transition-shadow duration-200`}
+                            >
                               <div className="flex items-center justify-center">
                                 {(installedIds.has(installedKey(skill.id, skill.repository)) || legacyInstalledIds.has(skill.id)) && !succeeded.has(skillKey(skill)) ? (
                                   <div
-                                    className={`h-8 rounded-md font-bold text-xs bg-white dark:bg-dark-bg-tertiary text-[#5e5e5e] dark:text-gray-400 flex items-center justify-center gap-1 cursor-not-allowed transition-all duration-300 ${showActionText ? 'w-32' : 'w-8'}`}
+                                    className={`h-8 rounded-md font-bold text-xs bg-[var(--bg-card)] dark:bg-dark-bg-tertiary text-[var(--text-secondary)] dark:text-gray-400 flex items-center justify-center gap-1 cursor-not-allowed transition-all duration-300 ${showActionText ? 'w-32' : 'w-8'}`}
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     <Icon name="check_circle" className="text-sm" />
@@ -1186,11 +1196,11 @@ export default function SkillDownload() {
                                   </div>
                                 ) : downloading.has(skillKey(skill)) ? (
                                   <div
-                                    className={`relative overflow-hidden h-8 rounded-md font-bold text-xs bg-[#f3f4f5] dark:bg-dark-bg-tertiary border border-[#e1e3e4] dark:border-dark-border cursor-not-allowed transition-all duration-300 ${showActionText ? 'w-32' : 'w-8'}`}
+                                    className={`relative overflow-hidden h-8 rounded-md font-bold text-xs bg-[var(--shell-surface-soft)] dark:bg-dark-bg-tertiary border border-[var(--border-color)] dark:border-dark-border cursor-not-allowed transition-all duration-300 ${showActionText ? 'w-32' : 'w-8'}`}
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     <div
-                                      className="absolute inset-0 bg-[#b71422] transition-[width] duration-300 ease-out"
+                                      className="absolute inset-0 bg-[var(--accent-primary)] transition-[width] duration-300 ease-out"
                                       style={{ width: `${progress[skill.id] ?? 0}%` }}
                                     />
                                     <span
@@ -1198,7 +1208,7 @@ export default function SkillDownload() {
                                       style={{ clipPath: `inset(0 ${100 - (progress[skill.id] ?? 0)}% 0 0)` }}
                                     >{progress[skill.id] ?? 0}%</span>
                                     <span
-                                      className="absolute inset-0 flex items-center justify-center text-[#b71422] dark:text-white pointer-events-none"
+                                      className="absolute inset-0 flex items-center justify-center text-[var(--accent-primary)] dark:text-white pointer-events-none"
                                       style={{ clipPath: `inset(0 0 0 ${progress[skill.id] ?? 0}%)` }}
                                     >{progress[skill.id] ?? 0}%</span>
                                   </div>
@@ -1208,7 +1218,7 @@ export default function SkillDownload() {
                                       e.stopPropagation();
                                       handleDownload(skill);
                                     }}
-                                    className={`h-8 rounded-md font-bold text-xs bg-[#b71422] text-white hover:bg-[#8f0f1a] transition-all duration-300 flex items-center justify-center gap-1 ${showActionText ? 'w-32 px-2' : 'w-8'}`}
+                                    className={`h-8 rounded-md font-bold text-xs bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-primary-strong)] transition-all duration-300 flex items-center justify-center gap-1 ${showActionText ? 'w-32 px-2' : 'w-8'}`}
                                     title={selectedAgent === 'global'
                                       ? t('skillDownload.download')
                                       : t('skillDownload.downloadTo', { target: selectedAgent })}
@@ -1232,7 +1242,7 @@ export default function SkillDownload() {
                         <tr>
                           <td colSpan={5} className="px-4 py-3 text-center text-sm text-slate-500 dark:text-gray-400">
                             <div className="flex items-center justify-center gap-2">
-                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-slate-300 dark:border-gray-600 border-t-[#b71422]"></div>
+                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-slate-300 dark:border-gray-600 border-t-[var(--accent-primary)]"></div>
                               <span>{t('skillDownload.loadingMore', { current: displayCount, total: filteredSkills.length })}</span>
                             </div>
                           </td>
@@ -1257,7 +1267,7 @@ export default function SkillDownload() {
             onClick={() => {
               if (logButtonRef.current) setLogPopoverAnchor(logButtonRef.current.getBoundingClientRect());
             }}
-            className="w-9 h-9 rounded-full bg-white dark:bg-dark-bg-card border border-[#e1e3e4] dark:border-dark-border shadow-md flex items-center justify-center hover:bg-slate-50 dark:hover:bg-gray-700 hover:shadow-lg transition-all"
+            className="w-9 h-9 rounded-full bg-[var(--bg-card)] dark:bg-dark-bg-card border border-[var(--border-color)] dark:border-dark-border shadow-md flex items-center justify-center hover:bg-[var(--hover-bg)] dark:hover:bg-gray-700 hover:shadow-lg transition-all"
           >
             <Icon name="history" className="text-base text-slate-500 dark:text-gray-400" />
           </button>
