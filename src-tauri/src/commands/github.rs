@@ -25,8 +25,7 @@ pub struct GitHubConfigManager {
 
 impl GitHubConfigManager {
     pub fn new() -> anyhow::Result<Self> {
-        let home = dirs::home_dir()
-            .context("Failed to get home directory")?;
+        let home = dirs::home_dir().context("Failed to get home directory")?;
         let config_dir = home.join(".skills-manager");
         fs::create_dir_all(&config_dir)?;
 
@@ -58,7 +57,6 @@ impl GitHubConfigManager {
         self.save_config(&github_config)?;
         Ok(())
     }
-
 }
 
 /// 测试 GitHub 连接
@@ -85,8 +83,7 @@ pub async fn save_github_config(
     branch: String,
     token: Option<String>,
 ) -> Result<(), String> {
-    let config_manager = GitHubConfigManager::new()
-        .map_err(|e| e.to_string())?;
+    let config_manager = GitHubConfigManager::new().map_err(|e| e.to_string())?;
 
     let repo_config = GitHubRepoConfig {
         owner,
@@ -96,7 +93,8 @@ pub async fn save_github_config(
         last_sync: None,
     };
 
-    config_manager.add_repo("default".to_string(), repo_config)
+    config_manager
+        .add_repo("default".to_string(), repo_config)
         .map_err(|e| e.to_string())?;
 
     Ok(())
@@ -105,10 +103,8 @@ pub async fn save_github_config(
 /// 获取 GitHub 配置
 #[tauri::command]
 pub async fn get_github_config() -> Result<GitHubConfig, String> {
-    let config_manager = GitHubConfigManager::new()
-        .map_err(|e| e.to_string())?;
-    config_manager.load_config()
-        .map_err(|e| e.to_string())
+    let config_manager = GitHubConfigManager::new().map_err(|e| e.to_string())?;
+    config_manager.load_config().map_err(|e| e.to_string())
 }
 
 /// 给 GitHub 仓库加星标
@@ -126,18 +122,12 @@ pub async fn star_github_repo(owner: String, repo: String, token: String) -> Res
         match resp {
             Ok(r) if r.status() == 204 => Ok(true),
             Ok(r) => Err(format!("GitHub API 返回状态码 {}", r.status())),
-            Err(ureq::Error::Status(401, _)) => {
-                Err("Token 无效或已过期".to_string())
-            }
+            Err(ureq::Error::Status(401, _)) => Err("Token 无效或已过期".to_string()),
             Err(ureq::Error::Status(403, _)) => {
                 Err("Token 权限不足，请确保具有 starring 权限".to_string())
             }
-            Err(ureq::Error::Status(404, _)) => {
-                Err("仓库不存在".to_string())
-            }
-            Err(ureq::Error::Status(code, _)) => {
-                Err(format!("GitHub API 错误 (HTTP {})", code))
-            }
+            Err(ureq::Error::Status(404, _)) => Err("仓库不存在".to_string()),
+            Err(ureq::Error::Status(code, _)) => Err(format!("GitHub API 错误 (HTTP {})", code)),
             Err(ureq::Error::Transport(e)) => Err(format!("网络错误: {}", e)),
         }
     })
@@ -171,16 +161,14 @@ pub async fn check_github_star(owner: String, repo: String, token: String) -> Re
 
 /// 同步 GitHub 仓库（推送本地技能到远端）
 #[tauri::command]
-pub async fn sync_github_repo(
-    request: SyncRepoRequest,
-) -> Result<(), String> {
+pub async fn sync_github_repo(request: SyncRepoRequest) -> Result<(), String> {
     // 读取配置
-    let config_manager = GitHubConfigManager::new()
-        .map_err(|e| e.to_string())?;
-    let config = config_manager.load_config()
-        .map_err(|e| e.to_string())?;
+    let config_manager = GitHubConfigManager::new().map_err(|e| e.to_string())?;
+    let config = config_manager.load_config().map_err(|e| e.to_string())?;
 
-    let repo_config = config.repositories.get(&request.name)
+    let repo_config = config
+        .repositories
+        .get(&request.name)
         .ok_or_else(|| format!("仓库 '{}' 不存在于配置中", request.name))?
         .clone();
 
@@ -190,8 +178,7 @@ pub async fn sync_github_repo(
             .map_err(|e| format!("Token 验证失败: {}", e))?;
     }
 
-    let integrator = GitHubIntegrator::new()
-        .map_err(|e| e.to_string())?;
+    let integrator = GitHubIntegrator::new().map_err(|e| e.to_string())?;
 
     let overwrite_remote = request.overwrite_remote;
     tokio::task::spawn_blocking(move || {
@@ -206,7 +193,9 @@ pub async fn sync_github_repo(
     let mut config = config_manager.load_config().map_err(|e| e.to_string())?;
     if let Some(rc) = config.repositories.get_mut(&request.name) {
         rc.last_sync = Some(chrono::Utc::now().to_rfc3339());
-        config_manager.save_config(&config).map_err(|e| e.to_string())?;
+        config_manager
+            .save_config(&config)
+            .map_err(|e| e.to_string())?;
     }
 
     Ok(())
@@ -218,12 +207,12 @@ pub async fn restore_from_github(
     request: SyncRepoRequest,
     app: tauri::AppHandle,
 ) -> Result<u32, String> {
-    let config_manager = GitHubConfigManager::new()
-        .map_err(|e| e.to_string())?;
-    let config = config_manager.load_config()
-        .map_err(|e| e.to_string())?;
+    let config_manager = GitHubConfigManager::new().map_err(|e| e.to_string())?;
+    let config = config_manager.load_config().map_err(|e| e.to_string())?;
 
-    let repo_config = config.repositories.get(&request.name)
+    let repo_config = config
+        .repositories
+        .get(&request.name)
         .ok_or_else(|| format!("仓库 '{}' 不存在于配置中", request.name))?
         .clone();
 
@@ -233,11 +222,11 @@ pub async fn restore_from_github(
             .map_err(|e| format!("Token 验证失败: {}", e))?;
     }
 
-    let integrator = GitHubIntegrator::new()
-        .map_err(|e| e.to_string())?;
+    let integrator = GitHubIntegrator::new().map_err(|e| e.to_string())?;
 
     let count = tokio::task::spawn_blocking(move || {
-        integrator.pull_from_remote(&repo_config, request.overwrite_local)
+        integrator
+            .pull_from_remote(&repo_config, request.overwrite_local)
             .map_err(|e| e.to_string())
     })
     .await
@@ -247,7 +236,9 @@ pub async fn restore_from_github(
     let mut config = config_manager.load_config().map_err(|e| e.to_string())?;
     if let Some(rc) = config.repositories.get_mut(&request.name) {
         rc.last_sync = Some(chrono::Utc::now().to_rfc3339());
-        config_manager.save_config(&config).map_err(|e| e.to_string())?;
+        config_manager
+            .save_config(&config)
+            .map_err(|e| e.to_string())?;
     }
 
     // 拉取成功后：触发一次全盘扫描 + 自愈 + 保存，并重建托盘菜单，

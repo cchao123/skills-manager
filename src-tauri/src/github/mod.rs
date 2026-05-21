@@ -120,8 +120,8 @@ impl GitHubIntegrator {
         let body_str = resp
             .into_string()
             .with_context(|| "读取 GitHub API 响应失败")?;
-        let body: serde_json::Value = serde_json::from_str(&body_str)
-            .with_context(|| "解析 GitHub API 响应 JSON 失败")?;
+        let body: serde_json::Value =
+            serde_json::from_str(&body_str).with_context(|| "解析 GitHub API 响应 JSON 失败")?;
         let can_push = body
             .get("permissions")
             .and_then(|p| p.get("push"))
@@ -175,8 +175,8 @@ impl GitHubIntegrator {
             .map_err(|e| anyhow!("获取仓库信息失败: {}", e))?
             .into_string()
             .map_err(|e| anyhow!("读取仓库信息失败: {}", e))?;
-        let repo_resp: serde_json::Value = serde_json::from_str(&repo_resp_str)
-            .map_err(|e| anyhow!("解析仓库信息失败: {}", e))?;
+        let repo_resp: serde_json::Value =
+            serde_json::from_str(&repo_resp_str).map_err(|e| anyhow!("解析仓库信息失败: {}", e))?;
 
         let default_branch = repo_resp["default_branch"]
             .as_str()
@@ -207,10 +207,7 @@ impl GitHubIntegrator {
         eprintln!("[test] 默认分支最新提交: {}", commit_sha);
 
         // 3. 创建新分支
-        let create_ref_url = format!(
-            "https://api.github.com/repos/{}/{}/git/refs",
-            owner, repo
-        );
+        let create_ref_url = format!("https://api.github.com/repos/{}/{}/git/refs", owner, repo);
         let body = serde_json::json!({
             "ref": format!("refs/heads/{}", branch),
             "sha": commit_sha
@@ -273,8 +270,7 @@ impl GitHubIntegrator {
         fs::create_dir_all(&temp_dir)?;
 
         // 初始化本地仓库
-        let local_repo = Repository::init(&temp_dir)
-            .context("初始化本地仓库失败")?;
+        let local_repo = Repository::init(&temp_dir).context("初始化本地仓库失败")?;
 
         // 创建一个初始的 README.md
         let readme_path = temp_dir.join("README.md");
@@ -289,11 +285,7 @@ impl GitHubIntegrator {
 
         // 添加文件到索引
         let mut index = local_repo.index()?;
-        index.add_all(
-            ["*"].iter(),
-            git2::IndexAddOption::DEFAULT,
-            None,
-        )?;
+        index.add_all(["*"].iter(), git2::IndexAddOption::DEFAULT, None)?;
         index.write()?;
 
         // 创建初始提交
@@ -333,12 +325,7 @@ impl GitHubIntegrator {
 
         // 创建本地分支引用
         let branch_ref = format!("refs/heads/{}", branch);
-        local_repo.reference(
-            &branch_ref,
-            oid,
-            true,
-            "Set branch to initial commit",
-        )?;
+        local_repo.reference(&branch_ref, oid, true, "Set branch to initial commit")?;
 
         // 设置 HEAD 指向新创建的分支
         local_repo.set_head(&branch_ref)?;
@@ -453,8 +440,10 @@ impl GitHubIntegrator {
 
         if delta_count > 0 {
             let parent = repo.head()?.peel_to_commit()?;
-            let sig = Signature::now("Skills Manager", "skills-manager@local")
-                .unwrap_or_else(|_| Signature::now("SkillsManager", "skills-manager@local").unwrap());
+            let sig =
+                Signature::now("Skills Manager", "skills-manager@local").unwrap_or_else(|_| {
+                    Signature::now("SkillsManager", "skills-manager@local").unwrap()
+                });
 
             let mut index = repo.index()?;
             let tree_id = index.write_tree()?;
@@ -485,12 +474,7 @@ impl GitHubIntegrator {
         let force_push = overwrite_remote || self.should_force_push(&repo, &config.branch)?;
 
         // 无论是否强制推送，都要执行推送操作
-        push_to_origin(
-            &repo,
-            &config.branch,
-            config.token.as_deref(),
-            force_push,
-        )?;
+        push_to_origin(&repo, &config.branch, config.token.as_deref(), force_push)?;
 
         eprintln!("✅ [sync] 技能同步成功推送到 GitHub");
         Ok(())
@@ -501,7 +485,11 @@ impl GitHubIntegrator {
     /// `overwrite_local`:
     /// - true  = 完全以远端为准：tracked 文件对齐远端，本地 untracked/ignored 文件也会被删除
     /// - false = merge 模式：远端覆盖同名 skill，本地独有（未在远端的）skill 目录保留
-    pub fn pull_from_remote(&self, config: &GitHubRepoConfig, overwrite_local: bool) -> Result<u32> {
+    pub fn pull_from_remote(
+        &self,
+        config: &GitHubRepoConfig,
+        overwrite_local: bool,
+    ) -> Result<u32> {
         eprintln!(
             "=== [restore] 开始从 GitHub 恢复 (overwrite_local={}) ===",
             overwrite_local
@@ -511,7 +499,10 @@ impl GitHubIntegrator {
         let local_only = if !overwrite_local {
             let local_skills = self.list_local_skills();
             let remote_skills = self.list_remote_skills(config)?;
-            local_skills.difference(&remote_skills).cloned().collect::<HashSet<String>>()
+            local_skills
+                .difference(&remote_skills)
+                .cloned()
+                .collect::<HashSet<String>>()
         } else {
             HashSet::new()
         };
@@ -677,7 +668,11 @@ impl GitHubIntegrator {
 
     /// 验证本地远程 URL 与配置是否一致，不一致则修正
     /// 以用户配置为准，因为用户可能在应用中修改了配置
-    fn ensure_remote_url_correct(&self, repo: &Repository, config: &GitHubRepoConfig) -> Result<()> {
+    fn ensure_remote_url_correct(
+        &self,
+        repo: &Repository,
+        config: &GitHubRepoConfig,
+    ) -> Result<()> {
         let expected_url = build_auth_url(&config.owner, &config.repo, config.token.as_deref());
 
         let remote = repo.find_remote("origin")?;
@@ -715,7 +710,10 @@ impl GitHubIntegrator {
             repo.remote_delete("origin")?;
             repo.remote("origin", &expected_url)?;
 
-            eprintln!("[sync] ✅ 本地远程 URL 已修正为: {}", expected_repo.unwrap_or_default());
+            eprintln!(
+                "[sync] ✅ 本地远程 URL 已修正为: {}",
+                expected_repo.unwrap_or_default()
+            );
         }
 
         Ok(())
@@ -807,10 +805,7 @@ impl GitHubIntegrator {
             None,
         )?;
         index.write()?;
-        eprintln!(
-            "[sync] 强制暂存托管文件 (绕过 .gitignore): {:?}",
-            existing
-        );
+        eprintln!("[sync] 强制暂存托管文件 (绕过 .gitignore): {:?}", existing);
         Ok(())
     }
 
@@ -863,14 +858,16 @@ impl GitHubIntegrator {
         } else {
             // 分支不存在，创建它并指向当前 HEAD
             eprintln!("[sync] 创建本地分支 '{}'", branch);
-            let head_oid = repo.head()?.target()
+            let head_oid = repo
+                .head()?
+                .target()
                 .ok_or_else(|| anyhow!("无法获取当前 HEAD 的目标"))?;
 
             repo.reference(
                 &branch_ref,
                 head_oid,
                 true,
-                "Create branch for Skills Manager sync"
+                "Create branch for Skills Manager sync",
             )?;
             repo.set_head(&branch_ref)?;
         }
@@ -910,13 +907,19 @@ impl GitHubIntegrator {
 
         if ahead > 0 && behind > 0 {
             // 分歧：本地和远程都有新提交
-            eprintln!("[sync] 本地与远端出现分歧（ahead={}, behind={}），将强制推送以本地为准", ahead, behind);
+            eprintln!(
+                "[sync] 本地与远端出现分歧（ahead={}, behind={}），将强制推送以本地为准",
+                ahead, behind
+            );
             return Ok(true);
         }
 
         if ahead == 0 && behind > 0 {
             // 远程领先，本地落后
-            eprintln!("[sync] 远端领先本地 {} 个提交，将强制推送以本地为准", behind);
+            eprintln!(
+                "[sync] 远端领先本地 {} 个提交，将强制推送以本地为准",
+                behind
+            );
             return Ok(true);
         }
 
@@ -998,9 +1001,7 @@ impl GitHubIntegrator {
         let mut to_remove: Vec<PathBuf> = Vec::new();
         for entry in statuses.iter() {
             let status = entry.status();
-            if !(status.contains(git2::Status::WT_NEW)
-                || status.contains(git2::Status::IGNORED))
-            {
+            if !(status.contains(git2::Status::WT_NEW) || status.contains(git2::Status::IGNORED)) {
                 continue;
             }
             let Some(rel) = entry.path() else { continue };

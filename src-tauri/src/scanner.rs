@@ -1,7 +1,5 @@
 use crate::linker::is_junction_or_symlink;
-use crate::models::{
-    pick_default_primary, AgentConfig, SkillEntry, SkillMetadata, SOURCE_GLOBAL,
-};
+use crate::models::{pick_default_primary, AgentConfig, SkillEntry, SkillMetadata, SOURCE_GLOBAL};
 use regex::Regex;
 use std::collections::HashMap;
 use std::fs;
