@@ -140,7 +140,7 @@ const SortableAgentRow: React.FC<SortableAgentRowProps> = ({
             onClick={() => onOpenPath(agent.rootPath)}
             aria-label={agent.rootPath}
             title={agent.rootPath}
-            className="shrink-0 w-8 h-8 mr-4 rounded-md flex items-center justify-center text-slate-300 dark:text-gray-600 hover:bg-[var(--bg-card)] dark:hover:bg-dark-bg-card hover:text-[var(--accent-primary)] transition-colors"
+            className="shrink-0 w-8 h-8 mr-4 rounded-md flex items-center justify-center text-slate-300 dark:text-gray-600 hover:bg-[var(--bg-card)] dark:hover:bg-dark-bg-card hover:text-sky-600 dark:hover:text-sky-300 transition-colors"
           >
             <Icon name="open_in_new" className="text-lg" />
           </button>
@@ -163,10 +163,10 @@ const SortableAgentRow: React.FC<SortableAgentRowProps> = ({
                   className="group w-full flex items-center gap-2 py-1 px-2 -ml-2 rounded-md hover:bg-white dark:hover:bg-dark-bg-card transition-colors text-left"
                 >
                   <Icon name="subdirectory_arrow_right" className="text-sm text-slate-400 dark:text-gray-500 shrink-0" />
-                  <span className="flex-1 min-w-0 text-xs font-mono text-slate-600 dark:text-gray-300 truncate group-hover:text-[var(--accent-primary)]">
+                  <span className="flex-1 min-w-0 text-xs font-mono text-slate-600 dark:text-gray-300 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">
                     {p}
                   </span>
-                  <Icon name="open_in_new" className="text-sm text-slate-300 dark:text-gray-600 group-hover:text-[var(--accent-primary)] shrink-0" />
+                  <Icon name="open_in_new" className="text-sm text-slate-300 dark:text-gray-600 group-hover:text-sky-600 dark:group-hover:text-sky-300 shrink-0" />
                 </button>
               </li>
             ))}
@@ -291,7 +291,7 @@ export const AgentsSection: React.FC<AgentsSectionProps> = ({ agents }) => {
             {t('settings.agents.appRoot')}
           </span>
         </div>
-        <Icon name="open_in_new" className="text-lg text-slate-300 dark:text-gray-600 shrink-0" />
+        <Icon name="open_in_new" className="text-lg text-sky-600 dark:text-sky-300 shrink-0" />
       </button>
 
       {/* Agents card */}

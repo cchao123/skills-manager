@@ -159,7 +159,7 @@ export const DashboardMain: React.FC<DashboardMainProps> = memo(({
                     <p className="text-xs text-[var(--text-secondary)] dark:text-gray-400">
                       {t('dashboard.rootPathLabel')}
                       <span
-                        className="text-[var(--accent-primary)] dark:text-blue-400 cursor-pointer hover:underline font-mono"
+                        className="text-sky-600 dark:text-sky-300 cursor-pointer hover:text-sky-700 dark:hover:text-sky-200 hover:underline font-mono"
                         onClick={() => agentsApi.openFolderPath('~/.skills-manager').catch(() => { })}
                       >~/.skills-manager</span>
                     </p>
@@ -179,7 +179,7 @@ export const DashboardMain: React.FC<DashboardMainProps> = memo(({
                           {t('dashboard.agentSourcePath')}
                           {path ? (
                             <span
-                              className="text-[var(--accent-primary)] dark:text-blue-400 cursor-pointer hover:underline font-mono"
+                              className="text-sky-600 dark:text-sky-300 cursor-pointer hover:text-sky-700 dark:hover:text-sky-200 hover:underline font-mono"
                               onClick={() => agentsApi.openFolderPath(path).catch(() => { })}
                             >{path}</span>
                           ) : (
@@ -328,4 +328,3 @@ const SkillGrid: React.FC<SkillGridProps> = ({
     </div>
   );
 };
-

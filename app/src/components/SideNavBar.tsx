@@ -23,12 +23,12 @@ export default function SideNavBar() {
   };
 
   const navButtonClass = (active: boolean, collapsed: boolean) =>
-    `flex items-center gap-3 py-3 rounded-lg font-bold transition-all active:scale-95 w-full ${
+    `flex items-center gap-3 py-3 rounded-lg font-bold transition-[background-color,box-shadow,transform] active:scale-95 w-full ${
       collapsed ? 'flex-col justify-center px-0 gap-1' : 'px-4'
     } ${
       active
-        ? 'text-white bg-[var(--accent-primary)] shadow-[0_16px_30px_-18px_rgba(255,68,88,0.95)] dark:text-white'
-        : 'text-[var(--text-secondary)] dark:text-gray-300 hover:text-[var(--text-primary)] hover:bg-white/80 dark:hover:bg-dark-bg-tertiary'
+        ? 'text-white bg-[var(--accent-primary)] shadow-[0_16px_30px_-18px_rgba(255,68,88,0.95)] dark:text-white [&_svg]:!text-white [&_svg]:transition-none'
+        : 'text-[var(--text-secondary)] dark:text-gray-300 hover:text-[var(--text-primary)] hover:bg-white/80 dark:hover:bg-dark-bg-tertiary [&_svg]:transition-none'
     }`;
 
   const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;

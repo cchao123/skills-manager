@@ -106,7 +106,7 @@ export const GitHubForm = ({
                 href={GITHUB_TOKENS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--accent-primary)] hover:text-[var(--accent-primary-strong)]"
+                className="text-sky-600 hover:text-sky-700 dark:text-sky-300 dark:hover:text-sky-200"
               >
                 Personal access tokens
               </a>
