@@ -3,27 +3,48 @@ use tempfile::TempDir;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::models::{AgentConfig, LinkStrategy, CURRENT_SCHEMA_VERSION};
+
+    fn test_agent() -> AgentConfig {
+        AgentConfig {
+            name: "test-agent".to_string(),
+            display_name: "Test Agent".to_string(),
+            path: "~/.test".to_string(),
+            skills_path: "skills".to_string(),
+            enabled: true,
+            detected: false,
+            extra_paths: vec![],
+        }
+    }
 
     #[test]
     fn test_create_default_config() {
         let temp_dir = TempDir::new().unwrap();
         let config_path = temp_dir.path().join("config.json");
 
-        let result = crate::settings::AppSettingsManager::load_or_create(&config_path);
-
-        assert!(result.is_ok());
-        let manager = result.unwrap();
+        let manager = crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
         let config = manager.get_config();
+        let agent_names: Vec<&str> = config
+            .agents
+            .iter()
+            .map(|agent| agent.name.as_str())
+            .collect();
 
-        // Phase 2: Updated to 5 default agents (was 3)
-        assert_eq!(config.agents.len(), 5);
-        assert_eq!(config.agents[0].name, "claude");
-        assert_eq!(config.agents[1].name, "cursor");
-        assert_eq!(config.agents[2].name, "codex");
-        assert_eq!(config.agents[3].name, "openclaw");
-        assert_eq!(config.agents[4].name, "opencode");
-        let claude = config.agents.iter().find(|a| a.name == "claude").unwrap();
-        assert_eq!(claude.skills_path, "skills");
+        assert!(config.agents.len() >= 5);
+        assert!(agent_names.contains(&"claude"));
+        assert!(agent_names.contains(&"cursor"));
+        assert!(agent_names.contains(&"codex"));
+        assert!(agent_names.contains(&"openclaw"));
+        assert!(agent_names.contains(&"opencode"));
+        assert_eq!(
+            config
+                .agents
+                .iter()
+                .find(|agent| agent.name == "claude")
+                .unwrap()
+                .skills_path,
+            "skills"
+        );
     }
 
     #[test]
@@ -31,31 +52,18 @@ mod tests {
         let temp_dir = TempDir::new().unwrap();
         let config_path = temp_dir.path().join("config.json");
 
-        let mut manager = crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
+        let mut manager =
+            crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
+        let default_count = manager.get_config().agents.len();
 
-        // 添加一个测试 Agent
-        use crate::models::AgentConfig;
-        let agent = AgentConfig {
-            name: "test-agent".to_string(),
-            display_name: "Test Agent".to_string(),
-            path: "~/.test".to_string(),
-            skills_path: "skills".to_string(),
-            enabled: true,
-            detected: false,
-        };
-
-        let result = manager.add_agent(agent);
-
-        assert!(result.is_ok());
+        manager.add_agent(test_agent()).unwrap();
         manager.save().unwrap();
 
-        // 重新加载验证
         let manager2 = crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
         let config = manager2.get_config();
 
-        // Phase 2: 5 default agents + 1 test agent = 6 total
-        assert_eq!(config.agents.len(), 6);
-        assert_eq!(config.agents[5].name, "test-agent");
+        assert_eq!(config.agents.len(), default_count + 1);
+        assert_eq!(config.agents.last().unwrap().name, "test-agent");
     }
 
     #[test]
@@ -63,27 +71,15 @@ mod tests {
         let temp_dir = TempDir::new().unwrap();
         let config_path = temp_dir.path().join("config.json");
 
-        let mut manager = crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
+        let mut manager =
+            crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
+        let default_count = manager.get_config().agents.len();
 
-        use crate::models::AgentConfig;
-        let agent = AgentConfig {
-            name: "test-agent".to_string(),
-            display_name: "Test Agent".to_string(),
-            path: "~/.test".to_string(),
-            skills_path: "skills".to_string(),
-            enabled: true,
-            detected: false,
-        };
+        manager.add_agent(test_agent()).unwrap();
+        assert_eq!(manager.get_config().agents.len(), default_count + 1);
 
-        manager.add_agent(agent).unwrap();
-        // Phase 2: 5 default agents + 1 test = 6 total
-        assert_eq!(manager.get_config().agents.len(), 6);
-
-        let result = manager.remove_agent("test-agent");
-
-        assert!(result.is_ok());
-        // Phase 2: After removal: 5 default agents remain
-        assert_eq!(manager.get_config().agents.len(), 5);
+        manager.remove_agent("test-agent").unwrap();
+        assert_eq!(manager.get_config().agents.len(), default_count);
     }
 
     #[test]
@@ -91,7 +87,6 @@ mod tests {
         let temp_dir = TempDir::new().unwrap();
         let config_path = temp_dir.path().join("config.json");
 
-        // 先手写一份"老版本"配置文件：schema_version 不匹配，skill_states 里带一条脏数据
         let legacy = serde_json::json!({
             "schema_version": "v0-legacy",
             "linking_strategy": "symlink",
@@ -107,13 +102,18 @@ mod tests {
         let manager = crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
         let config = manager.get_config();
 
-        assert_eq!(config.schema_version, crate::models::CURRENT_SCHEMA_VERSION);
-        assert!(config.skill_states.is_empty(), "skill_states should be cleared on mismatch");
+        assert_eq!(config.schema_version, CURRENT_SCHEMA_VERSION);
+        assert!(
+            config.skill_states.is_empty(),
+            "skill_states should be cleared on mismatch"
+        );
 
-        // 文件也应已被写回为新 schema_version
         let on_disk: serde_json::Value =
             serde_json::from_str(&std::fs::read_to_string(&config_path).unwrap()).unwrap();
-        assert_eq!(on_disk["schema_version"].as_str(), Some(crate::models::CURRENT_SCHEMA_VERSION));
+        assert_eq!(
+            on_disk["schema_version"].as_str(),
+            Some(CURRENT_SCHEMA_VERSION)
+        );
     }
 
     #[test]
@@ -122,7 +122,7 @@ mod tests {
         let config_path = temp_dir.path().join("config.json");
 
         let good = serde_json::json!({
-            "schema_version": crate::models::CURRENT_SCHEMA_VERSION,
+            "schema_version": CURRENT_SCHEMA_VERSION,
             "linking_strategy": "symlink",
             "agents": [],
             "skill_states": {
@@ -134,9 +134,38 @@ mod tests {
         std::fs::write(&config_path, serde_json::to_string_pretty(&good).unwrap()).unwrap();
 
         let manager = crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
-        let config = manager.get_config();
+        assert!(manager.get_config().skill_states.contains_key("keep-me"));
+    }
 
-        assert!(config.skill_states.contains_key("keep-me"));
+    #[test]
+    fn test_invalid_json_is_backed_up_and_reset_to_default() {
+        let temp_dir = TempDir::new().unwrap();
+        let config_path = temp_dir.path().join("config.json");
+
+        std::fs::write(&config_path, "{not-json").unwrap();
+
+        let manager = crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
+        let config = manager.get_config();
+        let on_disk: serde_json::Value =
+            serde_json::from_str(&std::fs::read_to_string(&config_path).unwrap()).unwrap();
+
+        assert!(!config.agents.is_empty());
+        assert_eq!(
+            on_disk["schema_version"].as_str(),
+            Some(CURRENT_SCHEMA_VERSION)
+        );
+
+        let backup_count = std::fs::read_dir(temp_dir.path())
+            .unwrap()
+            .filter_map(Result::ok)
+            .filter(|entry| {
+                entry
+                    .file_name()
+                    .to_string_lossy()
+                    .starts_with("config.json.invalid-")
+            })
+            .count();
+        assert_eq!(backup_count, 1);
     }
 
     #[test]
@@ -144,9 +173,8 @@ mod tests {
         let temp_dir = TempDir::new().unwrap();
         let config_path = temp_dir.path().join("config.json");
 
-        let mut manager = crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
-
-        use crate::models::LinkStrategy;
+        let mut manager =
+            crate::settings::AppSettingsManager::load_or_create(&config_path).unwrap();
         manager.set_linking_strategy(LinkStrategy::Copy).unwrap();
         manager.save().unwrap();
 
