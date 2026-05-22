@@ -25,11 +25,30 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&family=Noto+Sans+SC:wght@400;500;700;800&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (function initThemeBoot() {
+        var STORAGE_KEY = "vite-ui-theme";
+        var stored = "auto";
+        try {
+          stored = localStorage.getItem(STORAGE_KEY) || "auto";
+        } catch (e) {}
+        if (stored !== "light" && stored !== "dark" && stored !== "auto") {
+          stored = "auto";
+        }
+        var resolved = stored === "auto"
+          ? (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+          : stored;
+        var root = document.documentElement;
+        root.classList.remove("light", "dark");
+        root.classList.add(resolved);
+        root.setAttribute("data-theme-preference", stored);
+      })();
+    </script>
     <style>
       :root {
         /* 与应用 light mode 保持一致的品牌 token：
            - 背景/边框/文本：对齐 app/src/assets/styles/index.css `:root` 配色
-           - 品牌色 #b71422：对齐 app/src/components/SideNavBar.tsx 中的 wordmark 和输入框 focus
+           - 品牌色 #ff4458：对齐 app/src/assets/styles/index.css `:root` 中的 light mode 强调色
            - 字体：Inter（body）+ Manrope 800（brand wordmark） */
         --bg: #ffffff;
         --bg-soft: #f8f9fa;
@@ -39,12 +58,56 @@
         --text: #0f172a;
         --text-secondary: #475569;
         --text-muted: #64748b;
-        --accent: #b71422;
-        --accent-hover: #d81a2c;
-        --accent-soft: rgba(183, 20, 34, 0.08);
-        --accent-glow: rgba(183, 20, 34, 0.22);
+        --accent: #ff4458;
+        --accent-hover: #e63c50;
+        --accent-soft: #fff1f4;
+        --accent-glow: rgba(255, 68, 88, 0.22);
+        --accent-rgb: 255, 68, 88;
+        --nav-bg: rgba(255, 255, 255, 0.82);
+        --ghost-bg: #ffffff;
+        --ghost-hover-bg: #f1f5f9;
+        --ghost-hover-border: #cbd5e1;
+        --preview-shell-bg: #f8f9fa;
+        --preview-skeleton-start: #f8f9fa;
+        --preview-skeleton-mid: #eef1f5;
+        --preview-badge-bg: rgba(255, 255, 255, 0.92);
+        --preview-badge-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+        --card-hover-bg: #ffffff;
         --shadow-soft: 0 4px 16px rgba(15, 23, 42, 0.06);
         --shadow-lg: 0 30px 60px -30px rgba(15, 23, 42, 0.3);
+      }
+
+      html {
+        color-scheme: light;
+      }
+
+      html.dark {
+        color-scheme: dark;
+        --bg: #0a0a0a;
+        --bg-soft: #101214;
+        --bg-card: #171717;
+        --panel: #141414;
+        --panel-border: #2a2a2a;
+        --text: #f5f5f5;
+        --text-secondary: #d4d4d8;
+        --text-muted: #a1a1aa;
+        --accent: #b71422;
+        --accent-hover: #a01220;
+        --accent-soft: rgba(183, 20, 34, 0.22);
+        --accent-glow: rgba(183, 20, 34, 0.34);
+        --accent-rgb: 183, 20, 34;
+        --nav-bg: rgba(10, 10, 10, 0.82);
+        --ghost-bg: #141414;
+        --ghost-hover-bg: #1c1c1c;
+        --ghost-hover-border: #353535;
+        --preview-shell-bg: #101214;
+        --preview-skeleton-start: #15171a;
+        --preview-skeleton-mid: #1e2228;
+        --preview-badge-bg: rgba(20, 20, 20, 0.9);
+        --preview-badge-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+        --card-hover-bg: #1b1b1b;
+        --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.18);
+        --shadow-lg: 0 30px 60px -30px rgba(0, 0, 0, 0.55);
       }
 
       * { box-sizing: border-box; }
@@ -54,7 +117,6 @@
         padding: 0;
         background: var(--bg);
         color: var(--text);
-        color-scheme: light;
         font-family: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC",
           "Microsoft YaHei", sans-serif;
         scroll-behavior: smooth;
@@ -78,7 +140,7 @@
       /* ---- NAV ---- */
       .nav {
         position: sticky; top: 0; z-index: 50;
-        background: rgba(255, 255, 255, 0.82);
+        background: var(--nav-bg);
         backdrop-filter: saturate(160%) blur(18px);
         border-bottom: 1px solid var(--panel-border);
         transition: transform 0.3s ease;
@@ -104,6 +166,7 @@
         letter-spacing: -0.02em;
       }
       .nav-links { display: flex; align-items: center; gap: 28px; font-size: 14px; color: var(--text-muted); }
+      .nav-links > * { flex-shrink: 0; }
       .nav-links a:hover { color: var(--text); }
       .nav-links .lang-switch {
         padding: 5px 12px;
@@ -118,6 +181,43 @@
         color: var(--accent);
         border-color: var(--accent);
         background: var(--accent-soft);
+      }
+      .theme-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--panel-border);
+        border-radius: 999px;
+        background: var(--bg-card);
+        box-shadow: var(--shadow-soft);
+      }
+      .theme-option {
+        width: 30px;
+        height: 30px;
+        border: 0;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: color .2s, background .2s, box-shadow .2s, transform .2s;
+      }
+      .theme-option:hover {
+        color: var(--text);
+        background: var(--accent-soft);
+      }
+      .theme-option[data-active="true"] {
+        color: #fff;
+        background: var(--accent);
+        box-shadow: 0 6px 18px var(--accent-glow);
+      }
+      .theme-option svg {
+        width: 15px;
+        height: 15px;
+        stroke: currentColor;
       }
       .nav-cta {
         display: inline-flex; align-items: center; gap: 8px;
@@ -145,7 +245,7 @@
         position: absolute; inset: -20% -10% auto -10%; height: 720px;
         /* 白底下的品牌柔光更克制：顶部一圈粉红泛光 + 侧边淡灰做空间感 */
         background:
-          radial-gradient(55% 45% at 50% 0%, rgba(183, 20, 34, 0.10), transparent 65%),
+          radial-gradient(55% 45% at 50% 0%, rgba(var(--accent-rgb), 0.10), transparent 65%),
           radial-gradient(40% 40% at 80% 35%, rgba(148, 163, 184, 0.08), transparent 70%);
         filter: blur(60px);
         z-index: -1;
@@ -252,13 +352,13 @@
         box-shadow: 0 16px 36px var(--accent-glow);
       }
       .btn-ghost {
-        background: #ffffff;
+        background: var(--ghost-bg);
         color: var(--text);
         border: 1px solid var(--panel-border);
       }
       .btn-ghost:hover {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
+        background: var(--ghost-hover-bg);
+        border-color: var(--ghost-hover-border);
       }
       .btn svg { width: 18px; height: 18px; }
 
@@ -281,7 +381,7 @@
         box-shadow:
           0 40px 80px -30px rgba(15, 23, 42, 0.25),
           0 8px 24px -12px rgba(15, 23, 42, 0.12),
-          0 0 0 1px rgba(183, 20, 34, 0.05);
+          0 0 0 1px rgba(var(--accent-rgb), 0.05);
       }
       .hero-preview img { border-radius: 12px; width: 100%; height: auto; }
 
@@ -293,7 +393,7 @@
         height: clamp(650px, 80vh, 900px);
         border-radius: 12px;
         overflow: hidden;
-        background: #f8f9fa;
+        background: var(--preview-shell-bg);
       }
       .hero-preview .preview-frame {
         position: absolute; inset: 0;
@@ -307,7 +407,7 @@
         position: absolute; inset: 0;
         display: flex; align-items: center; justify-content: center;
         color: var(--text-muted); font-size: 14px; gap: 10px;
-        background: linear-gradient(120deg, #f8f9fa 0%, #eef1f5 50%, #f8f9fa 100%);
+        background: linear-gradient(120deg, var(--preview-skeleton-start) 0%, var(--preview-skeleton-mid) 50%, var(--preview-skeleton-start) 100%);
         background-size: 200% 100%;
         animation: preview-shimmer 2.4s linear infinite;
         transition: opacity 0.4s ease;
@@ -323,24 +423,24 @@
         z-index: 2;
         display: inline-flex; align-items: center; gap: 6px;
         padding: 6px 12px;
-        background: rgba(255, 255, 255, 0.92);
+        background: var(--preview-badge-bg);
         backdrop-filter: blur(8px);
         border: 1px solid var(--panel-border);
         border-radius: 999px;
         font-size: 12px; font-weight: 600;
         color: var(--accent);
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+        box-shadow: var(--preview-badge-shadow);
         pointer-events: none;
       }
       .hero-preview .preview-badge::before {
         content: ''; width: 6px; height: 6px; border-radius: 50%;
         background: var(--accent);
-        box-shadow: 0 0 0 0 rgba(183, 20, 34, 0.6);
+        box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.6);
         animation: preview-pulse 1.8s ease-in-out infinite;
       }
       @keyframes preview-pulse {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(183, 20, 34, 0.6); }
-        50%      { box-shadow: 0 0 0 6px rgba(183, 20, 34, 0); }
+        0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.6); }
+        50%      { box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0); }
       }
 
       @media (max-width: 768px) {
@@ -430,9 +530,9 @@
       }
       .card:hover {
         transform: translateY(-4px);
-        border-color: rgba(183, 20, 34, 0.25);
-        background: #ffffff;
-        box-shadow: 0 20px 40px -20px rgba(183, 20, 34, 0.18), 0 8px 20px -12px rgba(15, 23, 42, 0.08);
+        border-color: rgba(var(--accent-rgb), 0.25);
+        background: var(--card-hover-bg);
+        box-shadow: 0 20px 40px -20px rgba(var(--accent-rgb), 0.18), 0 8px 20px -12px rgba(15, 23, 42, 0.08);
       }
       .card .ico {
         width: 44px; height: 44px; border-radius: 12px;
@@ -446,8 +546,8 @@
       /* ---- GITHUB BANNER ---- */
       .cta-banner {
         margin: 0 auto;
-        background: linear-gradient(135deg, rgba(183, 20, 34, 0.08), rgba(183, 20, 34, 0.02));
-        border: 1px solid rgba(183, 20, 34, 0.22);
+        background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.08), rgba(var(--accent-rgb), 0.02));
+        border: 1px solid rgba(var(--accent-rgb), 0.22);
         border-radius: 24px;
         padding: 56px 48px;
         text-align: center;
@@ -457,7 +557,7 @@
       .cta-banner::before {
         content: ""; position: absolute; inset: -60% -30% auto auto;
         width: 600px; height: 600px;
-        background: radial-gradient(circle, rgba(183, 20, 34, 0.12), transparent 60%);
+        background: radial-gradient(circle, rgba(var(--accent-rgb), 0.12), transparent 60%);
         filter: blur(50px); z-index: 0;
       }
       .cta-banner > * { position: relative; z-index: 1; }
@@ -471,7 +571,7 @@
         background: var(--bg-card); border: 1px solid var(--panel-border);
         border-radius: 12px; padding: 18px 22px;
       }
-      details.faq[open] { border-color: rgba(183, 20, 34, 0.35); }
+      details.faq[open] { border-color: rgba(var(--accent-rgb), 0.35); }
       details.faq summary {
         list-style: none; cursor: pointer; font-weight: 600; font-size: 16px;
         display: flex; justify-content: space-between; align-items: center;
@@ -500,6 +600,7 @@
         /* 小屏保留语言切换按钮，其它锚点链接折叠 */
         .nav-links { gap: 10px; }
         .nav-links a:not(.lang-switch) { display: none; }
+        .theme-switch { margin-left: auto; }
         .feature-row { grid-template-columns: 1fr; gap: 40px; }
         .feature-row.reverse { direction: ltr; }
         .cards-grid { grid-template-columns: 1fr; }
@@ -520,6 +621,49 @@
           <a href="#preview">沙盒演示</a>
           <a href="#features">功能</a>
           <a href="#faq">FAQ</a>
+          <div class="theme-switch" role="group" aria-label="Theme">
+            <button
+              type="button"
+              class="theme-option"
+              data-theme-value="light"
+              data-active="false"
+              aria-label="Light theme"
+              aria-pressed="false"
+              title="Light theme"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2.5v2.25M12 19.25v2.25M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2.5 12h2.25M19.25 12h2.25M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"></path>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="theme-option"
+              data-theme-value="dark"
+              data-active="false"
+              aria-label="Dark theme"
+              aria-pressed="false"
+              title="Dark theme"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a7 7 0 1 0 10.7 10.7Z"></path>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="theme-option"
+              data-theme-value="auto"
+              data-active="false"
+              aria-label="System theme"
+              aria-pressed="false"
+              title="System theme"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3.5" y="4.5" width="17" height="12" rx="2"></rect>
+                <path d="M8.5 20h7M12 16.5V20"></path>
+              </svg>
+            </button>
+          </div>
           <a href="./en/" class="lang-switch" aria-label="Switch to English" hreflang="en">EN</a>
         </div>
         <a class="nav-cta" href="https://github.com/cchao123/skills-managers/releases" target="_blank" rel="noopener">
@@ -734,6 +878,80 @@
         }
 
         window.addEventListener('scroll', onScroll, { passive: true });
+      })();
+
+      (function initThemeSwitch() {
+        var STORAGE_KEY = "vite-ui-theme";
+        var THEMES = { light: "light", dark: "dark", auto: "auto" };
+        var root = document.documentElement;
+        var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-theme-value]"));
+        var mediaQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+        function isTheme(value) {
+          return value === THEMES.light || value === THEMES.dark || value === THEMES.auto;
+        }
+
+        function getStoredTheme() {
+          try {
+            var stored = localStorage.getItem(STORAGE_KEY);
+            return isTheme(stored) ? stored : THEMES.auto;
+          } catch (e) {
+            return THEMES.auto;
+          }
+        }
+
+        function resolveTheme(theme) {
+          if (theme !== THEMES.auto) return theme;
+          return mediaQuery && mediaQuery.matches ? THEMES.dark : THEMES.light;
+        }
+
+        function syncButtons(theme) {
+          buttons.forEach(function (button) {
+            var active = button.getAttribute("data-theme-value") === theme;
+            button.setAttribute("data-active", active ? "true" : "false");
+            button.setAttribute("aria-pressed", active ? "true" : "false");
+          });
+        }
+
+        function applyTheme(theme, persist) {
+          var nextTheme = isTheme(theme) ? theme : THEMES.auto;
+          var resolved = resolveTheme(nextTheme);
+          root.classList.remove(THEMES.light, THEMES.dark);
+          root.classList.add(resolved);
+          root.setAttribute("data-theme-preference", nextTheme);
+          syncButtons(nextTheme);
+
+          if (persist) {
+            try { localStorage.setItem(STORAGE_KEY, nextTheme); } catch (e) {}
+          }
+        }
+
+        buttons.forEach(function (button) {
+          button.addEventListener("click", function () {
+            applyTheme(button.getAttribute("data-theme-value"), true);
+          });
+        });
+
+        if (mediaQuery) {
+          var handleMediaChange = function () {
+            if ((root.getAttribute("data-theme-preference") || THEMES.auto) === THEMES.auto) {
+              applyTheme(THEMES.auto, false);
+            }
+          };
+
+          if (typeof mediaQuery.addEventListener === "function") {
+            mediaQuery.addEventListener("change", handleMediaChange);
+          } else if (typeof mediaQuery.addListener === "function") {
+            mediaQuery.addListener(handleMediaChange);
+          }
+        }
+
+        window.addEventListener("storage", function (event) {
+          if (event.key !== STORAGE_KEY) return;
+          applyTheme(event.newValue, false);
+        });
+
+        applyTheme(getStoredTheme(), false);
       })();
 
       /**

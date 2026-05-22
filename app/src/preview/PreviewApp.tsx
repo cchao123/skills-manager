@@ -1,13 +1,31 @@
+import { useEffect } from 'react';
 import { HashRouter, Routes, Route, Outlet, useLocation } from 'react-router-dom';
 import SideNavBar from '@/components/SideNavBar';
 import Dashboard from '@/pages/Dashboard';
 import Settings from '@/pages/Settings';
 import SkillDownloadPreview from '@/pages/Marketplace/SkillDownloadPreview';
-import { ThemeProvider } from '@/contexts/ThemeContext';
+import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
 import { ToastProvider } from '@/components/Toast';
 import { SidebarProvider } from '@/contexts/SidebarContext';
-import { PAGE, pathToPage, ROUTE_PATH, THEME } from '@/constants';
+import { PAGE, pathToPage, ROUTE_PATH, THEME, isTheme } from '@/constants';
 import PreviewOnlyDesktop from './PreviewOnlyDesktop';
+
+function PreviewThemeStorageSync() {
+  const { setTheme } = useTheme();
+
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== 'vite-ui-theme') return;
+      if (!isTheme(event.newValue)) return;
+      setTheme(event.newValue);
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [setTheme]);
+
+  return null;
+}
 
 function PreviewLayout() {
   const location = useLocation();
@@ -33,7 +51,8 @@ function PreviewLayout() {
 
 export default function PreviewApp() {
   return (
-    <ThemeProvider defaultTheme={THEME.Light}>
+    <ThemeProvider defaultTheme={THEME.Auto}>
+      <PreviewThemeStorageSync />
       <ToastProvider>
         <SidebarProvider>
         <HashRouter>
