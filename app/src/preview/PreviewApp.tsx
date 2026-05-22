@@ -10,6 +10,8 @@ import { SidebarProvider } from '@/contexts/SidebarContext';
 import { PAGE, pathToPage, ROUTE_PATH, THEME, isTheme } from '@/constants';
 import PreviewOnlyDesktop from './PreviewOnlyDesktop';
 
+const THEME_SYNC_MESSAGE_TYPE = 'skills-manager:theme-sync';
+
 function PreviewThemeStorageSync() {
   const { setTheme } = useTheme();
 
@@ -22,6 +24,21 @@ function PreviewThemeStorageSync() {
 
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
+  }, [setTheme]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+
+      const data = event.data;
+      if (!data || data.type !== THEME_SYNC_MESSAGE_TYPE) return;
+      if (!isTheme(data.theme)) return;
+
+      setTheme(data.theme);
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, [setTheme]);
 
   return null;

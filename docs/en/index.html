@@ -882,6 +882,7 @@
 
       (function initThemeSwitch() {
         var STORAGE_KEY = "vite-ui-theme";
+        var THEME_SYNC_MESSAGE_TYPE = "skills-manager:theme-sync";
         var THEMES = { light: "light", dark: "dark", auto: "auto" };
         var root = document.documentElement;
         var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-theme-value]"));
@@ -913,6 +914,18 @@
           });
         }
 
+        function syncPreviewFrameTheme(theme) {
+          var frame = document.querySelector("[data-preview-frame]");
+          if (!frame || !frame.contentWindow) return;
+
+          try {
+            frame.contentWindow.postMessage(
+              { type: THEME_SYNC_MESSAGE_TYPE, theme: theme },
+              window.location.origin
+            );
+          } catch (e) {}
+        }
+
         function applyTheme(theme, persist) {
           var nextTheme = isTheme(theme) ? theme : THEMES.auto;
           var resolved = resolveTheme(nextTheme);
@@ -920,6 +933,7 @@
           root.classList.add(resolved);
           root.setAttribute("data-theme-preference", nextTheme);
           syncButtons(nextTheme);
+          syncPreviewFrameTheme(nextTheme);
 
           if (persist) {
             try { localStorage.setItem(STORAGE_KEY, nextTheme); } catch (e) {}
@@ -1143,6 +1157,14 @@
           frame.addEventListener("load", function () {
             frame.classList.add("loaded");
             if (skeleton) skeleton.classList.add("hidden");
+
+            try {
+              const currentTheme = localStorage.getItem("vite-ui-theme") || "auto";
+              frame.contentWindow.postMessage(
+                { type: "skills-manager:theme-sync", theme: currentTheme },
+                window.location.origin
+              );
+            } catch (e) {}
           }, { once: true });
           frame.src = PREVIEW_SRC;
         }
