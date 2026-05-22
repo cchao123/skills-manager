@@ -2,176 +2,267 @@
 
 ## Introduction
 
-Skills Manager is a desktop application (macOS / Windows) for managing AI coding agent skills (plugins). It supports popular agents including Claude Code, Cursor, Codex, OpenClaw, and OpenCode.
+Skills Manager is a desktop app for macOS and Windows that helps you manage skills across multiple AI agents. It brings skills from different locations into one place so you can browse, enable, import, back them up, and redistribute them.
 
-Built with Tauri 2 + React, the app is lightweight, fast, and supports both Chinese and English interfaces with dark mode.
+Built-in agent presets currently include:
+
+- Claude Code
+- Cursor
+- Codex
+- OpenClaw
+- OpenCode
+- Trae
+- Qoder
+- Antigravity
+- Kiro
+
+The app is built with Tauri 2 + React and supports both Chinese and English, plus light and dark themes.
 
 ---
 
 ## Quick Start
 
-1. Download the latest version from [GitHub Releases](https://github.com/cchao123/skills-managers/releases)
-2. Install and launch the application
-3. The app automatically scans local agent directories and detects installed skills
+1. Download the latest release from [GitHub Releases](https://github.com/cchao123/skills-manager/releases)
+2. Install and launch the app
+3. On first launch, the app automatically scans local agent directories and detects installed skills
 
 ---
 
-## Feature Overview
+## Navigation Overview
 
-The app consists of three pages:
+The left navigation bar currently has 4 main entries:
 
-| Page | Description |
-|------|-------------|
-| **Installed Skills** | View, enable/disable, import, and delete skills |
-| **GitHub Backup** | Sync skills to/from a GitHub repository |
-| **Settings** | Language, theme, agent management, and about |
+| Entry | Purpose |
+|------|---------|
+| **Marketplace** | Browse community skills and download them to Root or a specific agent |
+| **Installed** | View detected skills on your machine, filter by source, enable, import, or delete them |
+| **GitHub Backup** | Sync your skills to GitHub or restore them from a remote repository |
+| **Settings** | Configure language, appearance, advanced behavior, agent management, and app info |
 
----
+The default landing page is **Marketplace**.
 
-## 1. Installed Skills (Dashboard)
+Useful shortcuts:
 
-### 1.1 View Modes
-
-Toggle between two view modes in the top-right corner of the page header:
-
-- **Flat View**: All skills from all sources are displayed in a deduplicated two-column masonry layout. Duplicate skills are merged automatically (priority: global > claude > cursor).
-- **By-Source View**: Skills are grouped by source. Use the source filter tabs to switch between different sources.
-
-### 1.2 Search and Filtering
-
-- **Search bar**: Fuzzy search across skill names and descriptions
-- **Stats bar** (flat view): Shows counts for "All / Enabled / Disabled" — click to filter
-- **Source tabs** (by-source view): Switch between skill sources
-
-### 1.3 Skill Card Actions
-
-Each skill card includes:
-
-- **Master toggle**: Globally enable/disable the skill with cascading logic
-  - Turning OFF: Backs up per-agent states, then disables all agents
-  - Turning ON: Restores previously backed-up per-agent states
-- **Expandable panel**: Expand to manage per-agent enable/disable toggles individually
-- **Detail button**: Opens the skill detail modal
-
-### 1.4 Skill Detail Modal
-
-Contains the following sections:
-
-- **File tree + content preview** (resizable split pane)
-  - Left: Collapsible file directory tree
-  - Right: File content viewer with monospace rendering
-- **Agent enable status**: Individual toggle for each agent
-- **Delete button** (only for global source skills)
-
-### 1.5 Drag-and-Drop Import
-
-Drag folders containing `SKILL.md` directly into the app window:
-
-1. A "Drop to install" overlay appears when dragging
-2. Release to start importing — a progress indicator is shown
-3. Success/error notifications appear when complete
-4. Supports dragging multiple folders at once
-
-### 1.6 Open Folder
-
-Click the folder icon in the search bar to navigate to **Settings > Agents** page for managing agent directories.
+- `Ctrl/Cmd + A`: open Marketplace
+- `Ctrl/Cmd + S`: open Installed
+- `Ctrl/Cmd + D`: open GitHub Backup
 
 ---
 
-## 2. GitHub Backup
+## 1. Marketplace
 
-### 2.1 Configuration Steps
+Marketplace is used to browse and install community skills from `skills.sh`.
 
-1. **Create a GitHub repository**: Create a new empty repository on GitHub
-2. **Generate a Personal Access Token**: Go to [GitHub Token Settings](https://github.com/settings/personal-access-tokens) and generate a token with `repo` permissions
-3. **Fill in the configuration form**:
-   - **Owner / Repository name**: e.g., `cchao123/my-skills`
-   - **Branch**: Defaults to `main`
-   - **Token**: Paste the token you generated
-4. **Test connection**: Click "Test Connection" to verify your configuration
+### 1.1 Rankings and Search
 
-### 2.2 Sync to GitHub
+- Supports **All / Trending / Hot**
+- Search by skill name or description
+- Loads more results as you scroll
 
-Click "Sync Now" to push local skills to the GitHub repository:
+Ranking shortcuts:
 
-- **Normal sync**: Only pushes changed files
-- **Overwrite remote**: Click the dropdown arrow and check "Overwrite remote with local version" to force-push local content. A confirmation dialog will appear.
+- `Ctrl/Cmd + 1`: switch to All
+- `Ctrl/Cmd + 2`: switch to Trending
+- `Ctrl/Cmd + 3`: switch to Hot
 
-### 2.3 Restore from GitHub
+### 1.2 Choose an Install Target
 
-Click "Restore from GitHub" to pull remote skills to local:
+In the top-right area, you can choose where downloads go:
 
-- **Normal restore**: Remote files overwrite local同名 files, local-only files are preserved
-- **Overwrite local**: Click the dropdown arrow and check "Overwrite local with remote version" to make local identical to remote. Local-only files will be deleted. A confirmation dialog will appear.
+- **Root**: installs to the central Skills Manager directory `~/.skills-manager/skills/` and is the recommended option
+- **Specific agent**: installs directly to a detected agent
 
-### 2.4 Other Features
+### 1.3 Skill Details and Install
 
-- **Star button**: Star the Skills Manager project from the top-right corner
-- **Open local directory**: Opens `~/.skills-manager` in the system file manager
-- **Status badge**: When connected, a clickable GitHub repository link is displayed
-
-### 2.5 Share with Others
-
-The "Share with Others" section at the bottom provides commands for others to install your skills via Claude Code:
-
-1. Register Marketplace:
-   ```
-   /plugin marketplace add owner/repo
-   ```
-2. Install a skill:
-   ```
-   /plugin install <skill-name>@owner/repo
-   ```
+- Click a skill card to open its details
+- The detail area shows description, preview content, and source information
+- Click download to install the skill into the currently selected target
 
 ---
 
-## 3. Settings
+## 2. Installed
 
-### 3.1 General
+The Installed page uses a **flat card view** to display skills.
 
-#### Language
+### 2.1 Left Source Rail
 
-Switch between Chinese and English. The system tray menu language updates automatically.
+The left side of the page contains a source filter rail:
 
-#### Appearance
+- **ALL**: shows skills from every source
+- **Root**: shows only skills in the Skills Manager root directory
+- **Agent entries**: show only skills from the selected agent source
+- **Bottom settings button**: jumps to `Settings > Agents`
 
-Three theme options:
+Tips:
 
-- **Light**: Always use light theme
-- **Dark**: Always use dark theme
-- **System**: Automatically match the system dark mode setting
+- Clicking a source filters the card list to that source
+- Right-clicking a source icon opens the corresponding folder
 
-### 3.2 Agents
+### 2.2 Search, Status Filters, and Prefix Hiding
 
-Displays all supported AI coding assistants:
+The top bar supports:
 
-| Agent | Name | Config Directory |
-|-------|------|-----------------|
-| Claude Code | Claude | ~/.claude |
-| Cursor | Cursor | ~/.cursor |
-| Codex | Codex | ~/.codex |
-| OpenClaw | OpenClaw | ~/.openclaw |
-| OpenCode | OpenCode | ~/.opencode |
+- searching by skill name or description
+- filtering by status using the stats bar
+- opening the prefix filter to hide skills with specific prefixes
 
-- **Installed** agents: Green badge, click to open their config directory
-- **Not installed** agents: Gray badge, not clickable
+Prefix filters can also be managed from `Settings > Advanced`.
 
-At the bottom of the page, a separate card for Skills Manager itself (octopus icon) opens the `~/.skills-manager` directory.
+### 2.3 Source Path and Import
 
-### 3.3 About
+When **Root** or a specific agent is selected, the list header shows the current scan path.
 
-Displays app version information and relevant links.
+At that point, an import button also appears so you can copy skills from other agents into the current source.
+
+If you want to jump straight to an agent directory, you can also right-click that agent in the left source rail to open its folder.
+
+### 2.4 Skill Cards
+
+Each skill card supports:
+
+- a **main toggle** for bulk enable/disable of shareable agent targets
+- an **expand action** to inspect per-agent status
+- **details** to open the right-side detail panel
+- a **context menu** for actions such as pinning
+
+Notes:
+
+- Skills from native agent directories cannot simply be "unshared" with one click
+- Native-source agents stay protected, so the main toggle does not turn those sources off
+
+### 2.5 Right Detail Panel
+
+Clicking into a skill opens a **resizable right-side detail panel**.
+
+The panel includes:
+
+- a file tree and file content preview
+- per-agent enable state
+- delete actions
+
+Delete rules:
+
+- In the current build, deletions are effectively limited to the skill's Root copy
+- Native agent-source rows are shown as protected in the delete dialog
+
+### 2.6 Drag-and-Drop Import
+
+You can drag folders containing `SKILL.md` directly into the app window:
+
+1. A "drop to install" overlay appears
+2. Releasing starts the import and shows progress
+3. A success or error notification appears when it finishes
+4. Multiple folders can be imported at once
 
 ---
 
-## 4. Skill File Format
+## 3. GitHub Backup
 
-Each skill is a folder that must contain a `SKILL.md` file. `SKILL.md` uses YAML frontmatter format:
+The GitHub Backup page is used to sync the central skills directory to GitHub or restore it from GitHub.
+
+### 3.1 Setup Steps
+
+1. Create a repository on GitHub for your skills
+2. Generate a **fine-grained personal access token**
+3. Grant at least **Contents: Read and write** on the target repository
+4. Fill in:
+   - **Owner**
+   - **Repository**
+   - **Branch**
+   - **Token**
+5. Click **Test Connection**
+
+### 3.2 Sync to GitHub
+
+You can sync in two modes:
+
+- **Normal sync**: pushes regular changes
+- **Overwrite remote**: force the remote repository to match local content
+
+Overwrite mode always asks for confirmation first.
+
+### 3.3 Restore from GitHub
+
+You can restore in two modes:
+
+- **Normal restore**: remote files overwrite matching local files, while local-only files are kept
+- **Overwrite local**: the local directory becomes an exact copy of the remote, and local-only files are deleted
+
+Overwrite-local also requires confirmation.
+
+### 3.4 Other Features
+
+- A floating action button opens `~/.skills-manager`
+- A status area reflects the current repository connection state
+- The page includes a built-in step-by-step configuration guide
+
+### 3.5 Share with Others
+
+At the bottom of the page, the sharing section generates Claude Code commands:
+
+1. Register the marketplace
+
+```text
+/plugin marketplace add owner/repo
+```
+
+2. Install a specific skill
+
+```text
+/plugin install <skill-name>@owner/repo
+```
+
+---
+
+## 4. Settings
+
+Settings currently has 4 tabs: **General / Advanced / Agents / About**.
+
+### 4.1 General
+
+The General tab includes:
+
+- **Language**: switch between Chinese and English
+- **Appearance**: light, dark, or follow system
+- **Search Bar Preferences**: configure which search-bar elements are shown
+
+### 4.2 Advanced
+
+The Advanced tab includes:
+
+- **Advanced Mode**: an advanced safety toggle exposed in Settings
+- **Skill Filter**: manage hidden skill prefixes
+
+Use Advanced Mode carefully when working with delete-related workflows.
+
+### 4.3 Agents
+
+The Agents tab shows supported agents and their detection status.
+
+- Detected agents can be clicked to open their directories
+- Undetected agents are shown as not installed
+- The bottom area also includes an entry for the Skills Manager root folder (`~/.skills-manager`)
+
+### 4.4 About
+
+The About tab displays:
+
+- the current app version
+- project links
+- basic project information
+
+---
+
+## 5. Skill File Format
+
+Every skill is a folder, and its root should contain a `SKILL.md`.
+
+Recommended format:
 
 ```markdown
 ---
 name: my-skill
-description: A brief description of the skill
+description: A short description of the skill
 ---
 
 # My Skill
@@ -179,34 +270,51 @@ description: A brief description of the skill
 The actual content of the skill...
 ```
 
-### Skill Storage Paths
+### Common Storage Locations
 
-| Source | Path |
-|--------|------|
-| Skills Manager (global) | ~/.skills-manager/skills/ |
-| Claude Code plugin cache | ~/.claude/plugins/cache/ |
-| Claude Code custom | ~/.claude/skills/ |
-| Cursor | ~/.cursor/skills/ |
+Common locations include:
+
+- the central Skills Manager directory: `~/.skills-manager/skills/`
+- each agent's own `skills` directory
+- some native cache or extension directories that the app scans automatically
+
+If you are unsure which path a specific agent currently uses, check `Settings > Agents` and open it from there.
 
 ---
 
-## 5. FAQ
+## 6. FAQ
 
 ### GitHub Connection Failed
 
-- Verify the token has `repo` permissions
-- Confirm the owner and repository name are spelled correctly
-- Confirm the branch name is correct (default: `main`)
+- Make sure the token has `Contents: Read and write` on the target repository
+- Check that Owner, Repository, and Branch are correct
 - Check your network connection
-
-### Sync Conflicts
-
-By default, the remote version takes precedence during sync. To use local as the source of truth, check "Overwrite remote with local version".
 
 ### Agent Not Detected
 
-The app detects agents by checking if directories like `~/.claude`, `~/.cursor` exist. If an installed agent is not detected, verify the installation path is correct.
+The app checks local directories to detect agents. If an installed agent does not appear:
+
+- verify the installation path
+- check detection state in `Settings > Agents`
+- restart the app if needed
 
 ### Skill Import Failed
 
-Ensure the folder contains a `SKILL.md` file at the root level with valid YAML frontmatter.
+Make sure:
+
+- the folder root contains `SKILL.md`
+- the frontmatter in `SKILL.md` is valid
+- the target location is writable
+
+### I Cannot Delete a Skill
+
+Common reasons:
+
+- the skill only exists in a native agent directory, so there is no deletable Root copy
+- the current delete dialog still protects native agent-source rows
+
+### Marketplace Download Fails
+
+- make sure your network can access `skills.sh`
+- make sure the target install location is writable
+- if installing to a specific agent, confirm that the agent has been detected correctly

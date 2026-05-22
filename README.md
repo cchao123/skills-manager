@@ -2,134 +2,139 @@
 
 <img src="docs/assets/logo.png" alt="Skills Manager" width="520" />
 
-### 在多个 AI Agent 之间管理、同步和分发 Skills 的桌面应用。
-
+### 在多个 AI Agent 之间统一管理、同步与分发 Skills 的桌面应用
 
 [![Tauri](https://img.shields.io/badge/Tauri-2.0-FFC131?logo=tauri&logoColor=000)](https://tauri.app/)
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=000)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=000)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=fff)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/平台-macOS%20%7C%20Windows-lightgrey)](README.md)
+[![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows-lightgrey)](README.md)
 
 <p>
   <strong>文档语言 / Readme language</strong><br />
-  <b><a href="#zh">中文</a></b> · <a href="README.en.md">English</a>
+  <b>中文</b> · <a href="README.en.md">English</a>
 </p>
 
-<p><a href="https://github.com/cchao123/skills-managers/issues">意见反馈（GitHub Issues）</a></p>
+<p>
+  <a href="https://github.com/cchao123/skills-manager/releases">下载最新版本</a> ·
+  <a href="docs/user-guide.md">使用指南</a> ·
+  <a href="https://github.com/cchao123/skills-manager/issues">反馈问题</a>
+</p>
 
 </div>
 
 ---
 
-<a id="zh"></a>
-
 ## Skills Manager 是什么
 
-**Skills Manager** 是一个基于 **Tauri 2 + React + Rust** 的桌面应用，为 Claude Code 及其他 AI Agent 提供统一的技能管理与分发平台。
+**Skills Manager** 是一个基于 **Tauri 2 + React + Rust** 的桌面应用，用来把分散在不同 AI Agent 目录里的 skills 收拢到一个界面里查看、启用、分发和备份。
 
-它当前围绕以下工作流展开：
+它主要解决这些问题：
 
-- **Marketplace 技能市场**：浏览、搜索并一键安装社区技能，支持 All Time、Trending、Hot 三种排序
-- **统一扫描与管理**：聚合本地多个 Agent 的 skill 目录，合并成一份可管理视图
-- **跨 Agent 分发**：通过链接或复制，把同一个 skill 分发到不同 Agent
-- **集中存储**：把可复用的 skills 放进中心目录，便于维护与迁移
-- **GitHub 备份与恢复**：将技能仓库推送到远端，或在新机器上一键恢复
-- **CI/CD 自动构建**：基于 GitHub Actions 实现跨平台自动构建与发布
+- **多 Agent 管理分散**：把不同 Agent 的 skills 聚合成统一视图，减少来回切目录。
+- **复用成本高**：同一个 skill 可以快速分发到多个 Agent，而不是手动复制。
+- **迁移和备份麻烦**：支持把 skills 同步到 GitHub，在新机器上一键恢复。
+- **发现优质 skills 困难**：内置 Marketplace，可直接浏览、搜索和安装社区技能。
 
-默认支持的 Agent 包括：**Claude、Cursor、Codex、OpenClaw、OpenCode**。
+当前内置的 Agent 预设包括：**Claude Code、Cursor、Codex、OpenClaw、OpenCode、Trae、Qoder、Antigravity、Kiro**。
 
 ---
 
 ## 功能概览
 
-### Marketplace 技能市场
+### Marketplace
 
-- **三大榜单**：All Time（总榜）、Trending（趋势榜）、Hot（热门榜）
-- **智能搜索**：按技能名称、描述快速筛选
-- **一键安装**：选择目标 Agent，直接下载并启用技能
-- **详情预览**：查看技能的 SKILL.md 内容、统计数据、安全审计等
-- **进度追踪**：实时显示下载进度与安装状态
-- **Agent 选择器**：可选择安装到 Root 或特定 Agent 目录
+- 基于 `skills.sh` 浏览社区 skills，支持 **All Time / Trending / Hot** 三种榜单
+- 按名称、描述快速搜索
+- 预览 `SKILL.md`、详情统计和安装目标
+- 一键安装到 Root 或指定 Agent
 
 ![技能市场](docs/screen-shot/ScreenShot_Marketplace-1.png)
 ![技能详情](docs/screen-shot/ScreenShot_Marketplace-2.png)
 
-### Skills 总览与管理
+### 已安装 Skills 管理
 
-- **统一视图**：把来自不同来源的 skills 聚合到一个界面中管理
-- **跨 Agent 开关**：通过总开关 / 子开关控制 skill 在不同 Agent 中的启用状态
-- **多来源查看**：查看 skill 的详情、来源和文件结构
-- **拖拽导入**：支持将包含 `SKILL.md` 的文件夹直接拖入导入
+- 把多个来源的 skills 聚合到一个管理界面
+- 按 Agent 开关启用状态
+- 查看来源、文件结构和详情内容
+- 支持拖拽导入包含 `SKILL.md` 的文件夹
 
 ![主页](docs/screen-shot/ScreenShot_Dashboard-1.png)
 ![技能详情](docs/screen-shot/ScreenShot_Dashboard-2.png)
 
 ### GitHub 备份与分发
 
-- **同步到 GitHub**：将本地 skills 仓库推送到远端
-- **从 GitHub 恢复**：在新机器上拉取远端仓库并恢复本地 skills
-- **分发技能仓库**：把整理好的 skills 作为共享仓库提供给自己或团队使用
-- **配置向导**：可视化配置 GitHub 仓库信息
+- 同步本地 skills 仓库到 GitHub
+- 从 GitHub 恢复到新机器
+- 把整理好的 skills 仓库分享给自己或团队复用
 
 ![GitHub 备份](docs/screen-shot/ScreenShot_Github.png)
 ![GitHub 设置](docs/screen-shot/ScreenShot_Setting.png)
 
+---
+
+## 下载安装
+
+1. 前往 [GitHub Releases](https://github.com/cchao123/skills-manager/releases) 下载最新版本。
+2. 安装并启动应用。
+3. 首次启动后，应用会自动扫描本地 Agent 目录并展示已发现的 skills。
+
+更详细的使用方式见 [docs/user-guide.md](docs/user-guide.md)。
 
 ---
 
-## 技术栈
-
-| 层级 | 技术 |
-|------|------|
-| 前端 | React 18、TypeScript、Vite 5、Tailwind CSS、react-i18next |
-| 桌面 | Tauri 2（Rust） |
-| CI/CD | GitHub Actions（多平台构建、自动发布） |
-| 典型依赖 | serde、git2、ureq、walkdir 等 |
-
-开发与构建需安装 **Node.js**、**Rust**；在 macOS 上编译部分原生依赖时可能需要 **OpenSSL**（见下文）。
-
----
-
-## 快速开始
+## 本地开发
 
 ### 环境要求
 
-- **Node.js 18+**（`npm` 或 `pnpm`，与仓库锁文件一致即可）
-- **Rust**（`rustup` 安装 stable）
-- **macOS**：若遇 OpenSSL 相关报错，可用 Homebrew：
-  ```bash
-  brew install openssl@3
-  export OPENSSL_DIR=$(brew --prefix openssl@3)
-  export PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig
-  ```
-
-### 克隆与安装
+- **Node.js 20+**，推荐配合 **pnpm 9**
+- **Rust stable**（通过 `rustup` 安装）
+- **macOS** 如遇 OpenSSL 报错，可先执行：
 
 ```bash
-git clone <仓库地址>
-cd skills-managers
-npm install
+brew install openssl@3
+export OPENSSL_DIR=$(brew --prefix openssl@3)
+export PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig
 ```
 
-### 可选：启用统计与监控（Aptabase + Sentry）
+仓库当前使用 `pnpm-lock.yaml`，以下文档命令默认以 `pnpm` 为准。
 
-项目会按需读取 `.env` / `.env.local` / `src-tauri/.env` 等环境变量文件。若你需要启用统计或监控，可自行创建 `.env` 并填写以下变量：
+### 克隆与安装依赖
 
-- `APTABASE_APP_KEY`：事件统计（前端 `trackEvent` + Rust 生命周期事件）
+```bash
+git clone https://github.com/cchao123/skills-manager.git
+cd skills-manager
+pnpm install
+```
+
+### 启动开发环境
+
+```bash
+pnpm tauri:dev
+```
+
+这会启动：
+
+- Vite 开发服务器（默认 `http://localhost:5173`）
+- Tauri 桌面窗口
+- 前端热更新与后端重新编译流程
+
+如果你只是用浏览器打开前端预览，部分功能会走 Mock 数据；完整行为请在 Tauri 窗口中验证。
+
+### 可选：配置统计与监控
+
+可以从 `.env.example` 复制一份 `.env`，按需填写：
+
+```bash
+cp .env.example .env
+```
+
+应用会读取 `.env`、`.env.local`、`src-tauri/.env` 等环境变量文件。常用变量如下：
+
+- `VITE_ENABLE_TELEMETRY=false`：关闭前端 telemetry
+- `VITE_APTABASE_APP_KEY`：Aptabase 前端事件统计
 - `VITE_SENTRY_DSN`：前端 React 错误上报
 - `SENTRY_DSN`：Rust 侧 panic / error 上报
-- `VITE_ENABLE_TELEMETRY=false`：可一键关闭前端 telemetry
-
-### 开发调试
-
-```bash
-npm run tauri:dev
-```
-
-将启动 Vite（默认 `http://localhost:5173`）并打开桌面窗口；前端支持热更新，后端修改后按 Tauri 常规流程重新编译。
-
-在**纯浏览器**中打开前端时，部分能力会使用 Mock 数据，完整功能请在 Tauri 窗口中使用。
 
 ---
 
@@ -137,133 +142,113 @@ npm run tauri:dev
 
 ```bash
 # Windows x64
-npm run tauri:build
+pnpm tauri:build
 
-# macOS（按需指定 target，详见 Tauri 文档）
-npm run tauri:build -- --target aarch64-apple-darwin
-npm run tauri:build -- --target x86_64-apple-darwin
+# macOS Apple Silicon
+pnpm tauri:build -- --target aarch64-apple-darwin
+
+# macOS Intel
+pnpm tauri:build -- --target x86_64-apple-darwin
 ```
 
-产物位于 `src-tauri/target/release/` 及 `src-tauri/target/release/bundle/`（安装包视平台而定）。
+构建产物位于：
 
-仅改 Rust 时可加快迭代：
+- `src-tauri/target/release/`
+- `src-tauri/target/release/bundle/`
+
+仅修改 Rust 代码时，可以更快地执行：
 
 ```bash
 cargo build --manifest-path=src-tauri/Cargo.toml
 ```
 
+项目使用 **GitHub Actions** 自动构建发布：
+
+- 构建工作流：`.github/workflows/build.yml`
+- Pages 文档部署：`.github/workflows/deploy-pages.yml`
+
 ---
 
-## 配置与数据位置（摘要）
+## 配置与数据路径
 
-- 应用配置：`~/.skills-manager/config.json`（技能启用状态、Agent、语言等）
-- 中央技能目录：`~/.skills-manager/skills/`
+- 应用配置：`~/.skills-manager/config.json`
+- 中央 skills 目录：`~/.skills-manager/skills/`
 - GitHub 配置：`~/.skills-manager/github-config.json`
 
-技能元数据来自各目录下的 **`SKILL.md`**（建议含 YAML frontmatter：`name`、`description` 等）。
+每个 skill 的元数据主要来自其目录下的 **`SKILL.md`**，推荐使用 YAML frontmatter 定义 `name`、`description` 等字段。
 
 ---
 
-## CI/CD 自动构建
+## 仓库结构
 
-项目使用 **GitHub Actions** 实现自动化构建与发布：
-
-### 构建工作流 (`.github/workflows/build.yml`)
-
-**触发条件：**
-- 推送标签：`v*`（如 `v1.0.4`）
-- 手动触发：可选择指定标签
-
-**支持平台：**
-- macOS ARM64（Apple Silicon）
-- macOS x64（Intel）
-- Windows x64
-
-**构建产物：**
-- macOS：`.app`、`.app.tar.gz`、`.dmg`
-- Windows：`.exe`（NSIS 安装包）、`.msi`（Windows Installer）
-
-**自动发布：**
-- 构建成功后自动创建 GitHub Release
-- 产物上传为 Release Assets
-- 支持环境变量配置监控与统计（Aptabase、Sentry）
-
-### 使用方式
-
-```bash
-# 创建并推送标签触发自动构建
-git tag v1.0.4
-git push origin v1.0.4
-
-# 或在 GitHub Actions 页面手动触发工作流
+```text
+skills-manager/
+|-- .github/workflows/
+|   |-- build.yml
+|   `-- deploy-pages.yml
+|-- app/
+|   `-- src/
+|       |-- pages/
+|       |   |-- Dashboard/
+|       |   |-- GitHubBackup/
+|       |   |-- Marketplace/
+|       |   `-- Settings/
+|       `-- api/
+|-- docs/
+|-- scripts/
+|-- src-tauri/
+|   `-- src/
+|       |-- commands/
+|       `-- ...
+|-- .env.example
+|-- README.md
+`-- README.en.md
 ```
 
 ---
 
 ## 常见问题
 
-| 现象 | 处理方向 |
+| 现象 | 建议检查 |
 |------|----------|
-| 图标格式报错 | 使用 `npx @tauri-apps/cli icon <源图>` 生成符合要求的图标集 |
-| 5173 端口占用 | 结束占用进程或修改 Vite 端口配置 |
-| macOS OpenSSL | 设置上文 `OPENSSL_DIR` / `PKG_CONFIG_PATH` |
-| 列表里没有技能 | 确认本机已安装对应 Agent、技能路径存在且含 `SKILL.md`，在界面中执行重新扫描 |
-| Marketplace 无法加载 | 检查网络连接，确保能访问 skills.sh API |
-| GitHub 备份失败 | 确认 GitHub Token 有仓库读写权限，检查仓库配置是否正确 |
-| 技能安装失败 | 确认目标 Agent 目录存在且有写入权限，检查磁盘空间 |
+| 图标格式报错 | 使用 `npx @tauri-apps/cli icon <源图>` 重新生成图标 |
+| 5173 端口占用 | 释放端口或修改 Vite 端口配置 |
+| macOS OpenSSL 报错 | 检查 `OPENSSL_DIR` 与 `PKG_CONFIG_PATH` |
+| 列表里没有技能 | 确认 Agent 已安装、目录存在且包含 `SKILL.md`，然后在应用中重新扫描 |
+| Marketplace 无法加载 | 检查网络连接，确认可以访问 `skills.sh` |
+| GitHub 备份失败 | 确认 Token 具备仓库读写权限，仓库配置填写正确 |
+| 安装 skill 失败 | 确认目标 Agent 目录存在且可写，磁盘空间充足 |
 
-更多截图、说明和静态文档可参考 **`docs/`** 目录；若文档与代码不一致，以当前代码实现为准。
-
----
-
-## 项目结构（简）
-
-```
-skills-manager/
-├── .github/workflows/   # GitHub Actions CI/CD 配置
-│   ├── build.yml        # 多平台构建工作流
-│   └── deploy-pages.yml # 页面部署工作流
-├── app/                 # React 前端（Vite）
-│   └── src/
-│       ├── pages/       # 页面组件
-│       │   ├── Dashboard/       # 技能管理主页
-│       │   ├── SkillDownload.tsx # Marketplace 技能市场
-│       │   ├── GitHubBackup/    # GitHub 备份页
-│       │   └── Settings/        # 设置页
-│       └── api/         # Tauri API 封装
-├── src-tauri/           # Tauri + Rust 后端
-│   ├── src/
-│   │   ├── commands/   # Tauri 命令处理
-│   │   └── *.rs        # 核心业务逻辑
-├── docs/                # 文档与资源（如 docs/assets/logo.png）
-├── LICENSE
-├── README.md
-└── README.en.md         # 英文说明
-```
+如果文档与代码实现有差异，请以当前代码为准。
 
 ---
 
 ## 参与贡献
 
-欢迎通过 [GitHub Issues](https://github.com/cchao123/skills-managers/issues) 反馈与讨论，也欢迎 Pull Request：功能改进、文档、国际化、Bug 修复等。
+欢迎通过 [GitHub Issues](https://github.com/cchao123/skills-manager/issues) 反馈问题，也欢迎提交 Pull Request。
 
-1. Fork 本仓库  
-2. 新建分支：`git checkout -b feature/your-feature`  
-3. 提交修改并推送  
-4. 发起 Pull Request  
+1. Fork 仓库
+2. 新建分支：`git checkout -b feature/your-feature`
+3. 提交修改并推送
+4. 发起 Pull Request
 
-提交前建议在本地执行 **`npm run build`**（含 `tsc`）与 **`cargo build`**，减少 CI 失败。
+提交前建议至少运行：
+
+```bash
+pnpm build
+cargo build --manifest-path=src-tauri/Cargo.toml
+```
 
 ---
 
 ## 开源协议
 
-本项目以 **MIT License** 发布，详见仓库内 [`LICENSE`](LICENSE)。
-
-英文说明见 **[`README.en.md`](README.en.md)**。
+本项目采用 **MIT License**，详见 [LICENSE](LICENSE)。
 
 ---
 
-## 致谢 · Acknowledgments
+## 致谢
 
-- [Tauri](https://tauri.app/) · [Material Symbols](https://fonts.google.com/icons) · [Claude Code](https://claude.ai/code)
+- [Tauri](https://tauri.app/)
+- [Material Symbols](https://fonts.google.com/icons)
+- [Claude Code](https://claude.ai/code)

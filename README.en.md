@@ -2,10 +2,10 @@
 
 <img src="docs/assets/logo.png" alt="Skills Manager" width="520" />
 
-### A desktop app for managing, syncing, and distributing skills across AI agents.
+### A desktop app for managing, syncing, and distributing skills across AI agents
 
 [![Tauri](https://img.shields.io/badge/Tauri-2.0-FFC131?logo=tauri&logoColor=000)](https://tauri.app/)
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=000)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=000)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=fff)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows-lightgrey)](README.en.md)
@@ -15,7 +15,11 @@
   <a href="README.md">中文</a> · <b>English</b>
 </p>
 
-<p><a href="https://github.com/cchao123/skills-managers/issues">Feedback (GitHub Issues)</a></p>
+<p>
+  <a href="https://github.com/cchao123/skills-manager/releases">Download latest release</a> ·
+  <a href="docs/user-guide-en.md">User guide</a> ·
+  <a href="https://github.com/cchao123/skills-manager/issues">Feedback</a>
+</p>
 
 </div>
 
@@ -23,18 +27,16 @@
 
 ## What It Is
 
-**Skills Manager** is a desktop app built with **Tauri 2 + React + Rust** for managing skills for Claude Code and other AI agents with a unified platform.
+**Skills Manager** is a desktop app built with **Tauri 2 + React + Rust** that brings skills from different AI agent directories into one place so you can inspect, enable, distribute, and back them up.
 
-It is designed around a few core workflows:
+It is designed for a few practical workflows:
 
-- **Marketplace**: browse, search, and install community skills with one click, featuring All Time, Trending, and Hot rankings
-- **Unified scanning**: collect skills from multiple agent directories into one manageable view
-- **Cross-agent distribution**: link or copy the same skill into different agents
-- **Central storage**: keep reusable skills in one place for easier maintenance and migration
-- **GitHub backup and restore**: push your skills repository to GitHub or restore it on a new machine
-- **CI/CD automation**: automated cross-platform builds and releases via GitHub Actions
+- **Reduce fragmentation**: manage skills from multiple agents in one UI instead of jumping between folders.
+- **Reuse skills faster**: link or copy the same skill into different agents with less manual work.
+- **Back up and migrate cleanly**: sync your skills repository to GitHub and restore it on a new machine.
+- **Discover useful skills**: browse, search, and install community skills from the built-in Marketplace.
 
-Supported agents currently include **Claude, Cursor, Codex, OpenClaw, and OpenCode**.
+Built-in agent presets currently include **Claude Code, Cursor, Codex, OpenClaw, OpenCode, Trae, Qoder, Antigravity, and Kiro**.
 
 ---
 
@@ -42,155 +44,166 @@ Supported agents currently include **Claude, Cursor, Codex, OpenClaw, and OpenCo
 
 ### Marketplace
 
-- **Three rankings**: All Time, Trending, and Hot leaderboards
-- **Smart search**: quickly filter by skill name or description
-- **One-click install**: select target agent and download/enable skills instantly
-- **Details preview**: view skill's SKILL.md content, statistics, security audits, and more
-- **Progress tracking**: real-time download progress and installation status
-- **Agent selector**: choose to install to Root or specific agent directories
+- Browse community skills from `skills.sh`
+- Switch between **All Time / Trending / Hot** rankings
+- Search by name or description
+- Preview `SKILL.md`, stats, and install targets
+- Install to Root or a specific agent in one click
 
 ![Marketplace](docs/screen-shot/ScreenShot_Marketplace-1.png)
 ![Skill Details](docs/screen-shot/ScreenShot_Marketplace-2.png)
 
-### Skill Overview and Management
+### Installed Skill Management
 
-- **Unified view**: manage skills from different sources in one interface
-- **Per-agent toggles**: control whether a skill is enabled for each agent
-- **Source and file inspection**: view skill details, sources, and file trees
-- **Drag-and-drop import**: import any folder that contains a `SKILL.md`
+- Aggregate skills from multiple sources into one manageable view
+- Toggle skill availability per agent
+- Inspect source locations, file trees, and detail content
+- Drag and drop any folder that contains a `SKILL.md`
 
 ![Home](docs/screen-shot/ScreenShot_Dashboard-1.png)
 ![Skill Details](docs/screen-shot/ScreenShot_Dashboard-2.png)
 
 ### GitHub Backup and Distribution
 
-- **Sync to GitHub**: push your local skills repository to a remote repo
-- **Restore from GitHub**: pull the repository back onto a new machine
-- **Share a curated repository**: use a GitHub repo as a portable skills distribution source
+- Sync your local skills repository to GitHub
+- Restore a repository on a new machine
+- Share a curated skills repository with yourself or your team
 
 ![GitHub Backup](docs/screen-shot/ScreenShot_Github.png)
 ![GitHub Settings](docs/screen-shot/ScreenShot_Setting.png)
 
 ---
 
-## Tech stack
+## Install and Use
 
-| Layer | Stack |
-|-------|--------|
-| Frontend | React 18, TypeScript, Vite 5, Tailwind CSS, react-i18next |
-| Desktop | Tauri 2 (Rust) |
-| CI/CD | GitHub Actions (multi-platform builds, automated releases) |
-| Typical deps | serde, git2, ureq, walkdir, etc. |
+1. Download the latest build from [GitHub Releases](https://github.com/cchao123/skills-manager/releases).
+2. Install and launch the app.
+3. On first launch, the app scans local agent directories and shows the skills it finds.
 
-Development and builds require **Node.js** and **Rust**; on macOS, **OpenSSL** may be needed for some native deps (see below).
+For a step-by-step walkthrough, see [docs/user-guide-en.md](docs/user-guide-en.md).
 
 ---
 
-## Quick start
+## Local Development
 
 ### Prerequisites
 
-- **Node.js 18+** (`npm` or `pnpm`, match the repo lockfile)
-- **Rust** (stable via `rustup`)
-- **macOS**: if you hit OpenSSL errors, with Homebrew:
-  ```bash
-  brew install openssl@3
-  export OPENSSL_DIR=$(brew --prefix openssl@3)
-  export PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig
-  ```
-
-### Clone and install
+- **Node.js 20+**, ideally with **pnpm 9**
+- **Rust stable** via `rustup`
+- **macOS** users who hit OpenSSL errors can run:
 
 ```bash
-git clone <repository-url>
-cd skills-managers
-npm install
+brew install openssl@3
+export OPENSSL_DIR=$(brew --prefix openssl@3)
+export PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig
 ```
 
-### Optional: enable analytics & monitoring (Aptabase + Sentry)
+This repo ships with `pnpm-lock.yaml`, so the commands below use `pnpm` for reproducibility.
 
-The app reads environment variables from files such as `.env`, `.env.local`, and `src-tauri/.env`. If you want analytics or monitoring, create a `.env` file and fill in what you need:
+### Clone and install dependencies
 
-- `APTABASE_APP_KEY`: product events (frontend `trackEvent` + Rust lifecycle events)
+```bash
+git clone https://github.com/cchao123/skills-manager.git
+cd skills-manager
+pnpm install
+```
+
+### Start the dev environment
+
+```bash
+pnpm tauri:dev
+```
+
+This starts:
+
+- the Vite dev server on `http://localhost:5173`
+- the Tauri desktop window
+- frontend hot reload plus the normal Tauri rebuild flow for backend changes
+
+If you open the frontend in a plain browser, some capabilities fall back to mock data. Use the Tauri window to verify full behavior.
+
+### Optional: telemetry and monitoring
+
+You can copy `.env.example` to `.env` and fill in only what you need:
+
+```bash
+cp .env.example .env
+```
+
+The app reads env files such as `.env`, `.env.local`, and `src-tauri/.env`. Common variables:
+
+- `VITE_ENABLE_TELEMETRY=false`: disable frontend telemetry
+- `VITE_APTABASE_APP_KEY`: Aptabase frontend event analytics
 - `VITE_SENTRY_DSN`: frontend React error reporting
 - `SENTRY_DSN`: Rust panic / error reporting
-- `VITE_ENABLE_TELEMETRY=false`: hard-disable frontend telemetry
-
-### Development
-
-```bash
-npm run tauri:dev
-```
-
-Starts Vite (default `http://localhost:5173`) and opens the desktop window; frontend changes hot reload, while Rust changes follow the normal Tauri rebuild flow.
-
-In a **plain browser**, some features use mock data; use the Tauri window for full behavior.
 
 ---
 
-## Build & release
+## Build and Release
 
 ```bash
 # Windows x64
-npm run tauri:build
+pnpm tauri:build
 
-# macOS (targets as needed; see Tauri docs)
-npm run tauri:build -- --target aarch64-apple-darwin
-npm run tauri:build -- --target x86_64-apple-darwin
+# macOS Apple Silicon
+pnpm tauri:build -- --target aarch64-apple-darwin
+
+# macOS Intel
+pnpm tauri:build -- --target x86_64-apple-darwin
 ```
 
-Artifacts live under `src-tauri/target/release/` and `src-tauri/target/release/bundle/` (installers depend on platform).
+Build artifacts are written to:
 
-For Rust-only iteration:
+- `src-tauri/target/release/`
+- `src-tauri/target/release/bundle/`
+
+For faster Rust-only iteration:
 
 ```bash
 cargo build --manifest-path=src-tauri/Cargo.toml
 ```
 
+GitHub automation in this repo:
+
+- Release builds: `.github/workflows/build.yml`
+- Pages docs deployment: `.github/workflows/deploy-pages.yml`
+
 ---
 
-## Config & data paths (summary)
+## Config and Data Paths
 
-- App config: `~/.skills-manager/config.json` (skill enablement, agents, language, etc.)
-- Central skills dir: `~/.skills-manager/skills/`
+- App config: `~/.skills-manager/config.json`
+- Central skills directory: `~/.skills-manager/skills/`
 - GitHub config: `~/.skills-manager/github-config.json`
 
-Skill metadata comes from **`SKILL.md`** in each folder (YAML frontmatter recommended: `name`, `description`, etc.).
+Skill metadata mainly comes from **`SKILL.md`** in each directory. YAML frontmatter such as `name` and `description` is recommended.
 
 ---
 
-## CI/CD Automated Builds
+## Repository Layout
 
-The project uses **GitHub Actions** for automated building and releasing:
-
-### Build Workflow (`.github/workflows/build.yml`)
-
-**Triggers:**
-- Tag push: `v*` (e.g., `v1.0.4`)
-- Manual workflow dispatch with optional tag specification
-
-**Supported platforms:**
-- macOS ARM64 (Apple Silicon)
-- macOS x64 (Intel)
-- Windows x64
-
-**Build artifacts:**
-- macOS: `.app`, `.app.tar.gz`, `.dmg`
-- Windows: `.exe` (NSIS installer), `.msi` (Windows Installer)
-
-**Automated releases:**
-- Automatically creates GitHub Release after successful build
-- Uploads artifacts as Release Assets
-- Supports environment variables for monitoring and analytics (Aptabase, Sentry)
-
-### Usage
-
-```bash
-# Create and push a tag to trigger automated build
-git tag v1.0.4
-git push origin v1.0.4
-
-# Or manually trigger the workflow from GitHub Actions page
+```text
+skills-manager/
+|-- .github/workflows/
+|   |-- build.yml
+|   `-- deploy-pages.yml
+|-- app/
+|   `-- src/
+|       |-- pages/
+|       |   |-- Dashboard/
+|       |   |-- GitHubBackup/
+|       |   |-- Marketplace/
+|       |   `-- Settings/
+|       `-- api/
+|-- docs/
+|-- scripts/
+|-- src-tauri/
+|   `-- src/
+|       |-- commands/
+|       `-- ...
+|-- .env.example
+|-- README.md
+`-- README.en.md
 ```
 
 ---
@@ -198,65 +211,45 @@ git push origin v1.0.4
 ## Troubleshooting
 
 | Symptom | What to try |
-|---------|----------------|
-| Icon format errors | `npx @tauri-apps/cli icon <source-image>` |
-| Port 5173 in use | Free the port or change Vite port |
-| macOS OpenSSL | Set `OPENSSL_DIR` / `PKG_CONFIG_PATH` as above |
-| Empty skill list | Install agents, ensure paths and `SKILL.md` exist, rescan in the UI |
-| Marketplace won't load | Check network connection, ensure access to skills.sh API |
-| GitHub backup fails | Verify GitHub Token has repo read/write permissions, check repo config |
-| Skill install fails | Ensure target agent directory exists with write permissions, check disk space |
+|---------|-------------|
+| Icon format errors | Rebuild icons with `npx @tauri-apps/cli icon <source-image>` |
+| Port 5173 is busy | Free the port or change the Vite port config |
+| macOS OpenSSL issues | Check `OPENSSL_DIR` and `PKG_CONFIG_PATH` |
+| Skill list is empty | Make sure the agent is installed, the path exists, and `SKILL.md` is present, then rescan in the app |
+| Marketplace will not load | Check network access to `skills.sh` |
+| GitHub backup fails | Verify the token has repo read/write permissions and the repository config is correct |
+| Skill install fails | Make sure the target agent directory exists and is writable, and check disk space |
 
-For more screenshots and static documentation, see **`docs/`**. If docs and code ever disagree, trust the current code.
-
----
-
-## Repository layout (short)
-
-```
-skills-manager/
-├── .github/workflows/   # GitHub Actions CI/CD configurations
-│   ├── build.yml        # Multi-platform build workflow
-│   └── deploy-pages.yml # Pages deployment workflow
-├── app/                 # React frontend (Vite)
-│   └── src/
-│       ├── pages/       # Page components
-│       │   ├── Dashboard/       # Skill management homepage
-│       │   ├── SkillDownload.tsx # Marketplace skills market
-│       │   ├── GitHubBackup/    # GitHub backup page
-│       │   └── Settings/        # Settings page
-│       └── api/         # Tauri API wrappers
-├── src-tauri/           # Tauri + Rust backend
-│   ├── src/
-│   │   ├── commands/   # Tauri command handlers
-│   │   └── *.rs        # Core business logic
-├── docs/                # Docs & assets (e.g. docs/assets/logo.png)
-├── LICENSE
-├── README.md            # Chinese readme
-└── README.en.md         # This file (English)
-```
+If the docs and the code ever disagree, trust the current code.
 
 ---
 
 ## Contributing
 
-[GitHub Issues](https://github.com/cchao123/skills-managers/issues) and pull requests welcome: features, docs, i18n, bug fixes.
+Issues and pull requests are welcome at [GitHub Issues](https://github.com/cchao123/skills-manager/issues).
 
-1. Fork the repo  
-2. Branch: `git checkout -b feature/your-feature`  
-3. Commit and push  
-4. Open a pull request  
+1. Fork the repository
+2. Create a branch: `git checkout -b feature/your-feature`
+3. Commit and push your changes
+4. Open a pull request
 
-Before pushing, run **`npm run build`** (includes `tsc`) and **`cargo build`** when you can to reduce CI noise.
+Before pushing, it helps to run:
+
+```bash
+pnpm build
+cargo build --manifest-path=src-tauri/Cargo.toml
+```
 
 ---
 
 ## License
 
-**MIT** — see [`LICENSE`](LICENSE).
+This project is released under the **MIT License**. See [LICENSE](LICENSE).
 
 ---
 
 ## Acknowledgments
 
-- [Tauri](https://tauri.app/) · [Material Symbols](https://fonts.google.com/icons) · [Claude Code](https://claude.ai/code)
+- [Tauri](https://tauri.app/)
+- [Material Symbols](https://fonts.google.com/icons)
+- [Claude Code](https://claude.ai/code)
