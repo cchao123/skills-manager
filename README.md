@@ -12,7 +12,7 @@
 
 <p>
   <strong>文档语言 / Readme language</strong><br />
-  <b>中文</b> · <a href="README.en.md">English</a>
+  <b>中文</b> · <a href="README.en.md">English</a> · <a href="README.ja.md">日本語</a>
 </p>
 
 <p>
@@ -202,7 +202,8 @@ skills-manager/
 |       `-- ...
 |-- .env.example
 |-- README.md
-`-- README.en.md
+|-- README.en.md
+`-- README.ja.md
 ```
 
 ---
